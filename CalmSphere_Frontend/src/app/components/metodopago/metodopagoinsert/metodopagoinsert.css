@@ -30,12 +30,25 @@
   gap: 14px;
 }
 
-/* Campos */
 mat-form-field {
   width: 100%;
 }
 
-/* Botón */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: #4a4a6a;
+}
+
+.radio-group mat-radio-group {
+  display: flex;
+  gap: 10px;
+}
+
+/* botón */
 .btn-submit {
   margin-top: 10px;
   width: 100%;

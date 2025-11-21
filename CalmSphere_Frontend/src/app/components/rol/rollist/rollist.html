@@ -1,46 +1,52 @@
-<div class="container">
-  <div style="text-align: center; margin: 5%">
-    <h1>Lista de roles</h1>
-  </div>
+<div class="list-container">
 
-  <div style="margin-bottom: 20px">
-    <button matButton routerLink="new">
-      <mat-icon>add</mat-icon> Registrar Rol
+  <div class="header-row">
+    <h2>Lista de roles</h2>
+
+    <button class="btn-primary" mat-button routerLink="news">
+      <mat-icon>add</mat-icon>
+      Nuevo rol
     </button>
   </div>
 
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-    <!-- id -->
-    <ng-container matColumnDef="c1">
-      <th mat-header-cell *matHeaderCellDef>ID</th>
-      <td mat-cell *matCellDef="let e">{{ e.idRol }}</td>
-    </ng-container>
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="dataSource" class="custom-table mat-elevation-z8">
 
-    <!-- tipo -->
-    <ng-container matColumnDef="c2">
-      <th mat-header-cell *matHeaderCellDef>Tipo Rol</th>
-      <td mat-cell *matCellDef="let e">{{ e.tipoRol }}</td>
-    </ng-container>
+      <!-- ID -->
+      <ng-container matColumnDef="c1">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let r">{{ r.idRol }}</td>
+      </ng-container>
 
-<ng-container matColumnDef="c3">
-  <th mat-header-cell *matHeaderCellDef>Editar</th>
-  <td mat-cell *matCellDef="let r">
-    <button matButton [routerLink]="['edits', r.idRol]">
-      <mat-icon>edit</mat-icon>
-    </button>
-  </td>
-</ng-container>
+      <!-- Tipo Rol -->
+      <ng-container matColumnDef="c2">
+        <th mat-header-cell *matHeaderCellDef>Tipo Rol</th>
+        <td mat-cell *matCellDef="let r">{{ r.tipoRol }}</td>
+      </ng-container>
 
-<ng-container matColumnDef="c4">
-  <th mat-header-cell *matHeaderCellDef>Eliminar</th>
-  <td mat-cell *matCellDef="let r">
-    <button matButton class="delete" (click)="eliminar(r.idRol)">
-      <mat-icon>delete</mat-icon>
-    </button>
-  </td>
-</ng-container>
+      <!-- Editar -->
+      <ng-container matColumnDef="c3">
+        <th mat-header-cell *matHeaderCellDef>Editar</th>
+        <td mat-cell *matCellDef="let r">
+          <button class="btn-edit" mat-icon-button [routerLink]="['edits', r.idRol]">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </td>
+      </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-  </table>
+      <!-- Eliminar -->
+      <ng-container matColumnDef="c4">
+        <th mat-header-cell *matHeaderCellDef>Eliminar</th>
+        <td mat-cell *matCellDef="let r">
+          <button class="btn-delete" mat-icon-button (click)="eliminar(r.idRol)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+    </table>
+  </div>
 </div>

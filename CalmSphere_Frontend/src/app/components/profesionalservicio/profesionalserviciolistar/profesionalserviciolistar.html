@@ -1,11 +1,11 @@
 <div class="list-container">
 
   <div class="header-row">
-    <h2>Lista de usuarios</h2>
+    <h2>Profesionales y servicios</h2>
 
     <button class="btn-primary" mat-button routerLink="news">
       <mat-icon>add</mat-icon>
-      Nuevo usuario
+      Nuevo profesional / servicio
     </button>
   </div>
 
@@ -15,44 +15,54 @@
       <!-- ID -->
       <ng-container matColumnDef="c1">
         <th mat-header-cell *matHeaderCellDef>ID</th>
-        <td mat-cell *matCellDef="let e">{{ e.idUsuario }}</td>
+        <td mat-cell *matCellDef="let p">{{ p.idProfesionalServicio }}</td>
       </ng-container>
 
       <!-- Nombre -->
       <ng-container matColumnDef="c2">
         <th mat-header-cell *matHeaderCellDef>Nombre</th>
-        <td mat-cell *matCellDef="let e">{{ e.nombre }}</td>
+        <td mat-cell *matCellDef="let p">
+          {{ p.nombre }}
+        </td>
       </ng-container>
 
-      <!-- Apellido -->
+      <!-- Duración -->
       <ng-container matColumnDef="c3">
-        <th mat-header-cell *matHeaderCellDef>Apellido</th>
-        <td mat-cell *matCellDef="let e">{{ e.apellido }}</td>
+        <th mat-header-cell *matHeaderCellDef>Duración (min)</th>
+        <td mat-cell *matCellDef="let p">
+          {{ p.duracionMin }}
+        </td>
       </ng-container>
 
-      <!-- Email -->
+      <!-- Precio -->
       <ng-container matColumnDef="c4">
-        <th mat-header-cell *matHeaderCellDef>Email</th>
-        <td mat-cell *matCellDef="let e">{{ e.email }}</td>
+        <th mat-header-cell *matHeaderCellDef>Precio base</th>
+        <td mat-cell *matCellDef="let p">
+          S/ {{ p.precioBase }}
+        </td>
       </ng-container>
 
-      <!-- Fecha Nacimiento -->
+      <!-- Disponibilidad -->
       <ng-container matColumnDef="c5">
-        <th mat-header-cell *matHeaderCellDef>F. Nacimiento</th>
-        <td mat-cell *matCellDef="let e">{{ e.fechaNacimiento }}</td>
+        <th mat-header-cell *matHeaderCellDef>ID Disponibilidad</th>
+        <td mat-cell *matCellDef="let p">
+          {{ p.idDisponibilidad }}
+        </td>
       </ng-container>
 
-      <!-- Fecha Registro -->
+      <!-- Usuario -->
       <ng-container matColumnDef="c6">
-        <th mat-header-cell *matHeaderCellDef>F. Registro</th>
-        <td mat-cell *matCellDef="let e">{{ e.fechaRegistro }}</td>
+        <th mat-header-cell *matHeaderCellDef>ID Usuario</th>
+        <td mat-cell *matCellDef="let p">
+          {{ p.idUsuario }}
+        </td>
       </ng-container>
 
       <!-- Editar -->
       <ng-container matColumnDef="c7">
         <th mat-header-cell *matHeaderCellDef>Editar</th>
-        <td mat-cell *matCellDef="let e">
-          <button class="btn-edit" mat-icon-button [routerLink]="['edits', e.idUsuario]">
+        <td mat-cell *matCellDef="let p">
+          <button class="btn-edit" mat-icon-button [routerLink]="['edits', p.idProfesionalServicio]">
             <mat-icon>edit</mat-icon>
           </button>
         </td>
@@ -61,8 +71,8 @@
       <!-- Eliminar -->
       <ng-container matColumnDef="c8">
         <th mat-header-cell *matHeaderCellDef>Eliminar</th>
-        <td mat-cell *matCellDef="let e">
-          <button class="btn-delete" mat-icon-button (click)="eliminar(e.idUsuario)">
+        <td mat-cell *matCellDef="let p">
+          <button class="btn-delete" mat-icon-button (click)="eliminar(p.idProfesionalServicio)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>

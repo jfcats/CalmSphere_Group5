@@ -1,36 +1,51 @@
-<div class="container">
-  <div style="text-align: center; margin: 3%">
-    <h2>{{ edicion ? 'Editar rol' : 'Registrar rol' }}</h2>
+<div class="form-container">
+  <div class="form-card">
+
+    <h2 class="form-title">
+      {{ edicion ? 'Editar rol' : 'Registrar rol' }}
+    </h2>
+
+    <form [formGroup]="form" (submit)="aceptar()" class="form-body">
+
+      @if ( edicion ) {
+        <mat-form-field appearance="outline">
+          <mat-label>ID</mat-label>
+          <input matInput formControlName="idRol" />
+          @if (form.get('idRol')?.hasError('required')) {
+            <mat-error>El ID es obligatorio.</mat-error>
+          }
+        </mat-form-field>
+      }
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo de rol</mat-label>
+        <mat-select formControlName="tipoRol" required>
+          @for (t of tipos; track t) {
+            <mat-option [value]="t">{{ t }}</mat-option>
+          }
+        </mat-select>
+        @if (form.get('tipoRol')?.hasError('required')) {
+          <mat-error>Seleccione un tipo de rol.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Usuario</mat-label>
+        <mat-select formControlName="idUsuario" required>
+          @for (u of usuarios; track u.idUsuario) {
+            <mat-option [value]="u.idUsuario">
+              {{ u.nombre }} {{ u.apellido }}
+            </mat-option>
+          }
+        </mat-select>
+        @if (form.get('idUsuario')?.hasError('required')) {
+          <mat-error>Seleccione un usuario.</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-button class="btn-submit">
+        {{ edicion ? 'Actualizar rol' : 'Registrar rol' }}
+      </button>
+    </form>
   </div>
-
-  <form [formGroup]="form" (submit)="aceptar()">
-    @if (edicion) {
-    <mat-form-field>
-      <mat-label>ID</mat-label>
-      <input matInput formControlName="idRol" required />
-    </mat-form-field>
-    }
-
-    <mat-form-field>
-      <mat-label>Tipo Rol</mat-label>
-      <mat-select formControlName="tipoRol">
-        @for (t of tipos; track t) {
-        <mat-option [value]="t">{{ t }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Usuario</mat-label>
-      <mat-select formControlName="idUsuario">
-        @for (u of usuarios; track u.idUsuario) {
-        <mat-option [value]="u.idUsuario">
-          {{ u.nombre }} {{ u.apellido }}
-        </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-
-    <button matButton>{{ edicion ? 'Actualizar' : 'Registrar' }}</button>
-  </form>
 </div>

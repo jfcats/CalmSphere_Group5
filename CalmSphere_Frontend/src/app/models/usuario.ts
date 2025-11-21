@@ -1,3 +1,5 @@
+import { Rol } from "./rol";
+
 export class Usuario {
   idUsuario: number = 0;
   nombre: string = '';
@@ -6,5 +8,5 @@ export class Usuario {
   contraseña: string = ''; 
   fechaNacimiento: string = '';
   fechaRegistro: string = '';
-  roles: any[] = [];
+  roles: Rol[] = [];
 }

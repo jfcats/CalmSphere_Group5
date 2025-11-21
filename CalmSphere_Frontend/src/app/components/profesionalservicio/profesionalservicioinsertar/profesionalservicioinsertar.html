@@ -1,0 +1,86 @@
+<div class="form-container">
+  <div class="form-card">
+
+    <h2 class="form-title">
+      {{ edicion ? 'Editar profesional / servicio' : 'Registrar profesional / servicio' }}
+    </h2>
+
+    <form [formGroup]="form" (submit)="aceptar()" class="form-body">
+
+      @if (edicion) {
+        <mat-form-field appearance="outline">
+          <mat-label>ID</mat-label>
+          <input matInput formControlName="id" />
+        </mat-form-field>
+      }
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre del servicio</mat-label>
+        <input
+          matInput
+          formControlName="nombre"
+          required
+        />
+        @if (form.get('nombre')?.hasError('required')) {
+          <mat-error>El nombre es obligatorio.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Duración (minutos)</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="duracionMin"
+          required
+        />
+        @if (form.get('duracionMin')?.hasError('required')) {
+          <mat-error>La duración es obligatoria.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Precio base (S/)</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="precioBase"
+          required
+        />
+        @if (form.get('precioBase')?.hasError('required')) {
+          <mat-error>El precio base es obligatorio.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>ID de disponibilidad</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="idDisponibilidad"
+          required
+        />
+        @if (form.get('idDisponibilidad')?.hasError('required')) {
+          <mat-error>La disponibilidad es obligatoria.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>ID de usuario (profesional)</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="idUsuario"
+          required
+        />
+        @if (form.get('idUsuario')?.hasError('required')) {
+          <mat-error>El usuario es obligatorio.</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-button class="btn-submit">
+        {{ edicion ? 'Actualizar profesional / servicio' : 'Registrar profesional / servicio' }}
+      </button>
+    </form>
+  </div>
+</div>

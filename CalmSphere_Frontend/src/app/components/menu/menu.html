@@ -1,49 +1,149 @@
 <mat-toolbar class="custom-toolbar">
+
+  <!-- Logo / título -->
   <div style="display: flex; align-items: center; gap: 8px; margin-right: auto;">
     <mat-icon>self_improvement</mat-icon>
     <span style="font-weight: 600; font-size: 0.95rem;">CalmSphere</span>
   </div>
 
+  <!-- Usuarios -->
   <button
-    class="btn-rojo"
+    class="btn-menu"
     mat-button
     [matMenuTriggerFor]="menuUsuarios"
     aria-label="Usuarios"
   >
-    <mat-icon>person</mat-icon>Usuarios
+    <mat-icon>person</mat-icon>
+    Usuarios
   </button>
 
+  <!-- Roles -->
   <button
-    class="btn-rojo"
+    class="btn-menu"
     mat-button
     [matMenuTriggerFor]="menuRoles"
     aria-label="Roles"
   >
-    <mat-icon>security</mat-icon>Roles
+    <mat-icon>security</mat-icon>
+    Roles
   </button>
+
+  <!-- Disponibilidad -->
+  <button
+    class="btn-menu"
+    mat-button
+    [matMenuTriggerFor]="menuDisponibilidad"
+    aria-label="Disponibilidad"
+  >
+    <mat-icon>schedule</mat-icon>
+    Disponibilidad
+  </button>
+
+  <!-- Profesionales / Servicios -->
+  <button
+    class="btn-menu"
+    mat-button
+    [matMenuTriggerFor]="menuProfesionalServicio"
+    aria-label="Profesionales y Servicios"
+  >
+    <mat-icon>psychology</mat-icon>
+    Profesionales
+  </button>
+
+  <!-- Eventos -->
+    <button
+      class="btn-menu"
+      mat-button
+      [matMenuTriggerFor]="menuEventos"
+      aria-label="Eventos"
+    >
+      <mat-icon>event</mat-icon>
+      Eventos
+    </button>
+
+  <!-- Métodos de Pago -->
+  <button
+    class="btn-menu"
+    mat-button
+    [matMenuTriggerFor]="menuMetodoPago"
+    aria-label="Métodos de Pago"
+  >
+    <mat-icon>credit_card</mat-icon>
+    Métodos de Pago
+  </button>
+
 </mat-toolbar>
 
-  <!-- SUBMENÚ USUARIOS -->
-  <mat-menu #menuUsuarios="matMenu">
-    <button mat-menu-item routerLink="/usuarios">
-      <mat-icon>list</mat-icon>
-      Listar
-    </button>
-    <button mat-menu-item routerLink="/usuarios/news">
-      <mat-icon>add</mat-icon>
-      Registrar
-    </button>
-  </mat-menu>
 
-  <!-- SUBMENÚ ROLES -->
-  <mat-menu #menuRoles="matMenu">
-    <button mat-menu-item routerLink="/roles">
-      <mat-icon>list</mat-icon>
-      Listar
-    </button>
-    <button mat-menu-item routerLink="/roles/news">
-      <mat-icon>add</mat-icon>
-      Registrar
-    </button>
-  </mat-menu>
 
+<!-- SUBMENÚ USUARIOS -->
+<mat-menu #menuUsuarios="matMenu">
+  <button mat-menu-item routerLink="/usuarios">
+    <mat-icon>list</mat-icon>
+    Listar
+  </button>
+  <button mat-menu-item routerLink="/usuarios/news">
+    <mat-icon>add</mat-icon>
+    Registrar
+  </button>
+</mat-menu>
+
+<!-- SUBMENÚ ROLES -->
+<mat-menu #menuRoles="matMenu">
+  <button mat-menu-item routerLink="/roles">
+    <mat-icon>list</mat-icon>
+    Listar
+  </button>
+  <button mat-menu-item routerLink="/roles/news">
+    <mat-icon>add</mat-icon>
+    Registrar
+  </button>
+</mat-menu>
+
+<!-- SUBMENÚ DISPONIBILIDAD -->
+<mat-menu #menuDisponibilidad="matMenu">
+  <button mat-menu-item routerLink="/disponibilidades">
+    <mat-icon>list</mat-icon>
+    Listar
+  </button>
+  <button mat-menu-item routerLink="/disponibilidades/news">
+    <mat-icon>add</mat-icon>
+    Registrar
+  </button>
+</mat-menu>
+
+<!-- SUBMENÚ MÉTODOS DE PAGO -->
+<mat-menu #menuMetodoPago="matMenu">
+  <button mat-menu-item routerLink="/metodopagos">
+    <mat-icon>list</mat-icon>
+    Listar
+  </button>
+  <button mat-menu-item routerLink="/metodopagos/news">
+    <mat-icon>add</mat-icon>
+    Registrar
+  </button>
+</mat-menu>
+
+<!-- SUBMENÚ PROFESIONALES / SERVICIOS -->
+<mat-menu #menuProfesionalServicio="matMenu">
+  <button mat-menu-item routerLink="/profesional-servicios">
+    <mat-icon>list</mat-icon>
+    Listar
+  </button>
+  <button mat-menu-item routerLink="/profesional-servicios/news">
+    <mat-icon>add</mat-icon>
+    Registrar
+  </button>
+</mat-menu>
+
+<!-- SUBMENÚ EVENTOS -->
+<mat-menu #menuEventos="matMenu">
+  <button mat-menu-item routerLink="/eventos">
+    <mat-icon>list</mat-icon>
+    Listar
+  </button>
+  <button mat-menu-item routerLink="/eventos/news">
+    <mat-icon>add</mat-icon>
+    Registrar
+  </button>
+</mat-menu>

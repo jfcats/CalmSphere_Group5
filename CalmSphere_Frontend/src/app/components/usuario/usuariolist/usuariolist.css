@@ -1,59 +1,89 @@
-:root {
-  --cs-primary: #6366f1;
-  --cs-primary-soft: rgba(99, 102, 241, 0.15);
-  --cs-text: #e5e7eb;
-  --cs-muted: #9ca3af;
-  --cs-surface: #0b1120;
+.list-container {
+  padding: 24px;
+  background: #f5f7ff;
+  min-height: calc(100vh - 64px);
 }
 
-/* === Tabla === */
-table {
-  background: var(--cs-surface);
-  color: var(--cs-text);
-  border-radius: 12px;
-  overflow: hidden;
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
 }
 
-/* Encabezados */
-.mat-mdc-header-cell {
-  background: rgba(99, 102, 241, 0.12);
-  color: var(--cs-text);
+.header-row h2 {
+  font-size: 1.6rem;
   font-weight: 600;
+  color: #25306a;
 }
 
-/* Filas */
-.mat-mdc-row:hover {
-  background: var(--cs-primary-soft) !important;
-  transition: background 0.2s ease;
-}
-
-/* === Botones de acción (editar / eliminar) === */
-button[matButton] {
-  font-size: 0.8rem;
-  font-weight: 500;
-  border-radius: 8px;
-  padding: 6px 10px;
-  text-transform: none;
+/* Botón principal */
+.btn-primary {
+  background: linear-gradient(135deg, #6d82f7, #8f9bff);
+  color: #fff !important;
+  border-radius: 25px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  color: white;
-  background-color: var(--cs-primary);
-  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.25);
-  transition: background-color 0.25s ease, transform 0.15s ease;
+  gap: 6px;
+  font-weight: 600;
+  padding: 6px 16px;
+  box-shadow: 0px 4px 12px rgba(109, 130, 247, 0.35);
+  transition: 0.2s ease;
 }
 
-button[matButton]:hover {
-  background-color: #4f46e5;
-  transform: translateY(-1px);
+.btn-primary:hover {
+  filter: brightness(1.06);
+  box-shadow: 0px 6px 16px rgba(109, 130, 247, 0.45);
 }
 
-/* Botón eliminar (rojo suave) */
-button.delete {
-  background-color: #ef4444;
-  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.25);
+/* Tabla */
+.table-wrapper {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
 }
 
-button.delete:hover {
-  background-color: #dc2626;
+.custom-table th {
+  background: #eef1ff;
+  color: #3a4db7;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.custom-table td {
+  color: #394271;
+  font-size: 0.87rem;
+}
+
+/* Íconos Editar */
+.btn-edit mat-icon {
+  color: #6d82f7;
+  transition: 0.2s ease;
+}
+
+.btn-edit:hover mat-icon {
+  color: #3a4db7;
+}
+
+/* Íconos Eliminar */
+.btn-delete mat-icon {
+  color: #e57373;
+  transition: 0.2s ease;
+}
+
+.btn-delete:hover mat-icon {
+  color: #c62828;
+}
+
+@media (max-width: 768px) {
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .table-wrapper {
+    padding: 10px;
+  }
 }

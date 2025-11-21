@@ -1,0 +1,87 @@
+<div class="form-container">
+  <div class="form-card">
+
+    <h2 class="form-title">
+      {{ edicion ? 'Editar evento / cita' : 'Registrar evento / cita' }}
+    </h2>
+
+    <form [formGroup]="form" (submit)="aceptar()" class="form-body">
+
+      @if (edicion) {
+        <mat-form-field appearance="outline">
+          <mat-label>ID</mat-label>
+          <input matInput formControlName="id" />
+        </mat-form-field>
+      }
+
+      <mat-form-field appearance="outline">
+        <mat-label>ID Usuario</mat-label>
+        <input matInput type="number" formControlName="idUsuario" required />
+        @if (form.get('idUsuario')?.hasError('required')) {
+          <mat-error>El usuario es obligatorio.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>ID Profesional</mat-label>
+        <input matInput type="number" formControlName="idProfesionalServicio" required />
+        @if (form.get('idProfesionalServicio')?.hasError('required')) {
+          <mat-error>El profesional es obligatorio.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>ID Método de pago</mat-label>
+        <input matInput type="number" formControlName="idMetodoPago" required />
+        @if (form.get('idMetodoPago')?.hasError('required')) {
+          <mat-error>El método de pago es obligatorio.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Inicio</mat-label>
+        <input matInput type="datetime-local" formControlName="inicio" required />
+        @if (form.get('inicio')?.hasError('required')) {
+          <mat-error>La fecha/hora de inicio es obligatoria.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fin</mat-label>
+        <input matInput type="datetime-local" formControlName="fin" required />
+        @if (form.get('fin')?.hasError('required')) {
+          <mat-error>La fecha/hora de fin es obligatoria.</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="estado-group">
+        <span>Estado</span>
+        <mat-radio-group formControlName="estado" aria-label="Estado">
+          <mat-radio-button [value]="true">Activo</mat-radio-button>
+          <mat-radio-button [value]="false">Inactivo</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Motivo</mat-label>
+        <input matInput formControlName="motivo" required />
+        @if (form.get('motivo')?.hasError('required')) {
+          <mat-error>El motivo es obligatorio.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Monto (S/)</mat-label>
+        <input matInput type="number" formControlName="monto" required />
+        @if (form.get('monto')?.hasError('required')) {
+          <mat-error>El monto es obligatorio.</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-button class="btn-submit">
+        {{ edicion ? 'Actualizar evento' : 'Registrar evento' }}
+      </button>
+
+    </form>
+  </div>
+</div>

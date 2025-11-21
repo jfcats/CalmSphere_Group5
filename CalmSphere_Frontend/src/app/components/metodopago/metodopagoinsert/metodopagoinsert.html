@@ -1,0 +1,44 @@
+<div class="form-container">
+  <div class="form-card">
+    <h2 class="form-title">
+      {{ edicion ? 'Editar método de pago' : 'Registrar método de pago' }}
+    </h2>
+
+    <form [formGroup]="form" (submit)="aceptar()" class="form-body">
+      @if (edicion) {
+        <mat-form-field appearance="outline">
+          <mat-label>ID</mat-label>
+          <input matInput formControlName="idMetodoPago" />
+        </mat-form-field>
+      }
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" required />
+        @if (form.get('nombre')?.hasError('required')) {
+          <mat-error>El nombre es obligatorio.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo</mat-label>
+        <input matInput formControlName="tipo" required />
+        @if (form.get('tipo')?.hasError('required')) {
+          <mat-error>El tipo es obligatorio (ej. Tarjeta, Yape, Efectivo).</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="radio-group">
+        <label>Estado</label>
+        <mat-radio-group formControlName="estado">
+          <mat-radio-button [value]="true">Activo</mat-radio-button>
+          <mat-radio-button [value]="false">Inactivo</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <button matButton class="btn-submit">
+        {{ edicion ? 'Actualizar método de pago' : 'Registrar método de pago' }}
+      </button>
+    </form>
+  </div>
+</div>

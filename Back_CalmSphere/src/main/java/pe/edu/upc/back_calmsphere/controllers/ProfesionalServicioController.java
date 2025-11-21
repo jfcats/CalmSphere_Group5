@@ -48,7 +48,7 @@ public class ProfesionalServicioController {
         return ps;
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping
     public ResponseEntity<?> listar() {
         List<ProfesionalServicio> lista = service.list();
@@ -59,7 +59,7 @@ public class ProfesionalServicioController {
         return ResponseEntity.ok(listaDTO);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping("/{id}")
     public ResponseEntity<?> listarId(@PathVariable("id") int id) {
         ProfesionalServicio ps = service.listId(id);
@@ -69,7 +69,7 @@ public class ProfesionalServicioController {
         return ResponseEntity.ok(toDTO(ps));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @PostMapping
     public ResponseEntity<String> insertar(@RequestBody ProfesionalServicioDTOInsert dto) {
         ProfesionalServicio ps = toEntity(dto);
@@ -77,7 +77,7 @@ public class ProfesionalServicioController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Profesional-servicio creado con ID: " + ps.getIdProfesionalServicio());
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @PutMapping
     public ResponseEntity<String> actualizar(@RequestBody ProfesionalServicioDTOInsert dto) {
         ProfesionalServicio ps = toEntity(dto);
@@ -90,7 +90,7 @@ public class ProfesionalServicioController {
         return ResponseEntity.ok("Profesional-servicio actualizado con ID: " + ps.getIdProfesionalServicio());
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable("id") int id) {
         ProfesionalServicio ps = service.listId(id);
@@ -101,7 +101,7 @@ public class ProfesionalServicioController {
         return ResponseEntity.ok("Profesional-servicio eliminado con ID: " + id);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping("/busquedas")
     public ResponseEntity<?> buscarPorUsuario(@RequestParam("idUsuario") int idUsuario) {
         List<ProfesionalServicio> lista = service.findByUsuario(idUsuario);

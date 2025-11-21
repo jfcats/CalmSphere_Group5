@@ -30,12 +30,18 @@
   gap: 14px;
 }
 
-/* Campos */
 mat-form-field {
   width: 100%;
 }
 
-/* Botón */
+.estado-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #394271;
+}
+
 .btn-submit {
   margin-top: 10px;
   width: 100%;

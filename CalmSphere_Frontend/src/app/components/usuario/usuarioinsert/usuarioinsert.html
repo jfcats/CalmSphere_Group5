@@ -1,55 +1,60 @@
-<div class="container">
-  <div style="text-align: center; margin: 3%">
-    <h2>{{ edicion ? 'Editar usuario' : 'Registrar usuario' }}</h2>
-  </div>
+<div class="form-container">
+  <div class="form-card">
 
-  <div style="text-align: center; margin: 2%">
-    <form [formGroup]="form" (submit)="aceptar()" class="example-form">
+    <h2 class="form-title">
+      {{ edicion ? 'Editar usuario' : 'Registrar usuario' }}
+    </h2>
+
+    <form [formGroup]="form" (submit)="aceptar()" class="form-body">
 
       <!-- ID solo en edición -->
-      @if (edicion) {
-      <mat-form-field>
-        <mat-label>Código</mat-label>
-        <input matInput formControlName="idUsuario" />
-
-        @if (form.get('idUsuario')?.hasError('required')) {
-        <mat-error>El campo id es obligatorio.</mat-error>
-        }
-      </mat-form-field>
+      @if ( edicion ) {
+        <mat-form-field appearance="outline">
+          <mat-label>Código</mat-label>
+          <input matInput formControlName="idUsuario" />
+          @if (form.get('idUsuario')?.hasError('required')) {
+            <mat-error>El campo código es obligatorio.</mat-error>
+          }
+        </mat-form-field>
       }
 
-      <br />
-
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Nombre</mat-label>
         <input matInput formControlName="nombre" required />
+        @if (form.get('nombre')?.hasError('required')) {
+          <mat-error>El nombre es obligatorio.</mat-error>
+        }
       </mat-form-field>
 
-      <br />
-
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Apellido</mat-label>
         <input matInput formControlName="apellido" required />
+        @if (form.get('apellido')?.hasError('required')) {
+          <mat-error>El apellido es obligatorio.</mat-error>
+        }
       </mat-form-field>
 
-      <br />
-
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" required />
+        @if (form.get('email')?.hasError('required')) {
+          <mat-error>El email es obligatorio.</mat-error>
+        }
+        @if (form.get('email')?.hasError('email')) {
+          <mat-error>Ingrese un correo válido.</mat-error>
+        }
       </mat-form-field>
 
-      <br />
-
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Contraseña</mat-label>
         <input matInput type="password" formControlName="contrasena" required />
+        @if (form.get('contrasena')?.hasError('required')) {
+          <mat-error>La contraseña es obligatoria.</mat-error>
+        }
       </mat-form-field>
 
-      <br />
-
-      <mat-form-field>
-        <mat-label>Fecha nacimiento</mat-label>
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha de nacimiento</mat-label>
         <input
           matInput
           [matDatepicker]="picker1"
@@ -59,12 +64,13 @@
         />
         <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
         <mat-datepicker #picker1></mat-datepicker>
+        @if (form.get('fechaNacimiento')?.hasError('required')) {
+          <mat-error>La fecha de nacimiento es obligatoria.</mat-error>
+        }
       </mat-form-field>
 
-      <br />
-
-      <mat-form-field>
-        <mat-label>Fecha registro</mat-label>
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha de registro</mat-label>
         <input
           matInput
           [matDatepicker]="picker2"
@@ -73,12 +79,13 @@
         />
         <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
         <mat-datepicker #picker2></mat-datepicker>
+        @if (form.get('fechaRegistro')?.hasError('required')) {
+          <mat-error>La fecha de registro es obligatoria.</mat-error>
+        }
       </mat-form-field>
 
-      <br />
-
-      <button matButton>
-        {{ edicion ? 'Actualizar' : 'Registrar' }}
+      <button mat-button class="btn-submit">
+        {{ edicion ? 'Actualizar usuario' : 'Registrar usuario' }}
       </button>
     </form>
   </div>
