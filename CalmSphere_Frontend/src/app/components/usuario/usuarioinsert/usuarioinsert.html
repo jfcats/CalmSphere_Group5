@@ -1,0 +1,85 @@
+<div class="container">
+  <div style="text-align: center; margin: 3%">
+    <h2>{{ edicion ? 'Editar usuario' : 'Registrar usuario' }}</h2>
+  </div>
+
+  <div style="text-align: center; margin: 2%">
+    <form [formGroup]="form" (submit)="aceptar()" class="example-form">
+
+      <!-- ID solo en edición -->
+      @if (edicion) {
+      <mat-form-field>
+        <mat-label>Código</mat-label>
+        <input matInput formControlName="idUsuario" />
+
+        @if (form.get('idUsuario')?.hasError('required')) {
+        <mat-error>El campo id es obligatorio.</mat-error>
+        }
+      </mat-form-field>
+      }
+
+      <br />
+
+      <mat-form-field>
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" required />
+      </mat-form-field>
+
+      <br />
+
+      <mat-form-field>
+        <mat-label>Apellido</mat-label>
+        <input matInput formControlName="apellido" required />
+      </mat-form-field>
+
+      <br />
+
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" required />
+      </mat-form-field>
+
+      <br />
+
+      <mat-form-field>
+        <mat-label>Contraseña</mat-label>
+        <input matInput type="password" formControlName="contrasena" required />
+      </mat-form-field>
+
+      <br />
+
+      <mat-form-field>
+        <mat-label>Fecha nacimiento</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker1"
+          formControlName="fechaNacimiento"
+          [max]="today"
+          required
+        />
+        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+
+      <br />
+
+      <mat-form-field>
+        <mat-label>Fecha registro</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker2"
+          formControlName="fechaRegistro"
+          required
+        />
+        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+
+      <br />
+
+      <button matButton>
+        {{ edicion ? 'Actualizar' : 'Registrar' }}
+      </button>
+    </form>
+  </div>
+</div>
