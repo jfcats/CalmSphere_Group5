@@ -1,0 +1,49 @@
+<mat-toolbar class="custom-toolbar">
+  <div style="display: flex; align-items: center; gap: 8px; margin-right: auto;">
+    <mat-icon>self_improvement</mat-icon>
+    <span style="font-weight: 600; font-size: 0.95rem;">CalmSphere</span>
+  </div>
+
+  <button
+    class="btn-rojo"
+    mat-button
+    [matMenuTriggerFor]="menuUsuarios"
+    aria-label="Usuarios"
+  >
+    <mat-icon>person</mat-icon>Usuarios
+  </button>
+
+  <button
+    class="btn-rojo"
+    mat-button
+    [matMenuTriggerFor]="menuRoles"
+    aria-label="Roles"
+  >
+    <mat-icon>security</mat-icon>Roles
+  </button>
+</mat-toolbar>
+
+  <!-- SUBMENÚ USUARIOS -->
+  <mat-menu #menuUsuarios="matMenu">
+    <button mat-menu-item routerLink="/usuarios">
+      <mat-icon>list</mat-icon>
+      Listar
+    </button>
+    <button mat-menu-item routerLink="/usuarios/news">
+      <mat-icon>add</mat-icon>
+      Registrar
+    </button>
+  </mat-menu>
+
+  <!-- SUBMENÚ ROLES -->
+  <mat-menu #menuRoles="matMenu">
+    <button mat-menu-item routerLink="/roles">
+      <mat-icon>list</mat-icon>
+      Listar
+    </button>
+    <button mat-menu-item routerLink="/roles/news">
+      <mat-icon>add</mat-icon>
+      Registrar
+    </button>
+  </mat-menu>
+

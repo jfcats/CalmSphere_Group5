@@ -1,0 +1,127 @@
+/* Paleta base CalmSphere */
+:root {
+  --cs-bg: #050816;               /* fondo app */
+  --cs-surface: #0b1220;          /* barra / tarjetas */
+  --cs-primary: #6366f1;          /* violeta-azulado principal */
+  --cs-primary-soft: rgba(99, 102, 241, 0.14);
+  --cs-accent: #22c55e;           /* acento verdoso suave */
+  --cs-text: #e5e7eb;             /* gris muy claro */
+  --cs-muted: #9ca3af;            /* texto secundario */
+}
+
+/* --- Toolbar CalmSphere --- */
+.custom-toolbar {
+  background: radial-gradient(circle at top left, #4f46e5 0, #0b1120 45%, #020617 100%);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  min-height: 56px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.8);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+/* Espacio entre grupos de botones por si luego agregamos más */
+.custom-toolbar > * + * {
+  margin-left: 8px;
+}
+
+/* --- Botón de menú principal (ahora tipo "pill" CalmSphere) --- */
+.btn-rojo {
+  background-color: transparent;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  margin: 4px;
+  padding: 6px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--cs-text);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+/* Hover CalmSphere */
+.btn-rojo:hover {
+  background-color: var(--cs-primary-soft);
+  border-color: var(--cs-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.7);
+}
+
+/* Estado "focus" accesible */
+.btn-rojo:focus-visible {
+  outline: 2px solid var(--cs-primary);
+  outline-offset: 2px;
+}
+
+/* --- Iconos dentro del botón --- */
+.btn-rojo mat-icon,
+.btn-rojo .material-symbols-outlined {
+  font-size: 1.2rem;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* Alinear texto e iconos siempre centrados */
+.btn-rojo span:not(.material-symbols-outlined),
+.btn-rojo {
+  vertical-align: middle;
+}
+
+/* --- Asegurar color de iconos y texto en la toolbar --- */
+.custom-toolbar button,
+.custom-toolbar mat-icon {
+  color: var(--cs-text);
+}
+
+/* --- Panel del menú desplegable estilo "glass" oscuro --- */
+.mat-mdc-menu-panel {
+  background-color: rgba(15, 23, 42, 0.96) !important; /* superficie oscura */
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 10px;
+  padding: 4px 0;
+  box-shadow:
+    0 18px 45px rgba(15, 23, 42, 0.9),
+    0 0 0 1px rgba(15, 23, 42, 0.7);
+}
+
+/* --- Opciones del menú --- */
+.mat-mdc-menu-item {
+  color: var(--cs-text) !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Iconos dentro del menú */
+.mat-mdc-menu-item mat-icon {
+  color: var(--cs-muted) !important;
+}
+
+/* Hover en opciones del menú */
+.mat-mdc-menu-item:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(99, 102, 241, 0.22),
+    rgba(37, 99, 235, 0.08)
+  ) !important;
+  color: #f9fafb !important;
+}
+
+.mat-mdc-menu-item:hover mat-icon {
+  color: #e5e7eb !important;
+}
+
+/* --- Contenedor general opcional (por si quieres alinear con el resto del layout) --- */
+.container {
+  width: 100%;
+}

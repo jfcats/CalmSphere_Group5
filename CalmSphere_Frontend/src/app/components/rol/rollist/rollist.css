@@ -1,0 +1,65 @@
+:root {
+  --cs-primary: #6366f1;
+  --cs-primary-soft: rgba(99, 102, 241, 0.15);
+  --cs-text: #e5e7eb;
+  --cs-muted: #9ca3af;
+  --cs-surface: #0b1120;
+}
+
+/* === Tabla === */
+table {
+  background: var(--cs-surface);
+  color: var(--cs-text);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Encabezados */
+.mat-mdc-header-cell {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--cs-text);
+  font-weight: 600;
+}
+
+/* Filas */
+.mat-mdc-row:hover {
+  background: var(--cs-primary-soft) !important;
+  transition: background 0.2s ease;
+}
+
+/* Centrar columnas de acciones (si usas c3/c4 para botones) */
+.mat-mdc-cell.c-acciones,
+.mat-mdc-header-cell.c-acciones {
+  text-align: center;
+}
+
+/* === Botones de acción (Editar / Eliminar) === */
+button[matButton] {
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 6px 10px;
+  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: white;
+  background-color: var(--cs-primary);
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.25);
+  transition: background-color 0.25s ease, transform 0.15s ease;
+}
+
+button[matButton]:hover {
+  background-color: #4f46e5;
+  transform: translateY(-1px);
+}
+
+/* Botón eliminar (rojo CalmSphere) */
+button.delete {
+  background-color: #ef4444;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.25);
+}
+
+button.delete:hover {
+  background-color: #dc2626;
+}

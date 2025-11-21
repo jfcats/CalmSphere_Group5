@@ -1,0 +1,36 @@
+<div class="container">
+  <div style="text-align: center; margin: 3%">
+    <h2>{{ edicion ? 'Editar rol' : 'Registrar rol' }}</h2>
+  </div>
+
+  <form [formGroup]="form" (submit)="aceptar()">
+    @if (edicion) {
+    <mat-form-field>
+      <mat-label>ID</mat-label>
+      <input matInput formControlName="idRol" required />
+    </mat-form-field>
+    }
+
+    <mat-form-field>
+      <mat-label>Tipo Rol</mat-label>
+      <mat-select formControlName="tipoRol">
+        @for (t of tipos; track t) {
+        <mat-option [value]="t">{{ t }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Usuario</mat-label>
+      <mat-select formControlName="idUsuario">
+        @for (u of usuarios; track u.idUsuario) {
+        <mat-option [value]="u.idUsuario">
+          {{ u.nombre }} {{ u.apellido }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button matButton>{{ edicion ? 'Actualizar' : 'Registrar' }}</button>
+  </form>
+</div>
