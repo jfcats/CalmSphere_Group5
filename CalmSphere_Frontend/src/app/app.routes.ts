@@ -17,8 +17,15 @@ import { Profesionalserviciolistar } from './components/profesionalservicio/prof
 import { Evento } from './components/evento/evento';
 import { Eventoinsert } from './components/evento/eventoinsert/eventoinsert';
 import { Eventolistar } from './components/evento/eventolistar/eventolistar';
+import { Home } from './components/home/home';
 
 export const routes: Routes = [
+
+{ path: '', component: Home },          // landing CalmSphere
+  // { path: 'login', component: LoginComponent },
+  // { path: 'register', component: RegisterComponent },
+  // { path: 'dashboard', component: DashboardComponent, canActivate: [...]}
+
 {
     path: 'usuarios',
     component: Usuario,
