@@ -24,7 +24,7 @@ public class UsuarioController {
     private IUsuarioService service;
 
     @GetMapping
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> listar() {
         List<Usuario> usuarios = service.list();
 
@@ -42,7 +42,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> insertar(@RequestBody UsuarioDTOInsert dto) {
         if (dto.getNombre() == null || dto.getApellido() == null || dto.getEmail() == null || dto.getContraseña() == null || dto.getFechaNacimiento() == null || dto.getFechaRegistro() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -55,7 +55,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> listarId(@PathVariable("id") Integer id) {
         Usuario u = service.listId(id);
         if (u == null) {
@@ -69,7 +69,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> eliminar(@PathVariable("id") Integer id) {
         Usuario u = service.listId(id);
         if (u == null) {
@@ -81,7 +81,7 @@ public class UsuarioController {
     }
 
     @PutMapping
-   //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> modificar(@RequestBody UsuarioDTOInsert dto) {
         if (dto.getNombre() == null || dto.getApellido() == null || dto.getEmail() == null || dto.getContraseña() == null || dto.getFechaNacimiento() == null || dto.getFechaRegistro() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -103,7 +103,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/busquedas")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> buscar(@RequestParam String n) {
         List<Usuario> usuarios = service.buscarNombre(n);
 
@@ -121,7 +121,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/busquedasEventoEstres")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> buscarEventoEstres() {
         List<String[]> usuarios = service.buscarEventoEstresPorUsuario();
         List<UsuarioEventoEstresDTO> listarPorEventoEstres = new ArrayList<>();

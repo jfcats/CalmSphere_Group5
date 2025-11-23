@@ -20,7 +20,7 @@ public class MetodoPagoController {
     @Autowired
     private IMetodoPagoService cMP;
 
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping
     public ResponseEntity<?> listar() {
         List<MetodoPago> lista = cMP.list();
@@ -33,7 +33,7 @@ public class MetodoPagoController {
         return ResponseEntity.ok(listaDTO);
     }
 
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping("/{id}")
     public ResponseEntity<?> listarId(@PathVariable("id") int id) {
         MetodoPago c = cMP.listId(id);
@@ -45,7 +45,7 @@ public class MetodoPagoController {
         return ResponseEntity.ok(dto);
     }
 
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @PostMapping
     public ResponseEntity<String> insertar(@RequestBody MetodoPagoDTO dto) {
         MetodoPago m = new ModelMapper().map(dto, MetodoPago.class);
@@ -54,7 +54,7 @@ public class MetodoPagoController {
                 .body("Colección registrada con ID: " + m.getIdMetodoPago());
     }
 
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @PutMapping
     public ResponseEntity<String> actualizar(@RequestBody MetodoPagoDTO dto) {
         MetodoPago c = new ModelMapper().map(dto, MetodoPago.class);
@@ -67,7 +67,7 @@ public class MetodoPagoController {
         return ResponseEntity.ok("Colección actualizada con ID: " + c.getIdMetodoPago());
     }
 
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable("id") int id) {
         MetodoPago c = cMP.listId(id);

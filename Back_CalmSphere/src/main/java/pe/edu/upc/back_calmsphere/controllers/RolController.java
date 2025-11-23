@@ -27,7 +27,7 @@ public class RolController {
     private IUsuarioService uservice;
 
     @GetMapping
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> listar() {
         List<Rol> roles = service.list();
 
@@ -46,7 +46,7 @@ public class RolController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> insertar(@RequestBody RolDTO dto) {
         if (dto.getTipoRol() == null || dto.getIdUsuario() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -72,7 +72,7 @@ public class RolController {
     }
 
     @GetMapping("/{id}")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> listarid(@PathVariable("id") Integer id) {
         Rol r = service.listId(id);
         if (r == null) {
@@ -86,7 +86,7 @@ public class RolController {
     }
 
     @DeleteMapping("/{id}")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> eliminar(@PathVariable("id") Integer id) {
         Rol r = service.listId(id);
         if (r == null) {
@@ -98,7 +98,7 @@ public class RolController {
     }
 
     @PutMapping
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> modificar(@RequestBody RolDTO dto) {
         if (dto.getTipoRol() == null || dto.getIdUsuario() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -118,7 +118,7 @@ public class RolController {
     }
 
     @GetMapping("/busquedas")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> buscar(@RequestParam String n) {
         List<Rol> roles = service.buscarTipoRol(n);
 
@@ -136,7 +136,7 @@ public class RolController {
     }
 
     @GetMapping("/busquedasRolesPorNombre")
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> listarRolesPorUsuario() {
         List<String[]> roles = service.listarRolesPorUsuario();
         List<RolesPorUsuarioDTO> listarRolesNroUsuario = new ArrayList<>();

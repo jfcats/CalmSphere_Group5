@@ -1,0 +1,35 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-header">
+      <img src="assets/img/logoCalmSphere.png" class="logo" />
+      <h2>Bienvenido a CalmSphere</h2>
+      <p class="subtitle">Inicia sesión para acceder a tu espacio de bienestar</p>
+    </div>
+
+    <form (ngSubmit)="login()" class="login-form">
+
+      <!-- Usuario -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Usuario</mat-label>
+        <input matInput [(ngModel)]="username" name="username" required />
+      </mat-form-field>
+
+      <!-- Contraseña -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Contraseña</mat-label>
+        <input matInput [(ngModel)]="password" name="password" 
+               [type]="hidePassword ? 'password':'text'" required />
+
+        <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="btn-login" type="submit">
+        {{ isLoading ? 'Ingresando...' : 'Ingresar' }}
+      </button>
+
+    </form>
+
+  </div>
+</div>
