@@ -1,12 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Loginservice } from '../../services/loginservice';
 import { Router } from '@angular/router';
 import { JwtRequest } from '../../models/jwtRequest';
+
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-login',
@@ -20,23 +23,35 @@ import { MatIconModule } from '@angular/material/icon';
     MatIconModule
   ]
 })
-export class Login {
+export class Login implements OnInit {
 
   username: string = '';
   password: string = '';
   hidePassword: boolean = true;
   isLoading: boolean = false;
 
-  constructor(private loginservice: Loginservice, private router: Router) {}
+  constructor(
+    private loginservice: Loginservice,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    // Evita usar sessionStorage en SSR
+    if (typeof window !== 'undefined') {
+      const token = sessionStorage.getItem('token');
+      const jwtHelper = new JwtHelperService();
+      if (token && !jwtHelper.isTokenExpired(token)) {
+        // ✅ Si ya hay sesión, vete directo a eventos
+        this.router.navigate(['/eventos']);
+      }
+    }
+  }
 
   togglePasswordVisibility() {
     this.hidePassword = !this.hidePassword;
   }
 
   login(): void {
-
-    console.log("HIZO CLICK EN LOGIN"); // 👈 prueba básica
-
     if (!this.username || !this.password) {
       alert('Ingresa usuario y contraseña');
       return;
@@ -50,15 +65,12 @@ export class Login {
 
     this.loginservice.login(request).subscribe({
       next: (data: any) => {
-
-        console.log("RESPUESTA DEL BACK:", data); // 👈 Debug
-
-       if (data && data.jwttoken) {
-        sessionStorage.setItem('token', data.jwttoken);
-      }
-
+        if (typeof window !== 'undefined' && data && data.jwttoken) {
+          sessionStorage.setItem('token', data.jwttoken);
+          // ✅ Redirección Angular a la lista de eventos
+          this.router.navigateByUrl('/eventos');
+        }
         this.isLoading = false;
-        this.router.navigate(['/eventos']);
       },
       error: (error) => {
         console.error("ERROR LOGIN:", error);
@@ -66,5 +78,9 @@ export class Login {
         alert("Credenciales incorrectas");
       }
     });
+  }
+
+  cancel(): void {
+    this.router.navigate(['/landing']);
   }
 }

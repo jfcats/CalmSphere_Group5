@@ -2,25 +2,37 @@
 
   <!-- HEADER -->
   <header class="cs-navbar">
-    <div class="cs-navbar-left">
+    <div class="cs-navbar-left" style="cursor:pointer" routerLink="/landing">
       <img src="assets/img/logoCalmSphere.png" class="cs-logo-img" />
     </div>
 
-    <nav class="cs-nav-links">
-      <a href="#recomendaciones">Inicio</a>
-      <a href="#contacto">Contáctanos</a>
-      <a href="#sobre-nosotros">Sobre nosotros</a>
-      <a href="#servicios">Servicios</a>
+    <!-- ======= SI HAY SESIÓN ACTIVA: MENÚ DEL SISTEMA (SIN botones de login) ======= -->
+    <nav class="cs-nav-links" *ngIf="logueado; else guestMenu">
+      <a routerLink="/eventos">Eventos</a>
+      <a routerLink="/usuarios">Usuarios</a>
+      <a routerLink="/metodopagos">Métodos de pago</a>
+      <a routerLink="/profesional-servicios">Profesionales</a>
+      <button class="cs-btn cs-btn-outline" (click)="logout()">Cerrar sesión</button>
     </nav>
 
-    <div class="cs-auth">
-      <button class="cs-btn cs-btn-outline" routerLink="/login">Iniciar sesión</button>
-      <button class="cs-btn cs-btn-primary" routerLink="/register">Registrarse</button>
-    </div>
+    <!-- ======= SI NO HAY SESIÓN: HEADER PÚBLICO ======= -->
+    <ng-template #guestMenu>
+      <nav class="cs-nav-links">
+        <a href="#recomendaciones">Inicio</a>
+        <a href="#contacto">Contáctanos</a>
+        <a href="#sobre-nosotros">Sobre nosotros</a>
+        <a href="#servicios">Servicios</a>
+      </nav>
+
+      <div class="cs-auth">
+        <button class="cs-btn cs-btn-outline" routerLink="/login">Iniciar sesión</button>
+        <button class="cs-btn cs-btn-primary" routerLink="/login">Registrarse</button>
+      </div>
+    </ng-template>
   </header>
 
-  <!-- HERO -->
-  <section class="hero">
+  <!-- HERO y resto del landing solo si NO hay sesión -->
+  <section class="hero" *ngIf="!logueado">
     <div class="hero-text">
       <h1>
         Bienvenido a CalmSphere: tu<br />
@@ -34,7 +46,7 @@
 
       <div class="hero-actions">
         <button class="cs-btn cs-btn-primary" routerLink="/login">Iniciar sesión</button>
-        <button class="cs-btn cs-btn-outline" routerLink="/register">Registrarse</button>
+        <button class="cs-btn cs-btn-outline" routerLink="/login">Registrarse</button>
       </div>
     </div>
 
@@ -43,8 +55,7 @@
     </div>
   </section>
 
-  <!-- RECOMENDACIONES -->
-  <section id="recomendaciones" class="section section-gray">
+  <section id="recomendaciones" class="section section-gray" *ngIf="!logueado">
     <div class="section-header">
       <h2>Recomendaciones</h2>
       <p>Descubre contenido personalizado para tu bienestar</p>
@@ -74,8 +85,7 @@
     </div>
   </section>
 
-  <!-- COMENTARIOS -->
-  <section class="section section-pink" id="sobre-nosotros">
+  <section class="section section-pink" id="sobre-nosotros" *ngIf="!logueado">
     <div class="section-header">
       <h2>Comentarios</h2>
       <p>Lo que dicen nuestros usuarios sobre su experiencia</p>
@@ -111,8 +121,7 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="cs-footer">
+  <footer class="cs-footer" *ngIf="!logueado">
     <div class="cs-footer-top">
       <div class="footer-logo-box">
         <img src="assets/img/logoCalmSphere.png" class="cs-logo-img-footer" />
@@ -134,7 +143,7 @@
     </div>
 
     <div class="cs-footer-bottom">
-      <p>Footer Copyright</p>
+      <p>© CalmSphere 2025</p>
     </div>
   </footer>
 

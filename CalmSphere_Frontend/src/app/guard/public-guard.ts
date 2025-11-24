@@ -1,16 +1,21 @@
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
-import { Loginservice } from '../services/loginservice';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 export const publicGuard: CanActivateFn = () => {
-  const loginservice = inject(Loginservice);
   const router = inject(Router);
+  const jwtHelper = new JwtHelperService();
 
-  // Si el usuario YA está autenticado
-  if (loginservice.verificar()) {
-    router.navigate(['/eventos']); // o dashboard, o home interno
-    return false;
+  // ✅ Verifica que estás en navegador
+  if (typeof window !== 'undefined') {
+    const token = sessionStorage.getItem('token');
+    const isLoggedIn = token && !jwtHelper.isTokenExpired(token);
+
+    if (isLoggedIn) {
+      router.navigate(['/eventos']);
+      return false;
+    }
   }
 
-  return true; // permite entrar a login/landing
+  return true; // permite acceder a login o landing
 };

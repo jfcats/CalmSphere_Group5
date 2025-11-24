@@ -22,7 +22,7 @@ public class DisponibilidadController {
     private IDisponibilidadService dS;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<?> listar() {
         List<Disponibilidad> lista = dS.list();
         if (lista.isEmpty()) {
@@ -35,7 +35,7 @@ public class DisponibilidadController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<?> listarId(@PathVariable("id") int id) {
         Disponibilidad d = dS.listId(id);
         if (d == null) {
@@ -46,7 +46,7 @@ public class DisponibilidadController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<String> insertar(@RequestBody DisponibilidadDTOInsert dto) {
         Disponibilidad d = new ModelMapper().map(dto, Disponibilidad.class);
         dS.insert(d);
@@ -54,7 +54,7 @@ public class DisponibilidadController {
     }
 
     @PutMapping
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<String> actualizar(@RequestBody DisponibilidadDTOInsert dto) {
         Disponibilidad d = new ModelMapper().map(dto, Disponibilidad.class);
         Disponibilidad obj = dS.listId(d.getDisponibilidadId());
@@ -66,7 +66,7 @@ public class DisponibilidadController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<String> eliminar(@PathVariable("id") int id) {
         Disponibilidad obj = dS.listId(id);
         if (obj == null) {
@@ -77,7 +77,7 @@ public class DisponibilidadController {
     }
 
     @GetMapping("/busquedas")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<?> buscar(@RequestParam("d") Integer diaSemana) {
         List<Disponibilidad> lista = dS.findByDiaSemana(diaSemana);
         if (lista.isEmpty()) {

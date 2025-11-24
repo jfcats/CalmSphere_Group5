@@ -56,7 +56,7 @@ public class EventoController {
         return e;
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping
     public ResponseEntity<?> listar(){
         List<Evento> lista = service.list();
@@ -67,7 +67,7 @@ public class EventoController {
         return ResponseEntity.ok(listaDTO);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping("/{id}")
     public ResponseEntity<?> listarId(@PathVariable("id") int id){
         Evento e = service.listId(id);
@@ -77,7 +77,7 @@ public class EventoController {
         return ResponseEntity.ok(toDTO(e));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @PostMapping
     public ResponseEntity<String> insertar(@RequestBody EventoDTOInsert dto){
         Evento e = toEntity(dto);
@@ -85,7 +85,7 @@ public class EventoController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Evento creado con ID: "+e.getIdEvento());
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+   // @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @PutMapping
     public ResponseEntity<String> actualizar(@RequestBody EventoDTOInsert dto){
         Evento e = toEntity(dto);
@@ -97,7 +97,7 @@ public class EventoController {
         return ResponseEntity.ok("Evento actualizado con ID: "+e.getIdEvento());
     }
 
-   @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+   //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable("id") int id){
         Evento e = service.listId(id);
@@ -108,7 +108,7 @@ public class EventoController {
         return ResponseEntity.ok("Evento eliminado con ID: "+id);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping("/busquedas/usuario")
     public ResponseEntity<?> buscarPorUsuario(@RequestParam("idUsuario") int idUsuario){
         List<Evento> lista = service.findByUsuario(idUsuario);
@@ -119,7 +119,7 @@ public class EventoController {
         return ResponseEntity.ok(listaDTO);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping("/busquedas/profesional")
     public ResponseEntity<?> buscarPorProfesional(@RequestParam("idProfesionalServicio") int idProfesionalServicio){
         List<Evento> lista = service.findByProfesionalServicio(idProfesionalServicio);
@@ -130,7 +130,7 @@ public class EventoController {
         return ResponseEntity.ok(listaDTO);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping("/busquedas/metodo-pago")
     public ResponseEntity<?> buscarPorMetodoPago(@RequestParam("idMetodoPago") int idMetodoPago){
         List<Evento> lista = service.findByMetodoPago(idMetodoPago);

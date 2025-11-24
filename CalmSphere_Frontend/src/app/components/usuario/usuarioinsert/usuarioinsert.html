@@ -5,10 +5,11 @@
       {{ edicion ? 'Editar usuario' : 'Registrar usuario' }}
     </h2>
 
+    <!-- Nota: el (submit) dispara aceptar() del TS -->
     <form [formGroup]="form" (submit)="aceptar()" class="form-body">
 
       <!-- ID solo en edición -->
-      @if ( edicion ) {
+      @if (edicion) {
         <mat-form-field appearance="outline">
           <mat-label>Código</mat-label>
           <input matInput formControlName="idUsuario" />
@@ -18,41 +19,58 @@
         </mat-form-field>
       }
 
+      <!-- Nombre -->
       <mat-form-field appearance="outline">
         <mat-label>Nombre</mat-label>
         <input matInput formControlName="nombre" required />
-        @if (form.get('nombre')?.hasError('required')) {
+        @if (form.get('nombre')?.hasError('required') && form.get('nombre')?.touched) {
           <mat-error>El nombre es obligatorio.</mat-error>
         }
       </mat-form-field>
 
+      <!-- Apellido -->
       <mat-form-field appearance="outline">
         <mat-label>Apellido</mat-label>
         <input matInput formControlName="apellido" required />
-        @if (form.get('apellido')?.hasError('required')) {
+        @if (form.get('apellido')?.hasError('required') && form.get('apellido')?.touched) {
           <mat-error>El apellido es obligatorio.</mat-error>
         }
       </mat-form-field>
 
+      <!-- Email -->
       <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" required />
-        @if (form.get('email')?.hasError('required')) {
+        @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
           <mat-error>El email es obligatorio.</mat-error>
         }
-        @if (form.get('email')?.hasError('email')) {
-          <mat-error>Ingrese un correo válido.</mat-error>
+        @if (form.get('email')?.hasError('emailInvalido') && form.get('email')?.touched) {
+          <mat-error>Ingrese un correo electrónico válido (ej. usuario@dominio.com).</mat-error>
         }
       </mat-form-field>
 
+      <!-- Contraseña -->
       <mat-form-field appearance="outline">
         <mat-label>Contraseña</mat-label>
         <input matInput type="password" formControlName="contrasena" required />
-        @if (form.get('contrasena')?.hasError('required')) {
+        @if (form.get('contrasena')?.hasError('required') && form.get('contrasena')?.touched) {
           <mat-error>La contraseña es obligatoria.</mat-error>
         }
       </mat-form-field>
 
+      <!-- Confirmar contraseña -->
+      <mat-form-field appearance="outline">
+        <mat-label>Confirmar contraseña</mat-label>
+        <input matInput type="password" formControlName="confirmarContrasena" required />
+        @if (form.get('confirmarContrasena')?.hasError('required') && form.get('confirmarContrasena')?.touched) {
+          <mat-error>Confirme la contraseña.</mat-error>
+        }
+        @if (form.hasError('passwordNoCoincide') && form.get('confirmarContrasena')?.touched) {
+          <mat-error>Las contraseñas no coinciden.</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Fecha de nacimiento (>= 18 años) -->
       <mat-form-field appearance="outline">
         <mat-label>Fecha de nacimiento</mat-label>
         <input
@@ -64,29 +82,47 @@
         />
         <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
         <mat-datepicker #picker1></mat-datepicker>
-        @if (form.get('fechaNacimiento')?.hasError('required')) {
+
+        @if (form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched) {
           <mat-error>La fecha de nacimiento es obligatoria.</mat-error>
+        }
+        @if (form.get('fechaNacimiento')?.hasError('menorDeEdad') && form.get('fechaNacimiento')?.touched) {
+          <mat-error>Debes ser mayor de 18 años.</mat-error>
         }
       </mat-form-field>
 
+      <!-- Fecha de registro = HOY (no pasado/ni futuro) -->
       <mat-form-field appearance="outline">
         <mat-label>Fecha de registro</mat-label>
         <input
           matInput
           [matDatepicker]="picker2"
           formControlName="fechaRegistro"
+          [min]="today"
+          [max]="today"
+          readonly
           required
         />
         <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
         <mat-datepicker #picker2></mat-datepicker>
-        @if (form.get('fechaRegistro')?.hasError('required')) {
-          <mat-error>La fecha de registro es obligatoria.</mat-error>
+
+        @if (form.get('fechaRegistro')?.hasError('noEsHoy') && form.get('fechaRegistro')?.touched) {
+          <mat-error>La fecha de registro debe ser la de hoy.</mat-error>
         }
       </mat-form-field>
 
-      <button mat-button class="btn-submit">
-        {{ edicion ? 'Actualizar usuario' : 'Registrar usuario' }}
-      </button>
+      <!-- Acciones -->
+      <div class="actions">
+        <button mat-button class="btn-submit" type="submit">
+          {{ edicion ? 'Actualizar usuario' : 'Registrar usuario' }}
+        </button>
+
+        <button mat-button class="btn-submit btn-cancel" type="button" (click)="cancel()">
+          Cancelar
+        </button>
+
+
+      </div>
     </form>
   </div>
 </div>
