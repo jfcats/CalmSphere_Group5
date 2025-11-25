@@ -27,7 +27,7 @@ public class RolController {
     private IUsuarioService uservice;
 
     @GetMapping
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> listar() {
         List<Rol> roles = service.list();
 
@@ -46,7 +46,7 @@ public class RolController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> insertar(@RequestBody RolDTO dto) {
         if (dto.getTipoRol() == null || dto.getIdUsuario() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

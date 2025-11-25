@@ -1,78 +1,85 @@
-<mat-toolbar class="custom-toolbar" *ngIf="isLoggedIn()">
+<div class="container">
+  @if(verificar()){
+  <mat-toolbar class="custom-toolbar">
 
-  <!-- Logo / título -->
-  <div style="display: flex; align-items: center; gap: 8px; margin-right: auto; cursor: pointer;"
-       (click)="goToLanding()">
-    <mat-icon>self_improvement</mat-icon>
-    <span style="font-weight: 600; font-size: 0.95rem;">CalmSphere</span>
-  </div>
-
-  <!-- MENÚS: solo visibles si hay sesión -->
-  <button class="btn-menu" mat-button [matMenuTriggerFor]="menuUsuarios">
-    <mat-icon>person</mat-icon> Usuarios
-  </button>
-
-  <button class="btn-menu" mat-button [matMenuTriggerFor]="menuRoles">
-    <mat-icon>security</mat-icon> Roles
-  </button>
-
-  <button class="btn-menu" mat-button [matMenuTriggerFor]="menuDisponibilidad">
-    <mat-icon>schedule</mat-icon> Disponibilidad
-  </button>
-
-  <button class="btn-menu" mat-button [matMenuTriggerFor]="menuProfesionalServicio">
-    <mat-icon>psychology</mat-icon> Profesionales
-  </button>
-
-  <button class="btn-menu" mat-button [matMenuTriggerFor]="menuEventos">
-    <mat-icon>event</mat-icon> Eventos
-  </button>
-
-  <button class="btn-menu" mat-button [matMenuTriggerFor]="menuMetodoPago">
-    <mat-icon>credit_card</mat-icon> Métodos de Pago
-  </button>
-
-  <!-- BOTÓN DE USUARIO / CERRAR SESIÓN -->
-  <button class="btn-rojo" mat-button [matMenuTriggerFor]="menuUsuario">
-    <mat-icon>account_circle</mat-icon>
-    {{ getUsername() }}
-  </button>
-
-  <mat-menu #menuUsuario="matMenu">
-    <button mat-menu-item (click)="logout()">
-      <mat-icon>logout</mat-icon> Cerrar sesión
+    <!-- HOME -->
+    <button mat-button [routerLink]="['/homes']" class="btn-rojo">
+      <mat-icon>home</mat-icon>Inicio
     </button>
+
+    <!-- ADMIN -->
+    @if(isAdmin()){
+    <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuUsuarios">
+      <mat-icon>person</mat-icon>Usuarios
+    </button>
+
+    <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuRoles">
+      <mat-icon>security</mat-icon>Roles
+    </button>
+    }
+
+    <!-- PROFESIONAL -->
+    @if(isProfesional()){
+    <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuDisponibilidad">
+      <mat-icon>schedule</mat-icon>Disponibilidad
+    </button>
+    }
+
+    <!-- PACIENTE -->
+    @if(isPaciente()){
+    <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuMetodoPago">
+      <mat-icon>credit_card</mat-icon>Métodos de pago
+    </button>
+    }
+
+    <!-- EVENTOS (cualquier rol) -->
+    <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuEventos">
+      <mat-icon>event</mat-icon>Eventos
+    </button>
+
+    <span class="spacer"></span>
+
+    <!-- USUARIO -->
+    <button mat-button [matMenuTriggerFor]="menuSalir">
+      <mat-icon>person</mat-icon>Cuenta
+    </button>
+
+  </mat-toolbar>
+  }
+
+  <!-- SUBMENÚS -->
+  <mat-menu #menuUsuarios="matMenu">
+    <button mat-menu-item routerLink="/usuarios"><mat-icon>list</mat-icon>Listar</button>
+    <button mat-menu-item routerLink="/usuarios/news"><mat-icon>add</mat-icon>Registrar</button>
   </mat-menu>
 
-</mat-toolbar>
+  <mat-menu #menuRoles="matMenu">
+    <button mat-menu-item routerLink="/roles"><mat-icon>list</mat-icon>Listar</button>
+    <button mat-menu-item routerLink="/roles/news"><mat-icon>add</mat-icon>Registrar</button>
+  </mat-menu>
 
-<!-- SUBMENÚS -->
-<mat-menu #menuUsuarios="matMenu">
-  <button mat-menu-item routerLink="/usuarios"><mat-icon>list</mat-icon> Listar</button>
-  <button mat-menu-item routerLink="/usuarios/news"><mat-icon>add</mat-icon> Registrar</button>
-</mat-menu>
+  <mat-menu #menuDisponibilidad="matMenu">
+    <button mat-menu-item routerLink="/disponibilidades"><mat-icon>list</mat-icon>Listar</button>
+    <button mat-menu-item routerLink="/disponibilidades/news"><mat-icon>add</mat-icon>Registrar</button>
+  </mat-menu>
 
-<mat-menu #menuRoles="matMenu">
-  <button mat-menu-item routerLink="/roles"><mat-icon>list</mat-icon> Listar</button>
-  <button mat-menu-item routerLink="/roles/news"><mat-icon>add</mat-icon> Registrar</button>
-</mat-menu>
+  <mat-menu #menuMetodoPago="matMenu">
+    <button mat-menu-item routerLink="/metodopagos"><mat-icon>list</mat-icon>Listar</button>
+    <button mat-menu-item routerLink="/metodopagos/news"><mat-icon>add</mat-icon>Registrar</button>
+  </mat-menu>
 
-<mat-menu #menuDisponibilidad="matMenu">
-  <button mat-menu-item routerLink="/disponibilidades"><mat-icon>list</mat-icon> Listar</button>
-  <button mat-menu-item routerLink="/disponibilidades/news"><mat-icon>add</mat-icon> Registrar</button>
-</mat-menu>
+  <mat-menu #menuEventos="matMenu">
+    <button mat-menu-item routerLink="/eventos"><mat-icon>list</mat-icon>Listar</button>
+    <button mat-menu-item routerLink="/eventos/news"><mat-icon>add</mat-icon>Registrar</button>
+  </mat-menu>
 
-<mat-menu #menuMetodoPago="matMenu">
-  <button mat-menu-item routerLink="/metodopagos"><mat-icon>list</mat-icon> Listar</button>
-  <button mat-menu-item routerLink="/metodopagos/news"><mat-icon>add</mat-icon> Registrar</button>
-</mat-menu>
-
-<mat-menu #menuProfesionalServicio="matMenu">
-  <button mat-menu-item routerLink="/profesional-servicios"><mat-icon>list</mat-icon> Listar</button>
-  <button mat-menu-item routerLink="/profesional-servicios/news"><mat-icon>add</mat-icon> Registrar</button>
-</mat-menu>
-
-<mat-menu #menuEventos="matMenu">
-  <button mat-menu-item routerLink="/eventos"><mat-icon>list</mat-icon> Listar</button>
-  <button mat-menu-item routerLink="/eventos/news"><mat-icon>add</mat-icon> Registrar</button>
-</mat-menu>
+  <!-- SALIR -->
+  <mat-menu #menuSalir="matMenu">
+    <button mat-menu-item routerLink="/login" (click)="cerrar()">
+      <mat-icon>logout</mat-icon>Cerrar sesión
+    </button>
+    <button mat-menu-item>
+      Rol: {{ role }}
+    </button>
+  </mat-menu>
+</div>

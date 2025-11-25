@@ -48,7 +48,7 @@ public class ProfesionalServicioController {
         return ps;
     }
 
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping
     public ResponseEntity<?> listar() {
         List<ProfesionalServicio> lista = service.list();
@@ -69,7 +69,7 @@ public class ProfesionalServicioController {
         return ResponseEntity.ok(toDTO(ps));
     }
 
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @PostMapping
     public ResponseEntity<String> insertar(@RequestBody ProfesionalServicioDTOInsert dto) {
         ProfesionalServicio ps = toEntity(dto);

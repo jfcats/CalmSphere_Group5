@@ -13,6 +13,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   templateUrl: './login.html',
   styleUrl: './login.css',
   imports: [
@@ -36,12 +37,11 @@ export class Login implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Evita usar sessionStorage en SSR
+    // Si ya hay sesión válida, salta login
     if (typeof window !== 'undefined') {
       const token = sessionStorage.getItem('token');
       const jwtHelper = new JwtHelperService();
       if (token && !jwtHelper.isTokenExpired(token)) {
-        // ✅ Si ya hay sesión, vete directo a eventos
         this.router.navigate(['/eventos']);
       }
     }
@@ -65,17 +65,17 @@ export class Login implements OnInit {
 
     this.loginservice.login(request).subscribe({
       next: (data: any) => {
-        if (typeof window !== 'undefined' && data && data.jwttoken) {
+        if (data && data.jwttoken) {
+          // guarda token y entra a privadas
           sessionStorage.setItem('token', data.jwttoken);
-          // ✅ Redirección Angular a la lista de eventos
           this.router.navigateByUrl('/eventos');
         }
         this.isLoading = false;
       },
       error: (error) => {
-        console.error("ERROR LOGIN:", error);
+        console.error('ERROR LOGIN:', error);
         this.isLoading = false;
-        alert("Credenciales incorrectas");
+        alert('Credenciales incorrectas');
       }
     });
   }

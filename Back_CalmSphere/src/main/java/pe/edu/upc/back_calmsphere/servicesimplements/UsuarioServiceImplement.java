@@ -40,6 +40,11 @@ public class UsuarioServiceImplement implements IUsuarioService {
 
     @Override
     public void update(Usuario u) {
+        // Si viene una contraseña nueva, la encripto
+        if (u.getContraseña() != null && !u.getContraseña().isEmpty()) {
+            String contraseñaEncriptada = passwordEncoder.encode(u.getContraseña());
+            u.setContraseña(contraseñaEncriptada);
+        }
         repository.save(u);
     }
 

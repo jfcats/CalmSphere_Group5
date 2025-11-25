@@ -20,7 +20,7 @@ public class MetodoPagoController {
     @Autowired
     private IMetodoPagoService cMP;
 
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping
     public ResponseEntity<?> listar() {
         List<MetodoPago> lista = cMP.list();
@@ -45,7 +45,7 @@ public class MetodoPagoController {
         return ResponseEntity.ok(dto);
     }
 
-    //PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @PostMapping
     public ResponseEntity<String> insertar(@RequestBody MetodoPagoDTO dto) {
         MetodoPago m = new ModelMapper().map(dto, MetodoPago.class);

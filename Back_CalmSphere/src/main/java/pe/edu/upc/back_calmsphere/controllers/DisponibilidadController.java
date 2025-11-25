@@ -22,7 +22,7 @@ public class DisponibilidadController {
     private IDisponibilidadService dS;
 
     @GetMapping
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<?> listar() {
         List<Disponibilidad> lista = dS.list();
         if (lista.isEmpty()) {
@@ -46,7 +46,7 @@ public class DisponibilidadController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<String> insertar(@RequestBody DisponibilidadDTOInsert dto) {
         Disponibilidad d = new ModelMapper().map(dto, Disponibilidad.class);
         dS.insert(d);

@@ -56,7 +56,7 @@ public class EventoController {
         return e;
     }
 
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @GetMapping
     public ResponseEntity<?> listar(){
         List<Evento> lista = service.list();
@@ -77,7 +77,7 @@ public class EventoController {
         return ResponseEntity.ok(toDTO(e));
     }
 
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @PostMapping
     public ResponseEntity<String> insertar(@RequestBody EventoDTOInsert dto){
         Evento e = toEntity(dto);
