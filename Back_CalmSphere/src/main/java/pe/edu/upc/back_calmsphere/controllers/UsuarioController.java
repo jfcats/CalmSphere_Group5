@@ -42,7 +42,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> insertar(@RequestBody UsuarioDTOInsert dto) {
         if (dto.getNombre() == null || dto.getApellido() == null || dto.getEmail() == null || dto.getContraseña() == null || dto.getFechaNacimiento() == null || dto.getFechaRegistro() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

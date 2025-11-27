@@ -1,26 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { Loginservice } from '../../services/loginservice';
+import { CommonModule } from '@angular/common'; // Importante para el template
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [MatIconModule, MatToolbarModule, MatMenuModule, MatButtonModule, RouterLink],
+  imports: [MatIconModule, MatToolbarModule, MatMenuModule, MatButtonModule, RouterLink, CommonModule],
   templateUrl: './menu.html',
   styleUrl: './menu.css',
 })
-export class Menu {
+export class Menu implements OnInit {
 
-  role: string = '';
+  roles: string[] = []; // Ahora es un array
 
   constructor(private loginService: Loginservice) {}
 
+  ngOnInit(): void {
+      // Cargamos roles al iniciar
+      if(this.verificar()){
+        this.roles = this.loginService.showRole();
+      }
+  }
+
   verificar() {
-    this.role = this.loginService.showRole();
     return this.loginService.verificar();
   }
 
@@ -28,16 +35,18 @@ export class Menu {
     sessionStorage.clear();
   }
 
-  // ===== EXACTAMENTE COMO LA PROFESORA =====
+  // ===== LÓGICA MULTI-ROL (CORREGIDA) =====
+  
   isAdmin() {
-    return this.role === 'ADMIN';
+    // Verifica si 'ADMIN' está dentro de la lista de roles
+    return this.roles.includes('ADMIN'); 
   }
 
   isProfesional() {
-    return this.role === 'PROFESIONAL';
+    return this.roles.includes('PROFESIONAL');
   }
 
   isPaciente() {
-    return this.role === 'PACIENTE';
+    return this.roles.includes('PACIENTE');
   }
 }

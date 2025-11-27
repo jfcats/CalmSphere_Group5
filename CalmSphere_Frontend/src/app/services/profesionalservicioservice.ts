@@ -20,8 +20,9 @@ export class Profesionalservicioservice {
     return this.http.get<ProfesionalServicio[]>(this.url);
   }
 
+  // CORREGIDO: Agregado { responseType: 'text' }
   insert(p: ProfesionalServicio) {
-    return this.http.post(this.url, p);
+    return this.http.post(this.url, p, { responseType: 'text' });
   }
 
   setList(listaNueva: ProfesionalServicio[]) {

@@ -36,7 +36,7 @@ public class RolServiceImplement implements IRolService {
     @Override
     public void delete(int id) {
         Rol r  = listId(id);
-        Usuario u = r.getIdUsuario();
+        Usuario u = r.getUsuario();
         if(u!=null){
             u.getRoles().remove(r);
             usuarioRepository.save(u);

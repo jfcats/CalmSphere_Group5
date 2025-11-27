@@ -9,7 +9,6 @@ const base_url = environment.base;
 @Injectable({
   providedIn: 'root',
 })
-
 export class Disponibilidadservice {
   private url = `${base_url}/disponibilidades`;
 
@@ -19,10 +18,11 @@ export class Disponibilidadservice {
 
   list(): Observable<Disponibilidad[]> {
     return this.http.get<Disponibilidad[]>(this.url);
-}
+  }
 
+  // CORREGIDO: Agregado { responseType: 'text' }
   insert(d: Disponibilidad) {
-    return this.http.post(this.url, d);
+    return this.http.post(this.url, d, { responseType: 'text' });
   }
 
   update(d: Disponibilidad) {

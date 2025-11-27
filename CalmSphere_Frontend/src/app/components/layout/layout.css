@@ -1,0 +1,125 @@
+/* Contenedor general */
+.layout-wrapper {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Espaciado para el dashboard */
+.dashboard-content {
+  padding: 40px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* BANNER DE BIENVENIDA */
+.welcome-card {
+  background: linear-gradient(135deg, #021b20 0%, #1a2e4e 100%);
+  border-radius: 24px;
+  padding: 40px 60px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  box-shadow: 0 10px 25px rgba(2, 27, 32, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-card h1 {
+  font-size: 2rem;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.brand {
+  color: #eac0d5; /* Tono secundario CalmSphere */
+}
+
+.role-badge {
+  background: #8428ff;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.9em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.floating-logo {
+  width: 120px;
+  filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
+  opacity: 0.9;
+}
+
+/* GRID DE ACCIONES */
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.card-action {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  text-decoration: none;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-action:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+  border-color: #8428ff;
+}
+
+.card-action h3 {
+  margin: 15px 0 8px;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.card-action p {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ICONOS CIRCULARES */
+.icon-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.purple { background: linear-gradient(135deg, #a855f7, #7e22ce); }
+.green { background: linear-gradient(135deg, #4ade80, #16a34a); }
+.orange { background: linear-gradient(135deg, #fbbf24, #d97706); }
+.blue { background: linear-gradient(135deg, #60a5fa, #2563eb); }
+
+/* ANIMACIÓN SUAVE */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-content { padding: 20px; }
+  .welcome-card { flex-direction: column; text-align: center; padding: 30px; gap: 20px; }
+  .floating-logo { width: 80px; }
+}

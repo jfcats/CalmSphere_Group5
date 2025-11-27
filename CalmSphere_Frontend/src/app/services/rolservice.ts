@@ -9,7 +9,6 @@ const base_url = environment.base;
 @Injectable({
   providedIn: 'root',
 })
-
 export class Rolservice {
   private url = `${base_url}/roles`;
   private listaCambio = new Subject<Rol[]>();
@@ -20,8 +19,9 @@ export class Rolservice {
     return this.http.get<Rol[]>(this.url);
   }
 
+  // CORREGIDO: Agregado { responseType: 'text' }
   insert(r: Rol) {
-    return this.http.post(this.url, r);
+    return this.http.post(this.url, r, { responseType: 'text' });
   }
 
   update(r: Rol) {

@@ -57,21 +57,24 @@ export class Metodopagoinsert implements OnInit {
       this.metodo.tipo = this.form.value.tipo;
       this.metodo.estado = this.form.value.estado;
 
-      if (this.edicion) {
-        this.mS.update(this.metodo).subscribe(() => {
-          this.mS.list().subscribe((data) => {
-            this.mS.setList(data);
-          });
-        });
-      } else {
-        this.mS.insert(this.metodo).subscribe(() => {
-          this.mS.list().subscribe((data) => {
-            this.mS.setList(data);
-          });
-        });
-      }
+      // 1. Definir la petición
+      const request = this.edicion 
+        ? this.mS.update(this.metodo) 
+        : this.mS.insert(this.metodo);
 
-      this.router.navigate(['metodopagos']);
+      // 2. Ejecutar y esperar respuesta
+      request.subscribe({
+        next: () => {
+          // 3. Navegar SOLO tras éxito
+          this.mS.list().subscribe((data) => {
+            this.mS.setList(data);
+            this.router.navigate(['metodopagos']); // <--- Movido aquí dentro
+          });
+        },
+        error: (err) => {
+          console.error('Error al guardar método de pago:', err);
+        }
+      });
     }
   }
 

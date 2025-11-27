@@ -11,12 +11,14 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 
 @Component({
   selector: 'app-disponibilidadinsert',
-  imports: [ReactiveFormsModule,
+  imports: [
+    ReactiveFormsModule,
     CommonModule,
     MatFormFieldModule,
     MatButtonModule,
     MatInputModule,
-    MatSelectModule,],
+    MatSelectModule,
+  ],
   templateUrl: './disponibilidadinsert.html',
   styleUrl: './disponibilidadinsert.css',
 })
@@ -65,21 +67,24 @@ export class Disponibilidadinsert implements OnInit {
       this.disp.horaInicio = this.form.value.horaInicio;
       this.disp.horaFin = this.form.value.horaFin;
 
-      if (this.edicion) {
-        this.dS.update(this.disp).subscribe(() => {
-          this.dS.list().subscribe((data) => {
-            this.dS.setList(data);
-          });
-        });
-      } else {
-        this.dS.insert(this.disp).subscribe(() => {
-          this.dS.list().subscribe((data) => {
-            this.dS.setList(data);
-          });
-        });
-      }
+      // 1. Definimos la petición (Update o Insert)
+      const request = this.edicion 
+        ? this.dS.update(this.disp) 
+        : this.dS.insert(this.disp);
 
-      this.router.navigate(['disponibilidades']);
+      // 2. Ejecutamos la petición
+      request.subscribe({
+        next: () => {
+          // 3. Solo cuando el servidor responde OK, refrescamos y navegamos
+          this.dS.list().subscribe((data) => {
+            this.dS.setList(data);
+            this.router.navigate(['disponibilidades']); // <--- Ahora está dentro
+          });
+        },
+        error: (err) => {
+          console.error('Error al guardar disponibilidad:', err);
+        }
+      });
     }
   }
 

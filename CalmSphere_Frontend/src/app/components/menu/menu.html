@@ -3,7 +3,7 @@
   <mat-toolbar class="custom-toolbar">
 
     <!-- HOME -->
-    <button mat-button [routerLink]="['/homes']" class="btn-rojo">
+    <button mat-button [routerLink]="['/inicio']" class="btn-rojo">
       <mat-icon>home</mat-icon>Inicio
     </button>
 
@@ -75,11 +75,12 @@
 
   <!-- SALIR -->
   <mat-menu #menuSalir="matMenu">
-    <button mat-menu-item routerLink="/login" (click)="cerrar()">
+    <button mat-menu-item routerLink="/landing" (click)="cerrar()">
       <mat-icon>logout</mat-icon>Cerrar sesión
     </button>
-    <button mat-menu-item>
-      Rol: {{ role }}
+    <!-- Mostramos roles unidos por ' | ' -->
+    <button mat-menu-item disabled>
+      <span style="font-size: 0.8em;">Roles: {{ roles.join(' | ') }}</span>
     </button>
   </mat-menu>
 </div>

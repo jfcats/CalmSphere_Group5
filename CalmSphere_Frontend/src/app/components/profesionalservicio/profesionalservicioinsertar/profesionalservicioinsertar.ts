@@ -53,20 +53,24 @@ export class Profesionalservicioinsertar implements OnInit {
       this.ps.idDisponibilidad = this.form.value.idDisponibilidad;
       this.ps.idUsuario = this.form.value.idUsuario;
 
-      if (this.edicion) {
-        this.psS.update(this.ps).subscribe(() => {
+      // 1. Definir la petición
+      const request = this.edicion 
+        ? this.psS.update(this.ps) 
+        : this.psS.insert(this.ps);
+
+      // 2. Ejecutar y esperar respuesta
+      request.subscribe({
+        next: () => {
+          // 3. Refrescar lista y navegar SOLO cuando sea exitoso
           this.psS.list().subscribe((data) => {
             this.psS.setList(data);
+            this.router.navigate(['profesional-servicios']); // <--- Movido aquí dentro
           });
-        });
-      } else {
-        this.psS.insert(this.ps).subscribe(() => {
-          this.psS.list().subscribe((data) => {
-            this.psS.setList(data);
-          });
-        });
-      }
-      this.router.navigate(['profesional-servicios']);
+        },
+        error: (err) => {
+          console.error('Error al guardar profesional-servicio:', err);
+        }
+      });
     }
   }
 

@@ -22,8 +22,9 @@ export class Metodopagoservice {
     return this.http.get<MetodoPago[]>(this.url);
   }
 
+  // CORREGIDO: Agregado { responseType: 'text' }
   insert(m: MetodoPago) {
-    return this.http.post(this.url, m);
+    return this.http.post(this.url, m, { responseType: 'text' });
   }
 
   update(m: MetodoPago) {

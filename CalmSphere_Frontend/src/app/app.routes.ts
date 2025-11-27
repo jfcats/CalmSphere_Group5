@@ -1,13 +1,14 @@
+import { Component } from '@angular/core'; // <--- IMPORTANTE AGREGAR ESTO
 import { Routes } from '@angular/router';
 
-// Guard único (como la profesora)
+// Guard único
 import { seguridadGuard } from './guard/seguridad-guard';
 
 // Rutas públicas
 import { Home } from './components/home/home';
 import { Login } from './components/login/login';
 
-// Layout para mostrar el menú + contenido en rutas privadas
+// Layout (Marco principal)
 import { Layout } from './components/layout/layout';
 
 // USUARIO
@@ -40,12 +41,18 @@ import { Evento } from './components/evento/evento';
 import { Eventolistar } from './components/evento/eventolistar/eventolistar';
 import { Eventoinsert } from './components/evento/eventoinsert/eventoinsert';
 
+// --- TRUCO: COMPONENTE FANTASMA ---
+// Definimos un componente vacío aquí mismo para romper el bucle infinito del Layout
+@Component({ template: '' })
+export class InicioPlaceholderComponent {}
+
 export const routes: Routes = [
 
   // ===========================
   // 🔓 RUTAS PÚBLICAS
   // ===========================
   { path: 'landing', component: Home },
+  { path: 'registro', component: Usuarioinsert },
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
   { path: 'login', component: Login },
 
@@ -54,9 +61,20 @@ export const routes: Routes = [
   // ===========================
   {
     path: '',
-    component: Layout,
+    component: Layout, // El PADRE carga el Layout (y muestra el dashboard si es /inicio)
     canActivate: [seguridadGuard],
     children: [
+      
+      // 1. DASHBOARD / INICIO
+      // USAMOS EL FANTASMA. Así el router-outlet no carga un SEGUNDO layout visualmente.
+      { path: 'inicio', component: InicioPlaceholderComponent },
+
+      // 2. REDIRECCIÓN POR DEFECTO
+      { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+
+      // ===========================
+      // CRUDS (Módulos)
+      // ===========================
 
       // EVENTOS
       {

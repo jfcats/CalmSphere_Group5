@@ -10,7 +10,7 @@ const base_url = environment.base;
   providedIn: 'root',
 })
 export class Eventoservice {
-private url = `${base_url}/eventos`;
+  private url = `${base_url}/eventos`;
 
   private listaCambio = new Subject<Evento[]>();
 
@@ -20,8 +20,9 @@ private url = `${base_url}/eventos`;
     return this.http.get<Evento[]>(this.url);
   }
 
+  // CORREGIDO: Agregado { responseType: 'text' }
   insert(e: Evento) {
-    return this.http.post(this.url, this.toDTO(e));
+    return this.http.post(this.url, this.toDTO(e), { responseType: 'text' });
   }
 
   setList(listaNueva: Evento[]) {

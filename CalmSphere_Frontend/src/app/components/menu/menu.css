@@ -1,11 +1,10 @@
 /* ============================
    PALETA OFICIAL CALMSPHERE
-   (la misma del Figma)
 ============================ */
 :root {
-  --cs-main: #021b20;      /* Main 60% - fondo navbar / secciones oscuras */
-  --cs-secondary: #eac0d5; /* Secondary 30% - bloques rosados suaves */
-  --cs-accent: #8428ff;    /* Accent 10% - botones / highlights */
+  --cs-main: #021b20;
+  --cs-secondary: #eac0d5;
+  --cs-accent: #8428ff;
   --cs-text-light: #ffffff;
   --cs-text-muted: #d1d5db;
 }
@@ -14,108 +13,100 @@
    TOOLBAR CALMSPHERE
 ============================ */
 .custom-toolbar {
-  background: linear-gradient(
-    90deg,
-    #0b1120 0%,     /* azul muy oscuro */
-    #111e3d 40%,    /* transicion */
-    #4f46e5 100%    /* violeta azulado */
-  );
+  background: linear-gradient(90deg, #0b1120 0%, #111e3d 40%, #4f46e5 100%);
   display: flex;
   align-items: center;
-  padding: 0 16px;
-  min-height: 60px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0 24px; /* Un poco más de padding */
+  min-height: 64px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-/* Texto e iconos SIEMPRE blancos */
+/* Forzar color blanco en textos e iconos */
 .custom-toolbar * {
   color: white !important;
 }
 
-
-/* Para que el logo/título a la izquierda se lea bien */
-.custom-toolbar .app-title,
-.custom-toolbar span,
-.custom-toolbar a {
-  color: var(--cs-text-light);
-}
-
 /* ============================
-   BOTONES DEL MENÚ (píldoras)
+   BOTONES DE NAVEGACIÓN (Izquierda)
 ============================ */
 .btn-rojo {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  margin: 4px;
-  padding: 6px 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  color: white;
-  font-size: 0.85rem;
+  background-color: transparent;
+  border-radius: 8px;
+  border: none;
+  margin-right: 4px;
+  padding: 0 12px;
+  height: 36px;
   font-weight: 500;
-  transition: 0.25s ease;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
 }
 
 .btn-rojo:hover {
-  background-color: rgba(79, 70, 229, 0.3); /* violeta (accent) */
-  border-color: #4f46e5;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.5);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Focus accesible */
-.btn-rojo:focus-visible {
-  outline: 2px solid var(--cs-accent);
-  outline-offset: 2px;
-}
-
-/* Iconos dentro del botón */
-.btn-rojo mat-icon,
-.btn-rojo .material-symbols-outlined {
-  font-size: 1.2rem;
-  vertical-align: middle;
-  line-height: 1;
-  color: var(--cs-text-light);
+/* Iconos alineados */
+.btn-rojo mat-icon {
+  margin-right: 6px;
+  font-size: 20px;
 }
 
 /* ============================
-   MENÚ DESPLEGABLE (mat-menu)
+   SPACER (LA CLAVE PARA SEPARAR)
+============================ */
+.spacer {
+  flex: 1 1 auto; /* Esto empuja todo lo siguiente hacia la derecha */
+}
+
+/* ============================
+   BOTÓN DE USUARIO (DERECHA)
+============================ */
+.btn-user {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50px; /* Redondo estilo píldora */
+  padding: 4px 16px 4px 12px;
+  margin-left: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.btn-user:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--cs-secondary);
+  box-shadow: 0 0 15px rgba(234, 192, 213, 0.3);
+}
+
+.btn-user mat-icon {
+  font-size: 24px;
+  margin-right: 8px;
+  color: var(--cs-secondary) !important; /* Icono rosado */
+}
+
+.user-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* ============================
+   MENÚ DESPLEGABLE
 ============================ */
 .mat-mdc-menu-panel {
-  background-color: rgba(15, 23, 42, 0.95) !important;
-  backdrop-filter: blur(10px);
+  background-color: rgba(11, 17, 32, 0.95) !important; /* Oscuro */
+  backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .mat-mdc-menu-item {
-  color: var(--cs-text-light) !important;
-  font-size: 0.85rem;
-  font-weight: 500;
+  color: white !important;
 }
 
-.mat-mdc-menu-item mat-icon {
-  color: var(--cs-text-muted) !important;
-}
-
-/* Hover opciones del menú */
 .mat-mdc-menu-item:hover {
-  background: linear-gradient(
-    90deg,
-    rgba(234, 192, 213, 0.2),
-    rgba(132, 40, 255, 0.2)
-  ) !important;
-  color: #f9fafb !important;
-}
-
-.mat-mdc-menu-item:hover mat-icon {
-  color: var(--cs-text-light) !important;
-}
-
-/* Contenedor auxiliar por si lo usas */
-.container {
-  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }

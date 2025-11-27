@@ -5,6 +5,7 @@ import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon'; // <--- IMPORTANTE
 import { Usuario } from '../../../models/usuario';
 import { Usuarioservice } from '../../../services/usuarioservice';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -19,6 +20,7 @@ function emailValido() {
 function passwordsIguales(group: AbstractControl): ValidationErrors | null {
   const pass = group.get('contrasena')?.value;
   const rep  = group.get('confirmarContrasena')?.value;
+  // Solo devolvemos error si ambos campos tienen valor y son diferentes
   return pass && rep && pass !== rep ? { passwordNoCoincide: true } : null;
 }
 
@@ -47,6 +49,7 @@ function fechaEsHoy(control: AbstractControl): ValidationErrors | null {
 
 @Component({
   selector: 'app-usuarioinsert',
+  standalone: true, // Asegurando que sea standalone
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -54,6 +57,7 @@ function fechaEsHoy(control: AbstractControl): ValidationErrors | null {
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatIconModule // <--- Agregado para el ícono del ojo
   ],
   templateUrl: './usuarioinsert.html',
   providers: [provideNativeDateAdapter()],
@@ -67,6 +71,10 @@ export class Usuarioinsert implements OnInit {
 
   today = new Date();
   isSaving = false;
+
+  // Variables para controlar la visibilidad de las contraseñas
+  hidePass = true;
+  hidePass2 = true;
 
   constructor(
     private uS: Usuarioservice,
@@ -82,22 +90,15 @@ export class Usuarioinsert implements OnInit {
       this.init();
     });
 
-    // Construimos formulario con validaciones nuevas
     this.form = this.formBuilder.group(
       {
         idUsuario: [''],
-
         nombre: ['', [Validators.required, Validators.minLength(2)]],
         apellido: ['', [Validators.required, Validators.minLength(2)]],
-
         email: ['', [Validators.required, Validators.email, emailValido()]],
-
-        contrasena: ['', [Validators.required, Validators.minLength(6)]],
+        contrasena: ['', [Validators.required, Validators.minLength(5)]],
         confirmarContrasena: ['', [Validators.required]],
-
         fechaNacimiento: ['', [Validators.required, mayorDe18]],
-
-        // Siempre HOY, bloqueado en UI; validamos que sea hoy por seguridad
         fechaRegistro: [{ value: this.onlyDate(this.today), disabled: true }, [fechaEsHoy]],
       },
       { validators: [passwordsIguales] }
@@ -120,26 +121,11 @@ export class Usuarioinsert implements OnInit {
   aceptar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      const errores: string[] = [];
-
-      if (this.form.hasError('passwordNoCoincide')) {
-        errores.push('Las contraseñas no coinciden.');
-      }
-      if (this.form.get('fechaNacimiento')?.hasError('menorDeEdad')) {
-        errores.push('Debes ser mayor de 18 años.');
-      }
-      if (this.form.get('email')?.hasError('emailInvalido')) {
-        errores.push('Ingresa un correo válido.');
-      }
-      if (this.form.get('fechaRegistro')?.hasError('noEsHoy')) {
-        errores.push('La fecha de registro debe ser hoy.');
-      }
-      alert(errores.join('\n') || 'Revisa los campos marcados.');
-      return;
+      // Pequeña mejora: No usar alert nativo si podemos evitarlo, 
+      // pero por ahora lo dejamos como fallback seguro.
+      return; 
     }
 
-    // ⚠ Importante: si un control está disabled, para enviar su valor
-    // usamos getRawValue()
     const v = this.form.getRawValue();
 
     const dto: any = {
@@ -147,24 +133,29 @@ export class Usuarioinsert implements OnInit {
       nombre: v.nombre,
       apellido: v.apellido,
       email: v.email,
-      contraseña: v.contrasena, // backend espera 'contraseña' con ñ
+      contraseña: v.contrasena, 
       fechaNacimiento: this.formatDate(v.fechaNacimiento),
       fechaRegistro: this.formatDate(v.fechaRegistro),
-      // Sugerencia: si tu backend soporta rol por defecto, puedes enviar:
-      // rol: { id: 3, nombre: 'PACIENTE' }  // <-- ajusta según tu modelo
     };
 
     this.isSaving = true;
 
     const obs = this.edicion ? this.uS.update(dto) : this.uS.insert(dto);
+    
     obs.subscribe({
       next: () => {
-        // refresca lista y vuelve
-        this.uS.list().subscribe((data) => {
-          this.uS.setList(data);
+        if (this.edicion || !this.router.url.includes('/registro')) {
+           this.uS.list().subscribe((data) => {
+            this.uS.setList(data);
+            this.isSaving = false;
+            this.router.navigate(['usuarios']); 
+          });
+        } 
+        else {
           this.isSaving = false;
-          this.router.navigate(['usuarios']);
-        });
+          alert('¡Registro exitoso! Por favor inicia sesión.');
+          this.router.navigate(['login']); 
+        }
       },
       error: (err) => {
         console.error(err);
@@ -175,26 +166,26 @@ export class Usuarioinsert implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['usuarios']);
+    if (this.router.url.includes('/registro')) {
+      this.router.navigate(['landing']);
+    } else {
+      this.router.navigate(['usuarios']);
+    }
   }
 
   init() {
     if (this.edicion) {
       this.uS.listId(this.id).subscribe((data) => {
-        this.form = this.formBuilder.group(
-          {
-            idUsuario: new FormControl(data.idUsuario),
-            nombre: new FormControl(data.nombre, [Validators.required, Validators.minLength(2)]),
-            apellido: new FormControl(data.apellido, [Validators.required, Validators.minLength(2)]),
-            email: new FormControl(data.email, [Validators.required, Validators.email, emailValido()]),
-            contrasena: new FormControl(data.contraseña, [Validators.required, Validators.minLength(5)]),
-            confirmarContrasena: new FormControl(data.contraseña, [Validators.required]),
-            fechaNacimiento: new FormControl(data.fechaNacimiento, [Validators.required, mayorDe18]),
-            fechaRegistro: new FormControl(this.onlyDate(new Date()), [fechaEsHoy]),
-          },
-          { validators: [passwordsIguales] }
-        );
-        // Bloquea fechaRegistro aún en edición
+        this.form.patchValue({
+            idUsuario: data.idUsuario,
+            nombre: data.nombre,
+            apellido: data.apellido,
+            email: data.email,
+            contrasena: data.contraseña,
+            confirmarContrasena: data.contraseña,
+            fechaNacimiento: data.fechaNacimiento,
+            fechaRegistro: this.onlyDate(new Date())
+        });
         this.form.get('fechaRegistro')?.disable();
       });
     }

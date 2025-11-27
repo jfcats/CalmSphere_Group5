@@ -42,7 +42,7 @@ export class Login implements OnInit {
       const token = sessionStorage.getItem('token');
       const jwtHelper = new JwtHelperService();
       if (token && !jwtHelper.isTokenExpired(token)) {
-        this.router.navigate(['/eventos']);
+        this.router.navigate(['/inicio']); 
       }
     }
   }
@@ -68,7 +68,7 @@ export class Login implements OnInit {
         if (data && data.jwttoken) {
           // guarda token y entra a privadas
           sessionStorage.setItem('token', data.jwttoken);
-          this.router.navigateByUrl('/eventos');
+          this.router.navigate(['/inicio']); 
         }
         this.isLoading = false;
       },

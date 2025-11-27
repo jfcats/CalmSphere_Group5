@@ -59,20 +59,25 @@ export class Eventoinsert implements OnInit {
       this.eve.motivo = this.form.value.motivo;
       this.eve.monto = this.form.value.monto;
 
-      if (this.edicion) {
-        this.eS.update(this.eve).subscribe(() => {
+      // 1. Definir la petición
+      const request = this.edicion 
+        ? this.eS.update(this.eve) 
+        : this.eS.insert(this.eve);
+
+      // 2. Ejecutar y esperar respuesta
+      request.subscribe({
+        next: () => {
+          // 3. Refrescar lista y navegar SOLO cuando sea exitoso
           this.eS.list().subscribe((data) => {
             this.eS.setList(data);
+            this.router.navigate(['eventos']); // <--- Movido aquí dentro
           });
-        });
-      } else {
-        this.eS.insert(this.eve).subscribe(() => {
-          this.eS.list().subscribe((data) => {
-            this.eS.setList(data);
-          });
-        });
-      }
-      this.router.navigate(['eventos']);
+        },
+        error: (err) => {
+          console.error('Error al guardar evento:', err);
+          // Aquí podrías poner un alert o snackbar de error
+        }
+      });
     }
   }
 
@@ -81,9 +86,11 @@ export class Eventoinsert implements OnInit {
       this.eS.listId(this.id).subscribe((data) => {
         this.form = new FormGroup({
           id: new FormControl(data.idEvento),
-          idUsuario: new FormControl(data.idUsuario),
-          idProfesionalServicio: new FormControl(data.idProfesionalServicio),
-          idMetodoPago: new FormControl(data.idMetodoPago),
+          // Nota: Asegúrate que 'data.idUsuario' sea el ID (number) o el objeto.
+          // Si tu backend devuelve objeto completo en listId, tal vez necesites 'data.idUsuario.idUsuario'
+          idUsuario: new FormControl(data.idUsuario || data.idUsuario), 
+          idProfesionalServicio: new FormControl(data.idProfesionalServicio || data.idProfesionalServicio),
+          idMetodoPago: new FormControl(data.idMetodoPago || data.idMetodoPago),
           inicio: new FormControl(data.inicio),
           fin: new FormControl(data.fin),
           estado: new FormControl(data.estado),

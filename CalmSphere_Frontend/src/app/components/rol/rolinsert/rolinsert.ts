@@ -17,7 +17,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
   styleUrl: './rolinsert.css',
 })
 export class Rolinsert implements OnInit {
- form: FormGroup = new FormGroup({});
+  form: FormGroup = new FormGroup({});
   rol: Rol = new Rol();
   id: number = 0;
   edicion: boolean = false;
@@ -61,21 +61,25 @@ export class Rolinsert implements OnInit {
       this.rol.idUsuario = new Usuario();
       this.rol.idUsuario.idUsuario = v.idUsuario;
 
-      if (this.edicion) {
-        this.rS.update(this.rol).subscribe(() => {
+      // Definimos qué operación hacer
+      const request = this.edicion 
+        ? this.rS.update(this.rol) 
+        : this.rS.insert(this.rol);
+
+      // Ejecutamos la petición
+      request.subscribe({
+        next: () => {
+          // Una vez guardado, refrescamos la lista y navegamos
           this.rS.list().subscribe((data) => {
             this.rS.setList(data);
             this.router.navigate(['roles']);
           });
-        });
-      } else {
-        this.rS.insert(this.rol).subscribe(() => {
-          this.rS.list().subscribe((data) => {
-            this.rS.setList(data);
-            this.router.navigate(['roles']);
-          });
-        });
-      }
+        },
+        error: (err) => {
+          console.error(err);
+          // Opcional: Mostrar mensaje de error al usuario
+        }
+      });
     }
   }
 
