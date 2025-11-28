@@ -3,62 +3,75 @@
   <div class="form-card">
     
     <div class="form-header">
-      <h2>{{ edicion ? 'Editar Disponibilidad' : 'Registrar Disponibilidad' }}</h2>
-      <p>Define el día y el rango de horas para la atención.</p>
+      <!-- Título más claro -->
+      <h2>{{ edicion ? 'Modificar Horario' : 'Abrir Nuevo Horario' }}</h2>
+      <p>Configura cuándo estarás disponible para recibir pacientes.</p>
     </div>
 
     <form [formGroup]="form" (submit)="aceptar()">
 
-      <!-- ID oculto pero presente para la lógica -->
       <input type="hidden" formControlName="disponibilidadId">
 
-      <!-- SELECTOR DE DÍA -->
-      <mat-form-field appearance="outline" class="full-width custom-field">
-        <mat-label>Día de la semana</mat-label>
-        <mat-select formControlName="diaSemana" required>
-          <mat-option *ngFor="let d of diasSemana" [value]="d.value">
-            {{ d.viewValue }}
-          </mat-option>
-        </mat-select>
-        <mat-icon matSuffix></mat-icon>
-        @if (form.get('diaSemana')?.hasError('required')) {
-          <mat-error>Debes seleccionar un día.</mat-error>
-        }
-      </mat-form-field>
+      <!-- Día -->
+      <div class="field-group">
+        <label class="custom-label">¿Qué día?</label>
+        <mat-form-field appearance="outline" class="full-width custom-field no-bottom-space">
+          <mat-select formControlName="diaSemana" placeholder="Selecciona el día" required>
+            <mat-option *ngFor="let d of diasSemana" [value]="d.value">
+              {{ d.viewValue }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix class="icon-suffix">calendar_today</mat-icon>
+          @if (form.get('diaSemana')?.hasError('required')) {
+            <mat-error>Requerido</mat-error>
+          }
+        </mat-form-field>
+      </div>
 
-      <!-- FILA DE HORARIOS -->
-      <div class="time-row">
+      <!-- Grid para horas -->
+      <div class="time-grid">
         
-        <!-- HORA INICIO -->
-        <mat-form-field appearance="outline" class="custom-field">
-          <mat-label>Hora de inicio</mat-label>
-          <input matInput type="time" formControlName="horaInicio" required />
-          <mat-icon matSuffix></mat-icon>
-          @if (form.get('horaInicio')?.hasError('required')) {
-            <mat-error>Requerido</mat-error>
-          }
-        </mat-form-field>
+        <!-- Hora Inicio -->
+        <div class="field-group">
+          <label class="custom-label">Desde las</label>
+          <mat-form-field appearance="outline" class="custom-field no-bottom-space">
+            <input matInput type="time" formControlName="horaInicio" required />
+            <!-- Icono decorativo -->
+            <span matSuffix class="time-suffix">AM/PM</span> 
+            @if (form.get('horaInicio')?.hasError('required')) {
+              <mat-error>Requerido</mat-error>
+            }
+          </mat-form-field>
+        </div>
 
-        <!-- HORA FIN -->
-        <mat-form-field appearance="outline" class="custom-field">
-          <mat-label>Hora de fin</mat-label>
-          <input matInput type="time" formControlName="horaFin" required />
-          <mat-icon matSuffix></mat-icon>
-          @if (form.get('horaFin')?.hasError('required')) {
-            <mat-error>Requerido</mat-error>
-          }
-        </mat-form-field>
+        <!-- Hora Fin -->
+        <div class="field-group">
+          <label class="custom-label">Hasta las</label>
+          <mat-form-field appearance="outline" class="custom-field no-bottom-space">
+            <input matInput type="time" formControlName="horaFin" required />
+            <span matSuffix class="time-suffix">AM/PM</span>
+            @if (form.get('horaFin')?.hasError('required')) {
+              <mat-error>Requerido</mat-error>
+            }
+          </mat-form-field>
+        </div>
 
       </div>
 
-      <!-- BOTONES DE ACCIÓN -->
+      <!-- Mensaje de ayuda -->
+      <div class="info-box">
+        <mat-icon>info</mat-icon>
+        <small>Los pacientes podrán reservar citas dentro de este rango.</small>
+      </div>
+
+      <!-- Botones -->
       <div class="form-actions">
         <button type="button" class="btn-cancel" (click)="router.navigate(['disponibilidades'])">
           Cancelar
         </button>
         
         <button type="submit" class="btn-save" [disabled]="form.invalid">
-          {{ edicion ? 'Actualizar' : 'Guardar Horario' }}
+          {{ edicion ? 'Guardar Cambios' : 'Habilitar Horario' }}
         </button>
       </div>
 

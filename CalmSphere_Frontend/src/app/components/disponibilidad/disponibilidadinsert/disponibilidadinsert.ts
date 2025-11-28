@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Disponibilidad } from '../../../models/disponibilidad';
 import { Disponibilidadservice } from '../../../services/disponibilidadservice';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-disponibilidadinsert',
@@ -16,7 +17,7 @@ import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
     MatFormFieldModule,
     MatButtonModule,
     MatInputModule,
-    MatSelectModule,],
+    MatSelectModule,MatIconModule],
   templateUrl: './disponibilidadinsert.html',
   styleUrl: './disponibilidadinsert.css',
 })

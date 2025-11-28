@@ -35,7 +35,6 @@ public class DisponibilidadController {
     }
 
     @GetMapping("/{id}")
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<?> listarId(@PathVariable("id") int id) {
         Disponibilidad d = dS.listId(id);
         if (d == null) {
@@ -49,24 +48,36 @@ public class DisponibilidadController {
     @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<String> insertar(@RequestBody DisponibilidadDTOInsert dto) {
         Disponibilidad d = new ModelMapper().map(dto, Disponibilidad.class);
+
+        // --- CORRECCIÓN DEFINITIVA ---
+        // Al poner NULL, Hibernate sabe que es un INSERT (nuevo) y genera el ID.
+        // Si ponemos 0, busca el ID 0 y falla.
+        d.setDisponibilidadId(null);
+
         dS.insert(d);
         return ResponseEntity.ok("Disponibilidad insertada con ID: " + d.getDisponibilidadId());
     }
 
     @PutMapping
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<String> actualizar(@RequestBody DisponibilidadDTOInsert dto) {
-        Disponibilidad d = new ModelMapper().map(dto, Disponibilidad.class);
-        Disponibilidad obj = dS.listId(d.getDisponibilidadId());
+        // Lógica segura: Buscamos el original y actualizamos sus campos
+        Disponibilidad obj = dS.listId(dto.getDisponibilidadId());
+
         if (obj == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Disponibilidad no encontrada");
         }
-        dS.update(d);
-        return ResponseEntity.ok("Disponibilidad actualizada con ID: " + d.getDisponibilidadId());
+
+        // Actualizamos valores
+        obj.setDiaSemana(dto.getDiaSemana());
+        obj.setHoraInicio(dto.getHoraInicio());
+        obj.setHoraFin(dto.getHoraFin());
+
+        // Guardamos
+        dS.update(obj);
+        return ResponseEntity.ok("Disponibilidad actualizada con ID: " + obj.getDisponibilidadId());
     }
 
     @DeleteMapping("/{id}")
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<String> eliminar(@PathVariable("id") int id) {
         Disponibilidad obj = dS.listId(id);
         if (obj == null) {
@@ -77,7 +88,6 @@ public class DisponibilidadController {
     }
 
     @GetMapping("/busquedas")
-    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     public ResponseEntity<?> buscar(@RequestParam("d") Integer diaSemana) {
         List<Disponibilidad> lista = dS.findByDiaSemana(diaSemana);
         if (lista.isEmpty()) {
