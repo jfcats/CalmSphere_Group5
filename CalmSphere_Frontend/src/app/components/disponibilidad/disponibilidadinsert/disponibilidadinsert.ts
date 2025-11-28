@@ -7,18 +7,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Disponibilidad } from '../../../models/disponibilidad';
 import { Disponibilidadservice } from '../../../services/disponibilidadservice';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-disponibilidadinsert',
-  imports: [
-    ReactiveFormsModule,
+  imports: [ReactiveFormsModule,
     CommonModule,
     MatFormFieldModule,
     MatButtonModule,
     MatInputModule,
-    MatSelectModule,
-  ],
+    MatSelectModule,],
   templateUrl: './disponibilidadinsert.html',
   styleUrl: './disponibilidadinsert.css',
 })
@@ -40,7 +38,7 @@ export class Disponibilidadinsert implements OnInit {
 
   constructor(
     private dS: Disponibilidadservice,
-    private router: Router,
+    public router: Router,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute
   ) {}
@@ -67,24 +65,21 @@ export class Disponibilidadinsert implements OnInit {
       this.disp.horaInicio = this.form.value.horaInicio;
       this.disp.horaFin = this.form.value.horaFin;
 
-      // 1. Definimos la petición (Update o Insert)
-      const request = this.edicion 
-        ? this.dS.update(this.disp) 
-        : this.dS.insert(this.disp);
-
-      // 2. Ejecutamos la petición
-      request.subscribe({
-        next: () => {
-          // 3. Solo cuando el servidor responde OK, refrescamos y navegamos
+      if (this.edicion) {
+        this.dS.update(this.disp).subscribe(() => {
           this.dS.list().subscribe((data) => {
             this.dS.setList(data);
-            this.router.navigate(['disponibilidades']); // <--- Ahora está dentro
           });
-        },
-        error: (err) => {
-          console.error('Error al guardar disponibilidad:', err);
-        }
-      });
+        });
+      } else {
+        this.dS.insert(this.disp).subscribe(() => {
+          this.dS.list().subscribe((data) => {
+            this.dS.setList(data);
+          });
+        });
+      }
+
+      this.router.navigate(['disponibilidades']);
     }
   }
 

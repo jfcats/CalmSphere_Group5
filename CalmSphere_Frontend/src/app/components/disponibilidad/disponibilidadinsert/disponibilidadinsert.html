@@ -1,64 +1,67 @@
-<div class="form-container">
+<div class="form-wrapper">
+  
   <div class="form-card">
+    
+    <div class="form-header">
+      <h2>{{ edicion ? 'Editar Disponibilidad' : 'Registrar Disponibilidad' }}</h2>
+      <p>Define el día y el rango de horas para la atención.</p>
+    </div>
 
-    <h2 class="form-title">
-      {{ edicion ? 'Editar disponibilidad' : 'Registrar disponibilidad' }}
-    </h2>
+    <form [formGroup]="form" (submit)="aceptar()">
 
-    <form [formGroup]="form" (submit)="aceptar()" class="form-body">
+      <!-- ID oculto pero presente para la lógica -->
+      <input type="hidden" formControlName="disponibilidadId">
 
-      @if ( edicion ) {
-        <mat-form-field appearance="outline">
-          <mat-label>ID</mat-label>
-          <input matInput formControlName="disponibilidadId" />
-        </mat-form-field>
-      }
-
-      <mat-form-field appearance="outline">
+      <!-- SELECTOR DE DÍA -->
+      <mat-form-field appearance="outline" class="full-width custom-field">
         <mat-label>Día de la semana</mat-label>
         <mat-select formControlName="diaSemana" required>
-          <mat-option [value]="1">Lunes</mat-option>
-          <mat-option [value]="2">Martes</mat-option>
-          <mat-option [value]="3">Miércoles</mat-option>
-          <mat-option [value]="4">Jueves</mat-option>
-          <mat-option [value]="5">Viernes</mat-option>
-          <mat-option [value]="6">Sábado</mat-option>
-          <mat-option [value]="7">Domingo</mat-option>
+          <mat-option *ngFor="let d of diasSemana" [value]="d.value">
+            {{ d.viewValue }}
+          </mat-option>
         </mat-select>
+        <mat-icon matSuffix></mat-icon>
         @if (form.get('diaSemana')?.hasError('required')) {
-          <mat-error>Seleccione un día de la semana.</mat-error>
+          <mat-error>Debes seleccionar un día.</mat-error>
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Hora de inicio</mat-label>
-        <input
-          matInput
-          type="time"
-          formControlName="horaInicio"
-          required
-        />
-        @if (form.get('horaInicio')?.hasError('required')) {
-          <mat-error>La hora de inicio es obligatoria.</mat-error>
-        }
-      </mat-form-field>
+      <!-- FILA DE HORARIOS -->
+      <div class="time-row">
+        
+        <!-- HORA INICIO -->
+        <mat-form-field appearance="outline" class="custom-field">
+          <mat-label>Hora de inicio</mat-label>
+          <input matInput type="time" formControlName="horaInicio" required />
+          <mat-icon matSuffix></mat-icon>
+          @if (form.get('horaInicio')?.hasError('required')) {
+            <mat-error>Requerido</mat-error>
+          }
+        </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Hora de fin</mat-label>
-        <input
-          matInput
-          type="time"
-          formControlName="horaFin"
-          required
-        />
-        @if (form.get('horaFin')?.hasError('required')) {
-          <mat-error>La hora de fin es obligatoria.</mat-error>
-        }
-      </mat-form-field>
+        <!-- HORA FIN -->
+        <mat-form-field appearance="outline" class="custom-field">
+          <mat-label>Hora de fin</mat-label>
+          <input matInput type="time" formControlName="horaFin" required />
+          <mat-icon matSuffix></mat-icon>
+          @if (form.get('horaFin')?.hasError('required')) {
+            <mat-error>Requerido</mat-error>
+          }
+        </mat-form-field>
 
-      <button mat-button class="btn-submit">
-        {{ edicion ? 'Actualizar disponibilidad' : 'Registrar disponibilidad' }}
-      </button>
+      </div>
+
+      <!-- BOTONES DE ACCIÓN -->
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="router.navigate(['disponibilidades'])">
+          Cancelar
+        </button>
+        
+        <button type="submit" class="btn-save" [disabled]="form.invalid">
+          {{ edicion ? 'Actualizar' : 'Guardar Horario' }}
+        </button>
+      </div>
+
     </form>
   </div>
 </div>
