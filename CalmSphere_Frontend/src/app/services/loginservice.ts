@@ -11,6 +11,7 @@ export class Loginservice {
   constructor(private http: HttpClient) { }
 
   login(request: JwtRequest) {
+    // Asegúrate de que esta URL sea la correcta de tu backend
     return this.http.post('http://localhost:8080/login', request);
   }
 
@@ -20,7 +21,7 @@ export class Loginservice {
     return token != null;
   }
 
-  // MODIFICADO: Ahora devuelve un arreglo de strings (string[])
+  // === LA MAGIA ESTÁ AQUÍ ===
   showRole(): string[] {
     if (typeof window === 'undefined') return [];
     
@@ -29,18 +30,25 @@ export class Loginservice {
 
     const helper = new JwtHelperService();
     const decodedToken = helper.decodeToken(token);
-    const roleClaim = decodedToken?.role; // O 'authorities', depende de tu back
+    const rawRole = decodedToken?.role; // Esto llega sucio: "PACIENTEPROFESIONAL"
 
-    // Caso 1: No hay rol
-    if (!roleClaim) return [];
+    if (!rawRole) return [];
 
-    // Caso 2: Es un arreglo (Ej: ["ADMIN", "PACIENTE"])
-    if (Array.isArray(roleClaim)) {
-      return roleClaim;
-    }
+    // 1. Definimos los roles que existen en tu sistema
+    const rolesDetectados: string[] = [];
+    const rolesPosibles = ['ADMIN', 'PACIENTE', 'PROFESIONAL'];
 
-    // Caso 3: Es un string simple (Ej: "ADMIN")
-    // Lo convertimos a arreglo para mantener la consistencia
-    return [roleClaim];
+    // 2. Convertimos lo que llega a mayúsculas para comparar bien
+    const rolString = rawRole.toString().toUpperCase();
+
+    // 3. Buscamos qué palabras clave están "escondidas" en el texto
+    rolesPosibles.forEach(rol => {
+      // Si dice "PACIENTEPROFESIONAL", .includes('PACIENTE') dará true
+      if (rolString.includes(rol)) {
+        rolesDetectados.push(rol);
+      }
+    });
+
+    return rolesDetectados; // Devuelve ["PACIENTE", "PROFESIONAL"]
   }
 }

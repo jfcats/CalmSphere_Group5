@@ -1,0 +1,41 @@
+<div class="report-container">
+    <h1 class="page-title">Reportes y Estadísticas</h1>
+
+    <div class="charts-grid">
+        
+        <!-- CARD 1: PROFESIONALES -->
+        <div class="chart-card">
+            <h3>Top Profesionales con más Citas</h3>
+            <div class="canvas-wrapper" *ngIf="hasDataProfesional; else noData">
+                <canvas baseChart 
+                    [datasets]="barChartData"
+                    [labels]="barChartLabels"
+                    [options]="barChartOptions"
+                    [legend]="barChartLegend"
+                    [type]="barChartType">
+                </canvas>
+            </div>
+        </div>
+
+        <!-- CARD 2: PAGOS -->
+        <div class="chart-card">
+            <h3>Métodos de Pago Preferidos</h3>
+            <div class="canvas-wrapper" *ngIf="hasDataPagos; else noData">
+                <canvas baseChart 
+                    [datasets]="donutChartData"
+                    [labels]="donutChartLabels"
+                    [options]="donutChartOptions"
+                    [type]="donutChartType">
+                </canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TEMPLATE NO DATA -->
+    <ng-template #noData>
+        <div class="no-data-box">
+            <p>No hay datos suficientes para generar este gráfico.</p>
+        </div>
+    </ng-template>
+</div>

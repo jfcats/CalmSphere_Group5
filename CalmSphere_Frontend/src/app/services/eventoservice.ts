@@ -4,6 +4,12 @@ import { Observable, Subject } from 'rxjs';
 import { Evento } from '../models/evento';
 import { HttpClient } from '@angular/common/http';
 
+// Interface para mapear la respuesta del reporte
+export interface ReporteDTO {
+  nombre: string;
+  cantidad: number;
+}
+
 const base_url = environment.base;
 
 @Injectable({
@@ -11,30 +17,17 @@ const base_url = environment.base;
 })
 export class Eventoservice {
   private url = `${base_url}/eventos`;
-
   private listaCambio = new Subject<Evento[]>();
 
   constructor(private http: HttpClient) {}
 
+  // === MÉTODOS CRUD EXISTENTES ===
   list() {
     return this.http.get<Evento[]>(this.url);
   }
 
-  // CORREGIDO: Agregado { responseType: 'text' }
   insert(e: Evento) {
     return this.http.post(this.url, this.toDTO(e), { responseType: 'text' });
-  }
-
-  setList(listaNueva: Evento[]) {
-    this.listaCambio.next(listaNueva);
-  }
-
-  getList() {
-    return this.listaCambio.asObservable();
-  }
-
-  listId(id: number) {
-    return this.http.get<Evento>(`${this.url}/${id}`);
   }
 
   update(e: Evento) {
@@ -45,7 +38,21 @@ export class Eventoservice {
     return this.http.delete(`${this.url}/${id}`, { responseType: 'text' });
   }
 
-  // búsquedas
+  listId(id: number) {
+    return this.http.get<Evento>(`${this.url}/${id}`);
+  }
+
+  // === MÉTODOS DE REPORTES (NUEVOS) ===
+  
+  getReporteProfesional(): Observable<ReporteDTO[]> {
+    return this.http.get<ReporteDTO[]>(`${this.url}/reporte-profesional`);
+  }
+
+  getReportePagos(): Observable<ReporteDTO[]> {
+    return this.http.get<ReporteDTO[]>(`${this.url}/reporte-pagos`);
+  }
+
+  // === BÚSQUEDAS ===
   searchByUsuario(idUsuario: number): Observable<Evento[]> {
     const params = { idUsuario: idUsuario.toString() };
     return this.http.get<Evento[]>(`${this.url}/busquedas/usuario`, { params });
@@ -61,7 +68,15 @@ export class Eventoservice {
     return this.http.get<Evento[]>(`${this.url}/busquedas/metodo-pago`, { params });
   }
 
-  // mapea a EventoDTOInsert que espera el backend
+  // === HELPERS ===
+  setList(listaNueva: Evento[]) {
+    this.listaCambio.next(listaNueva);
+  }
+
+  getList() {
+    return this.listaCambio.asObservable();
+  }
+
   private toDTO(e: Evento): any {
     return {
       idEvento: e.idEvento,

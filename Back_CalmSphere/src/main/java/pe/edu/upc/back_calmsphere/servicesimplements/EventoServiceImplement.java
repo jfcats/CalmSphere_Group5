@@ -7,6 +7,7 @@ import pe.edu.upc.back_calmsphere.repositories.IEventoRepository;
 import pe.edu.upc.back_calmsphere.servicesinterfaces.IEventoService;
 
 import java.util.List;
+
 @Service
 public class EventoServiceImplement implements IEventoService {
     @Autowired
@@ -50,5 +51,17 @@ public class EventoServiceImplement implements IEventoService {
     @Override
     public List<Evento> findByMetodoPago(int idMetodoPago) {
         return repository.findByMetodoPago(idMetodoPago);
+    }
+
+    // === IMPLEMENTACIÓN DE REPORTES ===
+
+    @Override
+    public List<String[]> reporteProfesional() {
+        return repository.reporteEventosPorProfesional();
+    }
+
+    @Override
+    public List<String[]> reporteMetodoPago() {
+        return repository.reporteEventosPorMetodoPago();
     }
 }

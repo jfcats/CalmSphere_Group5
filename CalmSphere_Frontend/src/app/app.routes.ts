@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'; // <--- IMPORTANTE AGREGAR ESTO
+import { Component } from '@angular/core'; 
 import { Routes } from '@angular/router';
 
 // Guard único
@@ -41,39 +41,39 @@ import { Evento } from './components/evento/evento';
 import { Eventolistar } from './components/evento/eventolistar/eventolistar';
 import { Eventoinsert } from './components/evento/eventoinsert/eventoinsert';
 
-// --- TRUCO: COMPONENTE FANTASMA ---
-// Definimos un componente vacío aquí mismo para romper el bucle infinito del Layout
+// REPORTES (NUEVO)
+import { ReportesComponent } from './components/reportes/reportes';
+
+// COMPONENTE FANTASMA
 @Component({ template: '' })
 export class InicioPlaceholderComponent {}
 
 export const routes: Routes = [
 
-  // ===========================
   // 🔓 RUTAS PÚBLICAS
-  // ===========================
   { path: 'landing', component: Home },
   { path: 'registro', component: Usuarioinsert },
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
   { path: 'login', component: Login },
 
-  // ===========================
   // 🔒 RUTAS PRIVADAS CON LAYOUT
-  // ===========================
   {
     path: '',
-    component: Layout, // El PADRE carga el Layout (y muestra el dashboard si es /inicio)
+    component: Layout, 
     canActivate: [seguridadGuard],
     children: [
       
-      // 1. DASHBOARD / INICIO
-      // USAMOS EL FANTASMA. Así el router-outlet no carga un SEGUNDO layout visualmente.
+      // DASHBOARD
       { path: 'inicio', component: InicioPlaceholderComponent },
-
-      // 2. REDIRECCIÓN POR DEFECTO
       { path: '', redirectTo: 'inicio', pathMatch: 'full' },
 
       // ===========================
-      // CRUDS (Módulos)
+      // REPORTES (Solo Admin verá el botón, pero la ruta debe existir)
+      // ===========================
+      { path: 'reportes', component: ReportesComponent },
+
+      // ===========================
+      // CRUDS
       // ===========================
 
       // EVENTOS
@@ -150,8 +150,5 @@ export const routes: Routes = [
     ],
   },
 
-  // ===========================
-  // WILDCARD
-  // ===========================
   { path: '**', redirectTo: '' },
 ];

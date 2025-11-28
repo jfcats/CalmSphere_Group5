@@ -1,17 +1,20 @@
 package pe.edu.upc.back_calmsphere.servicesinterfaces;
 
 import pe.edu.upc.back_calmsphere.entities.Evento;
-
 import java.util.List;
 
 public interface IEventoService {
-    void insert(Evento e);
-    List<Evento> list();
-    Evento listId(int id);
-    void update(Evento e);
-    void delete(int id);
+    public void insert(Evento e);
+    public List<Evento> list();
+    public Evento listId(int id);
+    public void update(Evento e);
+    public void delete(int id);
 
-    List<Evento> findByUsuario(int idUsuario);
-    List<Evento> findByProfesionalServicio(int idProfesionalServicio);
-    List<Evento> findByMetodoPago(int idMetodoPago);
+    public List<Evento> findByUsuario(int idUsuario);
+    public List<Evento> findByProfesionalServicio(int idProfesionalServicio);
+    public List<Evento> findByMetodoPago(int idMetodoPago);
+
+    // === MÉTODOS DE REPORTE ===
+    public List<String[]> reporteProfesional();
+    public List<String[]> reporteMetodoPago();
 }

@@ -7,12 +7,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.back_calmsphere.dtos.EventoDTOInsert;
 import pe.edu.upc.back_calmsphere.dtos.EventoDTOList;
+import pe.edu.upc.back_calmsphere.dtos.ReporteDTO; // <--- IMPORTANTE: DTO DE REPORTE
 import pe.edu.upc.back_calmsphere.entities.Evento;
 import pe.edu.upc.back_calmsphere.entities.MetodoPago;
 import pe.edu.upc.back_calmsphere.entities.ProfesionalServicio;
 import pe.edu.upc.back_calmsphere.entities.Usuario;
 import pe.edu.upc.back_calmsphere.servicesinterfaces.IEventoService;
 
+import java.util.ArrayList; // <--- IMPORTANTE
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,7 +87,7 @@ public class EventoController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Evento creado con ID: "+e.getIdEvento());
     }
 
-   // @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    // @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @PutMapping
     public ResponseEntity<String> actualizar(@RequestBody EventoDTOInsert dto){
         Evento e = toEntity(dto);
@@ -97,7 +99,7 @@ public class EventoController {
         return ResponseEntity.ok("Evento actualizado con ID: "+e.getIdEvento());
     }
 
-   //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
+    //@PreAuthorize("hasAuthority('ADMIN') || hasAuthority('PROFESIONAL') || hasAuthority('PACIENTE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable("id") int id){
         Evento e = service.listId(id);
@@ -139,5 +141,41 @@ public class EventoController {
         }
         List<EventoDTOList> listaDTO = lista.stream().map(this::toDTO).collect(Collectors.toList());
         return ResponseEntity.ok(listaDTO);
+    }
+
+    // =================================================================
+    // MÉTODOS DE REPORTE (NUEVOS)
+    // =================================================================
+
+    // REPORTE 1: Gráfico de Barras (Eventos por Profesional)
+    @GetMapping("/reporte-profesional")
+    @PreAuthorize("hasAuthority('ADMIN')") // Descomenta si solo ADMIN puede ver reportes
+    public List<ReporteDTO> obtenerReporteProfesional() {
+        List<String[]> fila = service.reporteProfesional();
+        List<ReporteDTO> dtoLista = new ArrayList<>();
+
+        for (String[] columna : fila) {
+            ReporteDTO dto = new ReporteDTO();
+            dto.setNombre(columna[0]); // Nombre del Profesional
+            dto.setCantidad(Integer.parseInt(columna[1])); // Cantidad
+            dtoLista.add(dto);
+        }
+        return dtoLista;
+    }
+
+    // REPORTE 2: Gráfico Circular (Eventos por Método de Pago)
+    @GetMapping("/reporte-pagos")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<ReporteDTO> obtenerReportePagos() {
+        List<String[]> fila = service.reporteMetodoPago();
+        List<ReporteDTO> dtoLista = new ArrayList<>();
+
+        for (String[] columna : fila) {
+            ReporteDTO dto = new ReporteDTO();
+            dto.setNombre(columna[0]); // Nombre del Método de Pago
+            dto.setCantidad(Integer.parseInt(columna[1])); // Cantidad
+            dtoLista.add(dto);
+        }
+        return dtoLista;
     }
 }
