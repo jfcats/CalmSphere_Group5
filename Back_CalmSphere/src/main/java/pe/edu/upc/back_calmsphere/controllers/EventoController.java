@@ -27,9 +27,24 @@ public class EventoController {
     private EventoDTOList toDTO(Evento e){
         EventoDTOList dto = new EventoDTOList();
         dto.setIdEvento(e.getIdEvento());
+
+        // Mapeo de IDs
         dto.setIdUsuario(e.getIdUsuario()!=null? e.getIdUsuario().getIdUsuario():0);
         dto.setIdProfesionalServicio(e.getProfesionalServicio()!=null? e.getProfesionalServicio().getIdProfesionalServicio():0);
         dto.setIdMetodoPago(e.getIdMetodoPago()!=null? e.getIdMetodoPago().getIdMetodoPago():0);
+
+        // --- NUEVO: Mapeo de Nombres ---
+        // Validamos null para evitar NullPointerException
+        if (e.getIdUsuario() != null) {
+            dto.setNombreUsuario(e.getIdUsuario().getNombre() + " " + e.getIdUsuario().getApellido());
+        }
+        if (e.getProfesionalServicio() != null) {
+            dto.setNombreProfesional(e.getProfesionalServicio().getNombre());
+        }
+        if (e.getIdMetodoPago() != null) {
+            dto.setNombreMetodoPago(e.getIdMetodoPago().getNombre());
+        }
+
         dto.setInicio(e.getInicio());
         dto.setFin(e.getFin());
         dto.setEstado(e.isEstado());

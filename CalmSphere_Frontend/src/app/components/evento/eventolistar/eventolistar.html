@@ -1,96 +1,90 @@
-<div class="list-container">
-
-  <div class="header-row">
-    <h2>Eventos / Citas</h2>
-
-    <button class="btn-primary" mat-button routerLink="news">
-      <mat-icon>add</mat-icon>
-      Nuevo evento
+<div class="page-container">
+  
+  <div class="header-section">
+    <div class="title-box">
+      <h1>Agenda de Citas</h1>
+      <p>Gestiona tus próximas sesiones y el historial.</p>
+    </div>
+    
+    <button mat-flat-button class="btn-primary" routerLink="news">
+      <mat-icon>add</mat-icon> Nueva Cita
     </button>
   </div>
 
-  <div class="table-wrapper">
-    <table mat-table [dataSource]="dataSource" class="custom-table mat-elevation-z8">
-
-      <!-- ID -->
-      <ng-container matColumnDef="c1">
-        <th mat-header-cell *matHeaderCellDef>ID</th>
-        <td mat-cell *matCellDef="let e">{{ e.idEvento }}</td>
-      </ng-container>
-
-      <!-- Usuario -->
-      <ng-container matColumnDef="c2">
-        <th mat-header-cell *matHeaderCellDef>ID Usuario</th>
-        <td mat-cell *matCellDef="let e">{{ e.idUsuario }}</td>
-      </ng-container>
-
-      <!-- Profesional -->
-      <ng-container matColumnDef="c3">
-        <th mat-header-cell *matHeaderCellDef>ID Profesional</th>
-        <td mat-cell *matCellDef="let e">{{ e.idProfesionalServicio }}</td>
-      </ng-container>
-
-      <!-- Método de pago -->
-      <ng-container matColumnDef="c4">
-        <th mat-header-cell *matHeaderCellDef>ID Método pago</th>
-        <td mat-cell *matCellDef="let e">{{ e.idMetodoPago }}</td>
-      </ng-container>
-
-      <!-- Inicio -->
-      <ng-container matColumnDef="c5">
-        <th mat-header-cell *matHeaderCellDef>Inicio</th>
-        <td mat-cell *matCellDef="let e">{{ e.inicio }}</td>
-      </ng-container>
-
-      <!-- Fin -->
-      <ng-container matColumnDef="c6">
-        <th mat-header-cell *matHeaderCellDef>Fin</th>
-        <td mat-cell *matCellDef="let e">{{ e.fin }}</td>
-      </ng-container>
-
-      <!-- Estado -->
-      <ng-container matColumnDef="c7">
-        <th mat-header-cell *matHeaderCellDef>Estado</th>
-        <td mat-cell *matCellDef="let e">
-          {{ e.estado ? 'Activo' : 'Inactivo' }}
-        </td>
-      </ng-container>
-
-      <!-- Motivo -->
-      <ng-container matColumnDef="c8">
-        <th mat-header-cell *matHeaderCellDef>Motivo</th>
-        <td mat-cell *matCellDef="let e">{{ e.motivo }}</td>
-      </ng-container>
-
-      <!-- Monto -->
-      <ng-container matColumnDef="c9">
-        <th mat-header-cell *matHeaderCellDef>Monto</th>
-        <td mat-cell *matCellDef="let e">S/ {{ e.monto }}</td>
-      </ng-container>
-
-      <!-- Editar -->
-      <ng-container matColumnDef="c10">
-        <th mat-header-cell *matHeaderCellDef>Editar</th>
-        <td mat-cell *matCellDef="let e">
-          <button class="btn-edit" mat-icon-button [routerLink]="['edits', e.idEvento]">
-            <mat-icon>edit</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <!-- Eliminar -->
-      <ng-container matColumnDef="c11">
-        <th mat-header-cell *matHeaderCellDef>Eliminar</th>
-        <td mat-cell *matCellDef="let e">
-          <button class="btn-delete" mat-icon-button (click)="eliminar(e.idEvento)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
-    </table>
+  <!-- BARRA DE BÚSQUEDA -->
+  <div class="search-bar">
+    <mat-icon>search</mat-icon>
+    <input type="text" placeholder="Buscar por motivo, profesional o paciente..." [(ngModel)]="filtroTexto" (keyup)="filtrar()">
   </div>
+
+  <!-- GRID DE CITAS -->
+  <div class="cards-grid">
+    
+    <div class="appointment-card" *ngFor="let e of eventosFiltrados">
+      
+      <!-- CABECERA DE TARJETA -->
+      <div class="card-header">
+        <div class="avatar-circle bg-purple">
+          {{ getInitials(e.nombreProfesional || 'Profesional') }}
+        </div>
+        <div class="header-info">
+          <h3>{{ e.nombreProfesional || 'Profesional Desconocido' }}</h3>
+          <span class="role-label">Profesional</span>
+        </div>
+        
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item [routerLink]="['edits', e.idEvento]">
+                <mat-icon>edit</mat-icon> Editar
+            </button>
+            <button mat-menu-item (click)="eliminar(e.idEvento)">
+                <mat-icon color="warn">cancel</mat-icon> Cancelar
+            </button>
+        </mat-menu>
+      </div>
+
+      <!-- CUERPO -->
+      <div class="card-body">
+        <div class="info-row">
+            <mat-icon>person</mat-icon>
+            <span><strong>Paciente:</strong> {{ e.nombreUsuario || 'Sin nombre' }}</span>
+        </div>
+        <div class="info-row">
+            <mat-icon>event</mat-icon>
+            <span>{{ e.inicio | date:'dd MMM yyyy' }}</span>
+        </div>
+        <div class="info-row">
+            <mat-icon>schedule</mat-icon>
+            <span>{{ e.inicio | date:'HH:mm' }} - {{ e.fin | date:'HH:mm' }}</span>
+        </div>
+        <div class="info-row highlight">
+            <mat-icon>payments</mat-icon>
+            <span>S/ {{ e.monto }} ({{ e.nombreMetodoPago }})</span>
+        </div>
+        
+        <div class="motivo-box">
+            <small>Motivo:</small>
+            <p>{{ e.motivo }}</p>
+        </div>
+      </div>
+
+      <!-- FOOTER / ESTADO -->
+      <div class="card-footer">
+        <span class="status-badge" [ngClass]="e.estado ? 'status-active' : 'status-inactive'">
+            {{ e.estado ? 'Confirmada' : 'Cancelada/Inactiva' }}
+        </span>
+      </div>
+
+    </div>
+
+  </div>
+  
+  <!-- Estado vacío -->
+  <div class="empty-state" *ngIf="eventosFiltrados.length === 0">
+    <mat-icon>event_busy</mat-icon>
+    <p>No se encontraron citas.</p>
+  </div>
+
 </div>

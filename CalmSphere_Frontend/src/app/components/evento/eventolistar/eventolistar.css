@@ -1,89 +1,197 @@
-.list-container {
-  padding: 24px;
-  background: #f5f7ff;
+.page-container {
+  padding: 30px;
+  background-color: #f8fafc;
   min-height: calc(100vh - 64px);
+  font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-.header-row {
+.header-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
 }
 
-.header-row h2 {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #25306a;
+.header-section h1 {
+  font-size: 2rem;
+  color: #1e1b4b;
+  margin: 0;
+  font-weight: 700;
 }
 
-/* Botón principal */
+.header-section p {
+  color: #64748b;
+  margin: 0;
+}
+
 .btn-primary {
-  background: linear-gradient(135deg, #6d82f7, #8f9bff);
-  color: #fff !important;
-  border-radius: 25px;
+  background-color: #8b5cf6;
+  color: white;
+  border-radius: 999px;
+  padding: 0 20px;
+  height: 45px;
+}
+
+/* SEARCH BAR */
+.search-bar {
+  background: white;
+  padding: 12px 20px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  padding: 6px 16px;
-  box-shadow: 0px 4px 12px rgba(109, 130, 247, 0.35);
-  transition: 0.2s ease;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  margin-bottom: 30px;
+  border: 1px solid #e2e8f0;
 }
 
-.btn-primary:hover {
-  filter: brightness(1.06);
-  box-shadow: 0px 6px 16px rgba(109, 130, 247, 0.45);
+.search-bar input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 1rem;
+  color: #475569;
 }
 
-/* Tabla */
-.table-wrapper {
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.08);
+/* GRID */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
 }
 
-.custom-table th {
-  background: #eef1ff;
-  color: #3a4db7;
-  font-weight: 600;
+/* CARD DISEÑO */
+.appointment-card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 30px -5px rgba(0,0,0,0.05);
+  border: 1px solid transparent;
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.appointment-card:hover {
+  transform: translateY(-5px);
+  border-color: #d8b4fe;
+}
+
+/* HEADER CARD */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.avatar-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #5b21b6;
+  background-color: #ede9fe; /* Lila suave */
+}
+
+.header-info h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #1e293b;
+}
+
+.role-label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+/* BODY CARD */
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #475569;
   font-size: 0.9rem;
 }
 
-.custom-table td {
-  color: #394271;
-  font-size: 0.87rem;
+.info-row mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #a855f7;
 }
 
-/* Íconos Editar */
-.btn-edit mat-icon {
-  color: #6d82f7;
-  transition: 0.2s ease;
+.highlight {
+  color: #059669; /* Verde para dinero */
+  font-weight: 600;
 }
 
-.btn-edit:hover mat-icon {
-  color: #3a4db7;
+.motivo-box {
+  background-color: #f8fafc;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
 }
 
-/* Íconos Eliminar */
-.btn-delete mat-icon {
-  color: #e57373;
-  transition: 0.2s ease;
+.motivo-box small {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  display: block;
 }
 
-.btn-delete:hover mat-icon {
-  color: #c62828;
+.motivo-box p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #334155;
+  font-style: italic;
 }
 
-@media (max-width: 768px) {
-  .header-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
+/* FOOTER / STATUS */
+.card-footer {
+  margin-top: 20px;
+  text-align: right;
+}
 
-  .table-wrapper {
-    padding: 10px;
-  }
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.status-active {
+  background-color: #d1fae5;
+  color: #047857;
+}
+
+.status-inactive {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8;
+}
+
+.empty-state mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 10px;
 }

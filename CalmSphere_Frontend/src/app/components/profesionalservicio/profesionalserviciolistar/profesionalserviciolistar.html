@@ -1,86 +1,69 @@
-<div class="list-container">
-
-  <div class="header-row">
-    <h2>Profesionales y servicios</h2>
-
-    <button class="btn-primary" mat-button routerLink="news">
-      <mat-icon>add</mat-icon>
-      Nuevo profesional / servicio
+<div class="page-container">
+  
+  <div class="header-section">
+    <h1>Profesionales Disponibles</h1>
+    
+    <!-- Solo admin puede registrar nuevos profesionales desde aquí -->
+    <button mat-flat-button class="btn-primary" routerLink="news" *ngIf="isAdmin()">
+      <mat-icon>add</mat-icon> Registrar Profesional
     </button>
   </div>
 
-  <div class="table-wrapper">
-    <table mat-table [dataSource]="dataSource" class="custom-table mat-elevation-z8">
+  <!-- BARRA DE BÚSQUEDA -->
+  <div class="search-bar">
+    <mat-icon class="search-icon">search</mat-icon>
+    <input type="text" placeholder="Buscar profesionales..." (keyup)="filtrar($event)">
+    
+    <div class="filters">
+        <!-- Estos selects son visuales por ahora, puedes conectarlos a lógica luego -->
+        <button class="filter-chip">Especialidad <mat-icon>expand_more</mat-icon></button>
+        <button class="filter-chip">Disponibilidad <mat-icon>expand_more</mat-icon></button>
+    </div>
+  </div>
 
-      <!-- ID -->
-      <ng-container matColumnDef="c1">
-        <th mat-header-cell *matHeaderCellDef>ID</th>
-        <td mat-cell *matCellDef="let p">{{ p.idProfesionalServicio }}</td>
-      </ng-container>
+  <!-- GRID DE TARJETAS -->
+  <div class="cards-grid">
+    
+    <div class="pro-card" *ngFor="let item of dataSource.filteredData">
+      
+      <div class="card-header">
+        <!-- Avatar con iniciales -->
+        <div class="avatar-circle" [ngClass]="getColorClass(item.nombre)">
+          {{ getInitials(item.nombre) }}
+        </div>
+      </div>
 
-      <!-- Nombre -->
-      <ng-container matColumnDef="c2">
-        <th mat-header-cell *matHeaderCellDef>Nombre</th>
-        <td mat-cell *matCellDef="let p">
-          {{ p.nombre }}
-        </td>
-      </ng-container>
+      <div class="card-body">
+        <h3>{{ item.nombre }}</h3>
+        <p class="role-text">Especialista en Salud Mental</p> <!-- Puedes traer esto de BD si tienes campo especialidad -->
+        
+        <div class="rating">
+            <span>4.8</span> <!-- Valor ejemplo o traer de BD -->
+            <mat-icon class="star">star</mat-icon>
+        </div>
 
-      <!-- Duración -->
-      <ng-container matColumnDef="c3">
-        <th mat-header-cell *matHeaderCellDef>Duración (min)</th>
-        <td mat-cell *matCellDef="let p">
-          {{ p.duracionMin }}
-        </td>
-      </ng-container>
+        <div class="status-badge available">
+            Disponible
+        </div>
+      </div>
 
-      <!-- Precio -->
-      <ng-container matColumnDef="c4">
-        <th mat-header-cell *matHeaderCellDef>Precio base</th>
-        <td mat-cell *matCellDef="let p">
-          S/ {{ p.precioBase }}
-        </td>
-      </ng-container>
+      <div class="card-footer">
+        <button class="btn-profile" (click)="verPerfil(item.idProfesionalServicio)">
+            Ver perfil
+        </button>
+        
+        <!-- Acciones Admin -->
+        <div class="admin-actions" *ngIf="isAdmin()">
+            <button mat-icon-button [routerLink]="['edits', item.idProfesionalServicio]">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="eliminar(item.idProfesionalServicio)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+      </div>
 
-      <!-- Disponibilidad -->
-      <ng-container matColumnDef="c5">
-        <th mat-header-cell *matHeaderCellDef>ID Disponibilidad</th>
-        <td mat-cell *matCellDef="let p">
-          {{ p.idDisponibilidad }}
-        </td>
-      </ng-container>
+    </div>
 
-      <!-- Usuario -->
-      <ng-container matColumnDef="c6">
-        <th mat-header-cell *matHeaderCellDef>ID Usuario</th>
-        <td mat-cell *matCellDef="let p">
-          {{ p.idUsuario }}
-        </td>
-      </ng-container>
-
-      <!-- Editar -->
-      <ng-container matColumnDef="c7">
-        <th mat-header-cell *matHeaderCellDef>Editar</th>
-        <td mat-cell *matCellDef="let p">
-          <button class="btn-edit" mat-icon-button [routerLink]="['edits', p.idProfesionalServicio]">
-            <mat-icon>edit</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <!-- Eliminar -->
-      <ng-container matColumnDef="c8">
-        <th mat-header-cell *matHeaderCellDef>Eliminar</th>
-        <td mat-cell *matCellDef="let p">
-          <button class="btn-delete" mat-icon-button (click)="eliminar(p.idProfesionalServicio)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
-    </table>
   </div>
 </div>

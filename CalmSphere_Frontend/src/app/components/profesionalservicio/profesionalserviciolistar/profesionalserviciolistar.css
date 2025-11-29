@@ -1,89 +1,171 @@
-.list-container {
-  padding: 24px;
-  background: #f5f7ff;
+.page-container {
+  padding: 40px;
+  background-color: #f8f9fa;
   min-height: calc(100vh - 64px);
+  font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-.header-row {
+.header-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
 }
 
-.header-row h2 {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #25306a;
+h1 {
+  font-size: 2.2rem;
+  color: #2d3748;
+  font-weight: 700;
+  margin: 0;
 }
 
-/* Botón principal */
-.btn-primary {
-  background: linear-gradient(135deg, #6d82f7, #8f9bff);
-  color: #fff !important;
-  border-radius: 25px;
+/* SEARCH BAR */
+.search-bar {
+  background: white;
+  padding: 12px 24px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  padding: 6px 16px;
-  box-shadow: 0px 4px 12px rgba(109, 130, 247, 0.35);
-  transition: 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  margin-bottom: 40px;
+  gap: 12px;
 }
 
-.btn-primary:hover {
-  filter: brightness(1.06);
-  box-shadow: 0px 6px 16px rgba(109, 130, 247, 0.45);
+.search-icon { color: #a0aec0; }
+
+.search-bar input {
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  width: 100%;
+  color: #4a5568;
 }
 
-/* Tabla */
-.table-wrapper {
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.08);
-}
-
-.custom-table th {
-  background: #eef1ff;
-  color: #3a4db7;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.custom-table td {
-  color: #394271;
-  font-size: 0.87rem;
-}
-
-/* Íconos Editar */
-.btn-edit mat-icon {
-  color: #6d82f7;
-  transition: 0.2s ease;
-}
-
-.btn-edit:hover mat-icon {
-  color: #3a4db7;
-}
-
-/* Íconos Eliminar */
-.btn-delete mat-icon {
-  color: #e57373;
-  transition: 0.2s ease;
-}
-
-.btn-delete:hover mat-icon {
-  color: #c62828;
-}
-
-@media (max-width: 768px) {
-  .header-row {
-    flex-direction: column;
-    align-items: flex-start;
+.filters {
+    display: flex;
     gap: 10px;
-  }
+}
 
-  .table-wrapper {
-    padding: 10px;
-  }
+.filter-chip {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    color: #4a5568;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* GRID */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+/* TARJETA */
+.pro-card {
+  background: white;
+  border-radius: 24px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 10px 30px -5px rgba(0,0,0,0.06);
+  transition: transform 0.2s;
+  border: 1px solid transparent;
+}
+
+.pro-card:hover {
+  transform: translateY(-5px);
+  border-color: #d6bcfa; /* Color lila suave */
+}
+
+/* Avatar */
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #553c9a;
+  margin-bottom: 16px;
+}
+
+/* Colores dinámicos para avatares */
+.bg-purple { background-color: #e9d8fd; color: #6b46c1; }
+.bg-green { background-color: #c6f6d5; color: #276749; }
+.bg-blue { background-color: #bee3f8; color: #2c5282; }
+.bg-orange { background-color: #feebc8; color: #9c4221; }
+
+.card-body h3 {
+    margin: 0 0 4px 0;
+    color: #1a202c;
+    font-size: 1.2rem;
+}
+
+.role-text {
+    color: #718096;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 16px;
+}
+
+.star { font-size: 18px; color: #f6ad55; height: 18px; width: 18px;}
+
+.status-badge {
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.available {
+    background-color: #48bb78; /* Verde */
+    color: white;
+}
+
+.card-footer {
+    width: 100%;
+    margin-top: 24px;
+}
+
+.btn-profile {
+    width: 100%;
+    background-color: #d6bcfa; /* Lila claro de tu imagen */
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    color: #44337a;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-profile:hover {
+    background-color: #b794f4;
+}
+
+.admin-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
