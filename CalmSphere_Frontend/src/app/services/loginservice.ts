@@ -11,8 +11,7 @@ export class Loginservice {
   constructor(private http: HttpClient) { }
 
   login(request: JwtRequest) {
-    // Asegúrate de que esta URL sea la correcta de tu backend
-    return this.http.post('http://localhost:8080/login', request);
+    return this.http.post('http://localhost:8080/login', request); // Asegúrate que el puerto sea el correcto
   }
 
   verificar() {
@@ -21,34 +20,33 @@ export class Loginservice {
     return token != null;
   }
 
-  // === LA MAGIA ESTÁ AQUÍ ===
   showRole(): string[] {
     if (typeof window === 'undefined') return [];
-    
     let token = sessionStorage.getItem("token");
     if (!token) return [];
-
     const helper = new JwtHelperService();
     const decodedToken = helper.decodeToken(token);
-    const rawRole = decodedToken?.role; // Esto llega sucio: "PACIENTEPROFESIONAL"
-
+    const rawRole = decodedToken?.role;
     if (!rawRole) return [];
-
-    // 1. Definimos los roles que existen en tu sistema
     const rolesDetectados: string[] = [];
     const rolesPosibles = ['ADMIN', 'PACIENTE', 'PROFESIONAL'];
-
-    // 2. Convertimos lo que llega a mayúsculas para comparar bien
     const rolString = rawRole.toString().toUpperCase();
-
-    // 3. Buscamos qué palabras clave están "escondidas" en el texto
     rolesPosibles.forEach(rol => {
-      // Si dice "PACIENTEPROFESIONAL", .includes('PACIENTE') dará true
       if (rolString.includes(rol)) {
         rolesDetectados.push(rol);
       }
     });
+    return rolesDetectados;
+  }
 
-    return rolesDetectados; // Devuelve ["PACIENTE", "PROFESIONAL"]
+  // === AGREGA ESTO ===
+  getUsername(): string {
+    if (typeof window === 'undefined') return '';
+    let token = sessionStorage.getItem("token");
+    if (!token) return '';
+    const helper = new JwtHelperService();
+    const decodedToken = helper.decodeToken(token);
+    // 'sub' es el estándar para el username/email en JWT
+    return decodedToken?.sub || ''; 
   }
 }

@@ -1,52 +1,77 @@
 <div class="list-container">
 
-  <div class="header-row">
-    <h2>Lista de roles</h2>
+  <div class="header-section">
+    <div class="title-box">
+      <h1>Gestión de Roles</h1>
+      <p>Administra los permisos y accesos de los usuarios.</p>
+    </div>
 
     <button class="btn-primary" mat-button routerLink="news">
-      <mat-icon>add</mat-icon>
-      Nuevo rol
+      <mat-icon>add_moderator</mat-icon>
+      Asignar Rol
     </button>
   </div>
 
+  <!-- BARRA DE BÚSQUEDA -->
+  <div class="search-bar">
+    <mat-icon>search</mat-icon>
+    <input type="text" placeholder="Buscar por usuario o rol..." [(ngModel)]="filtro" (keyup)="aplicarFiltro()">
+  </div>
+
   <div class="table-wrapper">
-    <table mat-table [dataSource]="dataSource" class="custom-table mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="roles-table">
 
-      <!-- ID -->
-      <ng-container matColumnDef="c1">
-        <th mat-header-cell *matHeaderCellDef>ID</th>
-        <td mat-cell *matCellDef="let r">{{ r.idRol }}</td>
-      </ng-container>
-
-      <!-- Tipo Rol -->
-      <ng-container matColumnDef="c2">
-        <th mat-header-cell *matHeaderCellDef>Tipo Rol</th>
-        <td mat-cell *matCellDef="let r">{{ r.tipoRol }}</td>
-      </ng-container>
-
-      <!-- Editar -->
-      <ng-container matColumnDef="c3">
-        <th mat-header-cell *matHeaderCellDef>Editar</th>
+      <!-- Usuario -->
+      <ng-container matColumnDef="usuario">
+        <th mat-header-cell *matHeaderCellDef>Usuario Asignado</th>
         <td mat-cell *matCellDef="let r">
-          <button class="btn-edit" mat-icon-button [routerLink]="['edits', r.idRol]">
-            <mat-icon>edit</mat-icon>
-          </button>
+          <div class="user-info">
+            <div class="avatar-circle">
+              {{ r.idUsuario?.nombre?.charAt(0) || 'U' }}
+            </div>
+            <div class="user-text">
+              <span class="user-name">{{ r.idUsuario?.nombre }} {{ r.idUsuario?.apellido }}</span>
+              <span class="user-email">{{ r.idUsuario?.email }}</span>
+            </div>
+          </div>
         </td>
       </ng-container>
 
-      <!-- Eliminar -->
-      <ng-container matColumnDef="c4">
-        <th mat-header-cell *matHeaderCellDef>Eliminar</th>
+      <!-- Rol -->
+      <ng-container matColumnDef="rol">
+        <th mat-header-cell *matHeaderCellDef>Rol</th>
         <td mat-cell *matCellDef="let r">
-          <button class="btn-delete" mat-icon-button (click)="eliminar(r.idRol)">
-            <mat-icon>delete</mat-icon>
-          </button>
+          <span class="role-badge" [ngClass]="getRoleClass(r.tipoRol)">
+            {{ r.tipoRol }}
+          </span>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <!-- Acciones -->
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let r">
+          <div class="actions-row">
+            <button class="btn-icon" [routerLink]="['edits', r.idRol]" title="Gestionar Roles">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button class="btn-icon delete" (click)="eliminar(r.idRol)" title="Revocar Rol">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="table-header"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
 
     </table>
+    
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+    <!-- Mensaje si no hay datos -->
+    <div *ngIf="dataSource.data.length === 0" class="empty-state">
+        <p>No se encontraron asignaciones.</p>
+    </div>
   </div>
 </div>

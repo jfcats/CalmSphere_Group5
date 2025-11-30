@@ -35,6 +35,17 @@
     </button>
     }
 
+    @if(isProfesional()){
+    
+    <button mat-button class="btn-rojo" routerLink="/profesional-servicios">
+      <mat-icon>medical_services</mat-icon> Mi Servicio
+    </button>
+
+    <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuDisponibilidad">
+      <mat-icon>schedule</mat-icon>Disponibilidad
+    </button>
+    }
+
     <!-- PACIENTE -->
     @if(isPaciente()){
     <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuMetodoPago">

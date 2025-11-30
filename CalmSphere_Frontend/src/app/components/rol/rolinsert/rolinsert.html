@@ -1,51 +1,74 @@
-<div class="form-container">
+<div class="form-wrapper">
+  
   <div class="form-card">
+    
+    <div class="form-header">
+      <h2>{{ edicion ? 'Gestionar Permisos' : 'Asignar Nuevo Rol' }}</h2>
+      <p>Configura los niveles de acceso para el usuario seleccionado.</p>
+    </div>
 
-    <h2 class="form-title">
-      {{ edicion ? 'Editar rol' : 'Registrar rol' }}
-    </h2>
+    <form [formGroup]="form" (submit)="aceptar()">
 
-    <form [formGroup]="form" (submit)="aceptar()" class="form-body">
-
-      @if ( edicion ) {
-        <mat-form-field appearance="outline">
-          <mat-label>ID</mat-label>
-          <input matInput formControlName="idRol" />
-          @if (form.get('idRol')?.hasError('required')) {
-            <mat-error>El ID es obligatorio.</mat-error>
+      <!-- PASO 1: SELECCIONAR USUARIO -->
+      <div class="field-group">
+        <label>Usuario</label>
+        <mat-form-field appearance="outline" class="custom-select">
+          <mat-select formControlName="idUsuario" 
+                      placeholder="Selecciona un usuario" 
+                      (selectionChange)="detectarRoles($event.value)">
+            
+            <mat-option *ngFor="let u of usuarios" [value]="u.idUsuario">
+              {{ u.nombre }} {{ u.apellido }} ({{ u.email }})
+            </mat-option>
+          </mat-select>
+          
+          @if (form.get('idUsuario')?.hasError('required')) {
+            <mat-error>Debes seleccionar un usuario</mat-error>
           }
         </mat-form-field>
-      }
+      </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Tipo de rol</mat-label>
-        <mat-select formControlName="tipoRol" required>
-          @for (t of tipos; track t) {
-            <mat-option [value]="t">{{ t }}</mat-option>
+      <!-- PASO 2: CHIPS DE ROLES -->
+      <div class="field-group">
+        <label>Roles Activos</label>
+        <div class="chips-container">
+          @for (rol of rolesDisponibles; track rol) {
+            <div 
+              class="role-chip" 
+              [class.selected]="isSelected(rol)"
+              (click)="toggleRol(rol)">
+              
+              <!-- Iconos según rol -->
+              @if (rol === 'ADMIN') { <mat-icon>security</mat-icon> }
+              @if (rol === 'PROFESIONAL') { <mat-icon>medical_services</mat-icon> }
+              @if (rol === 'PACIENTE') { <mat-icon>person</mat-icon> }
+              
+              <span>{{ rol | titlecase }}</span>
+              
+              @if (isSelected(rol)) {
+                <mat-icon class="check-icon">check_circle</mat-icon>
+              }
+            </div>
           }
-        </mat-select>
-        @if (form.get('tipoRol')?.hasError('required')) {
-          <mat-error>Seleccione un tipo de rol.</mat-error>
-        }
-      </mat-form-field>
+        </div>
+      </div>
+      
+      <!-- INFO -->
+      <div class="info-box">
+        <mat-icon>info</mat-icon>
+        <p>Los cambios se aplicarán inmediatamente. Si el usuario está conectado, deberá volver a iniciar sesión.</p>
+      </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Usuario</mat-label>
-        <mat-select formControlName="idUsuario" required>
-          @for (u of usuarios; track u.idUsuario) {
-            <mat-option [value]="u.idUsuario">
-              {{ u.nombre }} {{ u.apellido }}
-            </mat-option>
-          }
-        </mat-select>
-        @if (form.get('idUsuario')?.hasError('required')) {
-          <mat-error>Seleccione un usuario.</mat-error>
-        }
-      </mat-form-field>
+      <!-- BOTONES -->
+      <div class="actions-container">
+        <button type="button" class="btn-cancel" (click)="cancel()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-save" [disabled]="form.invalid && !edicion">
+          Guardar Cambios
+        </button>
+      </div>
 
-      <button mat-button class="btn-submit">
-        {{ edicion ? 'Actualizar rol' : 'Registrar rol' }}
-      </button>
     </form>
   </div>
 </div>

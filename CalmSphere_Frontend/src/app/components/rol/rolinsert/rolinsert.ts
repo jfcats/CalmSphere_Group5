@@ -1,30 +1,38 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+
 import { Rol } from '../../../models/rol';
 import { Usuario } from '../../../models/usuario';
 import { Rolservice } from '../../../services/rolservice';
 import { Usuarioservice } from '../../../services/usuarioservice';
-import { ActivatedRoute, Params, Router } from '@angular/router';
 
 @Component({
   selector: 'app-rolinsert',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatButtonModule, MatInputModule, MatSelectModule],
+  standalone: true,
+  imports: [
+    ReactiveFormsModule, MatFormFieldModule, MatButtonModule, 
+    MatInputModule, MatSelectModule, MatChipsModule,
+    MatIconModule, CommonModule
+  ],
   templateUrl: './rolinsert.html',
   styleUrl: './rolinsert.css',
 })
 export class Rolinsert implements OnInit {
   form: FormGroup = new FormGroup({});
-  rol: Rol = new Rol();
   id: number = 0;
   edicion: boolean = false;
-
+  
   usuarios: Usuario[] = [];
-
-  tipos = ['ADMIN', 'PACIENTE', 'PROFESIONAL'];
+  rolesDisponibles: string[] = ['ADMIN', 'PROFESIONAL', 'PACIENTE'];
+  rolesSeleccionados: string[] = [];
 
   constructor(
     private rS: Rolservice,
@@ -35,63 +43,97 @@ export class Rolinsert implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.cargarUsuarios();
+    
+    this.form = this.formBuilder.group({
+      idUsuario: ['', Validators.required] 
+    });
+
     this.route.params.subscribe((data: Params) => {
       this.id = data['id'];
       this.edicion = data['id'] != null;
-      this.init();
+      if (this.edicion) {
+        this.initEdicion();
+      }
     });
+  }
 
-    this.form = this.formBuilder.group({
-      idRol: [''],
-      tipoRol: ['', Validators.required],
-      idUsuario: ['', Validators.required],
-    });
-
-    this.uS.list().subscribe((data) => {
+  cargarUsuarios() {
+    this.uS.list().subscribe(data => {
       this.usuarios = data;
     });
   }
 
+  // --- LÓGICA NUEVA: Se ejecuta al seleccionar en el Dropdown ---
+  detectarRoles(idUsuarioSeleccionado: number) {
+    this.rolesSeleccionados = []; // Limpiamos selección anterior
+    
+    this.rS.list().subscribe(todosLosRoles => {
+      this.rolesSeleccionados = todosLosRoles
+        .filter(r => {
+           // Verificamos si el ID viene como objeto o como número directo
+           const rUserId = r.idUsuario?.idUsuario || (r.idUsuario as any);
+           return rUserId === idUsuarioSeleccionado;
+        })
+        .map(r => r.tipoRol); // Ej: ['ADMIN', 'PACIENTE']
+    });
+  }
+  // -------------------------------------------------------------
+
+  initEdicion() {
+    this.rS.listId(this.id).subscribe(rolData => {
+      const userId = rolData.idUsuario?.idUsuario || (rolData.idUsuario as any);
+
+      if (userId) {
+        this.form.patchValue({ idUsuario: userId });
+        this.form.get('idUsuario')?.disable(); 
+        
+        // Reutilizamos la misma lógica
+        this.detectarRoles(userId);
+      }
+    });
+  }
+
+  toggleRol(rol: string) {
+    const index = this.rolesSeleccionados.indexOf(rol);
+    if (index >= 0) {
+      this.rolesSeleccionados.splice(index, 1);
+    } else {
+      this.rolesSeleccionados.push(rol);
+    }
+  }
+
+  isSelected(rol: string): boolean {
+    // Aseguramos que compare ignorando mayúsculas/minúsculas por seguridad
+    return this.rolesSeleccionados.includes(rol);
+  }
+
   aceptar(): void {
-    if (this.form.valid) {
-      const v = this.form.value;
+    const idUsuario = this.form.getRawValue().idUsuario;
 
-      this.rol.idRol = v.idRol;
-      this.rol.tipoRol = v.tipoRol;
-      this.rol.idUsuario = new Usuario();
-      this.rol.idUsuario.idUsuario = v.idUsuario;
+    if (idUsuario) {
+      if (this.rolesSeleccionados.length === 0) {
+        // Opcional: Permitir guardar sin roles (significa revocar todo)
+        // alert("El usuario debe tener al menos un rol asignado.");
+      }
 
-      // Definimos qué operación hacer
-      const request = this.edicion 
-        ? this.rS.update(this.rol) 
-        : this.rS.insert(this.rol);
-
-      // Ejecutamos la petición
-      request.subscribe({
+      const asignacionDTO = {
+        idUsuario: idUsuario,
+        roles: this.rolesSeleccionados
+      };
+      
+      this.rS.assignRoles(asignacionDTO).subscribe({
         next: () => {
-          // Una vez guardado, refrescamos la lista y navegamos
-          this.rS.list().subscribe((data) => {
-            this.rS.setList(data);
-            this.router.navigate(['roles']);
-          });
+          this.router.navigate(['roles']);
         },
-        error: (err) => {
-          console.error(err);
-          // Opcional: Mostrar mensaje de error al usuario
+        error: (e) => {
+          console.error('Error asignando roles', e);
         }
       });
     }
   }
-
-  init() {
-    if (this.edicion) {
-      this.rS.listId(this.id).subscribe((data) => {
-        this.form = new FormGroup({
-          idRol: new FormControl(data.idRol),
-          tipoRol: new FormControl(data.tipoRol),
-          idUsuario: new FormControl(data.idUsuario.idUsuario),
-        });
-      });
-    }
+  
+  cancel() {
+    this.router.navigate(['roles']);
   }
 }

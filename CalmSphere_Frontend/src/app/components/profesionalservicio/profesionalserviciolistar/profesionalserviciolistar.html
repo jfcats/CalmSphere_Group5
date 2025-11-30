@@ -1,33 +1,23 @@
 <div class="page-container">
   
   <div class="header-section">
-    <h1>Profesionales Disponibles</h1>
+    <h1>Profesionales / Mis Servicios</h1>
     
-    <!-- Solo admin puede registrar nuevos profesionales desde aquí -->
-    <button mat-flat-button class="btn-primary" routerLink="news" *ngIf="isAdmin()">
-      <mat-icon>add</mat-icon> Registrar Profesional
+    <button mat-flat-button class="btn-primary" routerLink="news">
+      <mat-icon>add</mat-icon> 
+      {{ isAdmin() ? 'Registrar Profesional' : 'Crear mi Perfil' }}
     </button>
   </div>
 
-  <!-- BARRA DE BÚSQUEDA -->
   <div class="search-bar">
     <mat-icon class="search-icon">search</mat-icon>
-    <input type="text" placeholder="Buscar profesionales..." (keyup)="filtrar($event)">
-    
-    <div class="filters">
-        <!-- Estos selects son visuales por ahora, puedes conectarlos a lógica luego -->
-        <button class="filter-chip">Especialidad <mat-icon>expand_more</mat-icon></button>
-        <button class="filter-chip">Disponibilidad <mat-icon>expand_more</mat-icon></button>
-    </div>
+    <input type="text" placeholder="Buscar..." (keyup)="filtrar($event)">
   </div>
 
-  <!-- GRID DE TARJETAS -->
   <div class="cards-grid">
     
     <div class="pro-card" *ngFor="let item of dataSource.filteredData">
-      
       <div class="card-header">
-        <!-- Avatar con iniciales -->
         <div class="avatar-circle" [ngClass]="getColorClass(item.nombre)">
           {{ getInitials(item.nombre) }}
         </div>
@@ -35,35 +25,26 @@
 
       <div class="card-body">
         <h3>{{ item.nombre }}</h3>
-        <p class="role-text">Especialista en Salud Mental</p> <!-- Puedes traer esto de BD si tienes campo especialidad -->
+        <p class="role-text">Precio Base: S/ {{ item.precioBase }}</p>
+        <p class="role-text">Duración: {{ item.duracionMin }} min</p>
         
-        <div class="rating">
-            <span>4.8</span> <!-- Valor ejemplo o traer de BD -->
-            <mat-icon class="star">star</mat-icon>
-        </div>
-
-        <div class="status-badge available">
-            Disponible
-        </div>
+        <div class="status-badge available">Activo</div>
       </div>
 
       <div class="card-footer">
-        <button class="btn-profile" (click)="verPerfil(item.idProfesionalServicio)">
-            Ver perfil
+        <button mat-icon-button [routerLink]="['edits', item.idProfesionalServicio]">
+            <mat-icon>edit</mat-icon>
         </button>
         
-        <!-- Acciones Admin -->
-        <div class="admin-actions" *ngIf="isAdmin()">
-            <button mat-icon-button [routerLink]="['edits', item.idProfesionalServicio]">
-                <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="eliminar(item.idProfesionalServicio)">
-                <mat-icon>delete</mat-icon>
-            </button>
-        </div>
+        <button mat-icon-button color="warn" (click)="eliminar(item.idProfesionalServicio)" *ngIf="isAdmin()">
+            <mat-icon>delete</mat-icon>
+        </button>
       </div>
 
     </div>
-
   </div>
+    
+    <div class="empty-state" *ngIf="dataSource.filteredData.length === 0">
+        <p>No tienes un perfil profesional creado. Haz clic en "Crear mi Perfil".</p>
+    </div>
 </div>

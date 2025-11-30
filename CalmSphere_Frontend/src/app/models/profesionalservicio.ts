@@ -3,6 +3,5 @@ export class ProfesionalServicio {
   nombre: string = '';
   duracionMin: number = 0;
   precioBase: number = 0;
-  idDisponibilidad: number = 0;
-  idUsuario: number = 0;
+  idUsuario: number = 0; // ID del doctor (Usuario)
 }

@@ -3,9 +3,16 @@ import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { MatMenuModule } from '@angular/material/menu'; 
+
+// Modelos
 import { Disponibilidad } from '../../../models/disponibilidad';
+
+// Servicios
 import { Disponibilidadservice } from '../../../services/disponibilidadservice';
-import { MatMenuModule } from '@angular/material/menu'; // Para el menú de 3 puntitos
+import { Profesionalservicioservice } from '../../../services/profesionalservicioservice';
+import { Loginservice } from '../../../services/loginservice';
+import { Usuarioservice } from '../../../services/usuarioservice'; // Necesario para buscar por email
 
 @Component({
   selector: 'app-disponibilidadlist',
@@ -16,58 +23,77 @@ import { MatMenuModule } from '@angular/material/menu'; // Para el menú de 3 pu
 })
 export class Disponibilidadlist implements OnInit {
   
-  // Estructura para el calendario: { 1: [DispA, DispB], 2: [], ... }
   calendario: { [key: number]: Disponibilidad[] } = {};
-  
-  // Mapeo fijo para las columnas del grid
   diasSemana = [
-    { id: 1, nombre: 'Lunes' },
-    { id: 2, nombre: 'Martes' },
-    { id: 3, nombre: 'Miércoles' },
-    { id: 4, nombre: 'Jueves' },
-    { id: 5, nombre: 'Viernes' },
-    { id: 6, nombre: 'Sábado' },
-    { id: 7, nombre: 'Domingo' },
+    { id: 1, nombre: 'Lunes' }, { id: 2, nombre: 'Martes' }, { id: 3, nombre: 'Miércoles' },
+    { id: 4, nombre: 'Jueves' }, { id: 5, nombre: 'Viernes' }, { id: 6, nombre: 'Sábado' }, { id: 7, nombre: 'Domingo' },
   ];
 
-  constructor(private dS: Disponibilidadservice) {}
+  constructor(
+    private dS: Disponibilidadservice,
+    private psS: Profesionalservicioservice,
+    private uS: Usuarioservice,
+    private loginService: Loginservice
+  ) {}
 
   ngOnInit(): void {
-    this.cargarDatos();
+    this.cargarMisHorarios();
+    // Nos suscribimos a cambios en la lista base
     this.dS.getList().subscribe(() => {
-      this.cargarDatos();
+      this.cargarMisHorarios();
     });
   }
 
-  cargarDatos() {
-    this.dS.list().subscribe((data) => {
-      this.organizarCalendario(data);
+  cargarMisHorarios() {
+    // PASO 1: Saber quién soy (Email desde el Token)
+    const myEmail = this.loginService.getUsername(); 
+
+    if (!myEmail) return; // Si no hay usuario, no hacemos nada
+
+    // PASO 2: Buscar mi objeto Usuario usando el email
+    this.uS.list().subscribe(users => {
+      const myUser = users.find(u => u.email === myEmail);
+      
+      if (myUser) {
+        // PASO 3: Buscar si tengo un Servicio Profesional creado
+        this.psS.list().subscribe(servicios => {
+          // El servicio que tenga mi ID de usuario
+          const myService = servicios.find(s => s.idUsuario === myUser.idUsuario);
+          
+          if (myService) {
+             // PASO 4: Cargar horarios de ESE servicio
+             this.dS.list().subscribe(allDisponibilidades => {
+               const misHorarios = allDisponibilidades.filter(d => d.idProfesionalServicio === myService.idProfesionalServicio);
+               this.organizarCalendario(misHorarios);
+             });
+          } else {
+            console.log("Este usuario no tiene un perfil profesional creado.");
+          }
+        });
+      }
     });
   }
 
-  // Transforma la lista plana de BD en un objeto agrupado por días
   organizarCalendario(lista: Disponibilidad[]) {
-    // 1. Reiniciamos el calendario vacío
+    // Reiniciamos calendario
     this.calendario = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [] };
     
-    // 2. Llenamos los días
     lista.forEach(d => {
       if (this.calendario[d.diaSemana]) {
         this.calendario[d.diaSemana].push(d);
       }
     });
 
-    // 3. Ordenamos por hora de inicio (para que las de las 9am salgan antes que las de las 3pm)
+    // Ordenamos visualmente por hora
     for (let i = 1; i <= 7; i++) {
         this.calendario[i].sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
     }
   }
 
   eliminar(id: number) {
-    // Confirmación simple antes de borrar
     if(confirm('¿Deseas eliminar este horario?')) {
         this.dS.delete(id).subscribe(() => {
-            this.cargarDatos(); // Recargar la vista
+             // Al eliminar, getList() disparará la recarga en ngOnInit
         });
     }
   }

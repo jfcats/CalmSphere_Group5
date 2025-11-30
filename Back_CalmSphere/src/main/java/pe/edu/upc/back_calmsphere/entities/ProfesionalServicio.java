@@ -1,6 +1,8 @@
 package pe.edu.upc.back_calmsphere.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Profesional_servicio")
@@ -12,79 +14,39 @@ public class ProfesionalServicio {
     private Integer idProfesionalServicio;
 
     @Column(name = "nombre", length = 100, nullable = false)
-    private String nombre;
+    private String nombre; // Ej: "Consulta Psicológica General"
 
     @Column(name = "duracion_min", nullable = false)
-    private Integer duracionMin;
+    private Integer duracionMin; // Ej: 60 minutos
 
     @Column(name = "precio_base", nullable = false)
     private Double precioBase;
 
-    @ManyToOne
-    @JoinColumn(name = "id_disponibilidad", nullable = false)
-    private Disponibilidad disponibilidad;
-
+    // RELACIÓN CON EL DOCTOR
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    public ProfesionalServicio() {
-    }
+    // RELACIÓN INVERSA (Opcional, pero útil para saber los horarios del servicio)
+    // Usamos JsonIgnore para evitar bucles infinitos al listar
+    @OneToMany(mappedBy = "profesionalServicio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Disponibilidad> disponibilidades;
 
-    public ProfesionalServicio(Integer idProfesionalServicio, String nombre, Integer duracionMin, Double precioBase, Disponibilidad disponibilidad, Usuario usuario) {
-        this.idProfesionalServicio = idProfesionalServicio;
-        this.nombre = nombre;
-        this.duracionMin = duracionMin;
-        this.precioBase = precioBase;
-        this.disponibilidad = disponibilidad;
-        this.usuario = usuario;
-    }
+    public ProfesionalServicio() {}
 
-    public Integer getIdProfesionalServicio() {
-        return idProfesionalServicio;
-    }
+    // Getters y Setters...
+    public Integer getIdProfesionalServicio() { return idProfesionalServicio; }
+    public void setIdProfesionalServicio(Integer id) { this.idProfesionalServicio = id; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public Integer getDuracionMin() { return duracionMin; }
+    public void setDuracionMin(Integer d) { this.duracionMin = d; }
+    public Double getPrecioBase() { return precioBase; }
+    public void setPrecioBase(Double p) { this.precioBase = p; }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    public void setIdProfesionalServicio(Integer idProfesionalServicio) {
-        this.idProfesionalServicio = idProfesionalServicio;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public Integer getDuracionMin() {
-        return duracionMin;
-    }
-
-    public void setDuracionMin(Integer duracionMin) {
-        this.duracionMin = duracionMin;
-    }
-
-    public Double getPrecioBase() {
-        return precioBase;
-    }
-
-    public void setPrecioBase(Double precioBase) {
-        this.precioBase = precioBase;
-    }
-
-    public Disponibilidad getDisponibilidad() {
-        return disponibilidad;
-    }
-
-    public void setDisponibilidad(Disponibilidad disponibilidad) {
-        this.disponibilidad = disponibilidad;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
+    public List<Disponibilidad> getDisponibilidades() { return disponibilidades; }
+    public void setDisponibilidades(List<Disponibilidad> disponibilidades) { this.disponibilidades = disponibilidades; }
 }

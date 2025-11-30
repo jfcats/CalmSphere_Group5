@@ -1,89 +1,190 @@
 .list-container {
-  padding: 24px;
-  background: #f5f7ff;
+  padding: 40px;
+  background-color: #f4f4f5;
   min-height: calc(100vh - 64px);
+  font-family: 'Poppins', system-ui, sans-serif;
 }
 
-.header-row {
+.header-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 30px;
 }
 
-.header-row h2 {
-  font-size: 1.6rem;
+.header-section h1 {
+  font-size: 2.5rem;
+  color: #1f2937;
+  margin: 0;
   font-weight: 600;
-  color: #25306a;
 }
 
-/* Botón principal */
+.header-section p {
+  color: #6b7280;
+  margin: 5px 0 0;
+}
+
 .btn-primary {
-  background: linear-gradient(135deg, #6d82f7, #8f9bff);
-  color: #fff !important;
-  border-radius: 25px;
+  background-color: #8654FC;
+  color: white !important;
+  border-radius: 12px;
+  padding: 0 24px;
+  height: 48px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(134, 84, 252, 0.3);
+}
+
+/* BUSCADOR */
+.search-bar {
+  background: white;
+  padding: 12px 20px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
+  margin-bottom: 30px;
+  border: 1px solid #e5e7eb;
+  max-width: 600px;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  width: 100%;
+  color: #374151;
+}
+
+/* TABLA */
+.roles-table {
+  width: 100%;
+  background: transparent;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.table-header th {
+  background: transparent;
+  color: #6b7280;
   font-weight: 600;
-  padding: 6px 16px;
-  box-shadow: 0px 4px 12px rgba(109, 130, 247, 0.35);
-  transition: 0.2s ease;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  padding: 0 20px 10px;
+  border: none;
 }
 
-.btn-primary:hover {
-  filter: brightness(1.06);
-  box-shadow: 0px 6px 16px rgba(109, 130, 247, 0.45);
+.table-row {
+  background: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  transition: transform 0.2s;
 }
 
-/* Tabla */
-.table-wrapper {
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
+.table-row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
-.custom-table th {
-  background: #eef1ff;
-  color: #3a4db7;
+.table-row td {
+  padding: 20px;
+  border-top: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.table-row td:first-child {
+  border-left: 1px solid #f3f4f6;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.table-row td:last-child {
+  border-right: 1px solid #f3f4f6;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* USER INFO */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e0e7ff;
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.user-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
   font-weight: 600;
-  font-size: 0.9rem;
+  color: #1f2937;
 }
 
-.custom-table td {
-  color: #394271;
-  font-size: 0.87rem;
+.user-email {
+  font-size: 0.8rem;
+  color: #9ca3af;
 }
 
-/* Íconos Editar */
-.btn-edit mat-icon {
-  color: #6d82f7;
-  transition: 0.2s ease;
+/* BADGES */
+.role-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
-.btn-edit:hover mat-icon {
-  color: #3a4db7;
+.badge-admin { background: #1f2937; color: white; }
+.badge-pro { background: #d8b4fe; color: #6b21a8; }
+.badge-cliente { background: #f3f4f6; color: #4b5563; }
+
+/* BOTONES ACCIÓN */
+.actions-row {
+  display: flex;
+  gap: 8px;
 }
 
-/* Íconos Eliminar */
-.btn-delete mat-icon {
-  color: #e57373;
-  transition: 0.2s ease;
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
 }
 
-.btn-delete:hover mat-icon {
-  color: #c62828;
+.btn-icon:hover {
+  background: #f9fafb;
+  color: #8654FC;
+  border-color: #d8b4fe;
 }
 
-@media (max-width: 768px) {
-  .header-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
+.btn-icon.delete:hover {
+  color: #ef4444;
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
 
-  .table-wrapper {
-    padding: 10px;
-  }
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #9ca3af;
+    font-style: italic;
 }

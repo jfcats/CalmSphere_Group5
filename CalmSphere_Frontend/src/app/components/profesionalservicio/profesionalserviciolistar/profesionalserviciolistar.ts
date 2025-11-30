@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProfesionalServicio } from '../../../models/profesionalservicio';
 import { Profesionalservicioservice } from '../../../services/profesionalservicioservice';
+import { Loginservice } from '../../../services/loginservice';
+import { Usuarioservice } from '../../../services/usuarioservice'; // Para buscar mi ID
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Loginservice } from '../../../services/loginservice'; // Para verificar si es admin
 
 @Component({
   selector: 'app-profesionalserviciolistar',
@@ -20,16 +21,39 @@ export class Profesionalserviciolistar implements OnInit {
   
   constructor(
     private psS: Profesionalservicioservice,
-    private loginService: Loginservice
+    private loginService: Loginservice,
+    private uS: Usuarioservice
   ) {}
 
   ngOnInit(): void {
-    this.psS.list().subscribe((data) => {
-      this.dataSource = new MatTableDataSource(data);
+    this.cargarDatos();
+    this.psS.getList().subscribe(data => {
+      this.dataSource = new MatTableDataSource(data); // Actualización reactiva simple
     });
-    this.psS.getList().subscribe((data) => {
-      this.dataSource = new MatTableDataSource(data);
-    });
+  }
+
+  cargarDatos() {
+    // 1. Si es ADMIN, traemos todo
+    if (this.isAdmin()) {
+        this.psS.list().subscribe(data => {
+            this.dataSource = new MatTableDataSource(data);
+        });
+    } 
+    // 2. Si es PROFESIONAL, filtramos solo EL SUYO
+    else {
+        const email = this.loginService.getUsername();
+        if(email) {
+            this.uS.list().subscribe(users => {
+                const me = users.find(u => u.email === email);
+                if(me) {
+                    // Opción A: Usar el endpoint searchByUsuario que ya tienes en el service
+                    this.psS.searchByUsuario(me.idUsuario).subscribe(servicios => {
+                        this.dataSource = new MatTableDataSource(servicios);
+                    });
+                }
+            });
+        }
+    }
   }
 
   filtrar(event: Event) {
@@ -38,39 +62,25 @@ export class Profesionalserviciolistar implements OnInit {
   }
 
   eliminar(id: number) {
-    if(confirm('¿Seguro de eliminar este profesional?')){
+    if(confirm('¿Seguro de eliminar este servicio?')){
         this.psS.delete(id).subscribe(() => {
-        this.psS.list().subscribe((data) => {
-            this.psS.setList(data);
-        });
+           this.cargarDatos(); // Recargar según rol
         });
     }
   }
 
-  // Helpers visuales
   getInitials(name: string): string {
     if (!name) return 'PS';
     const parts = name.split(' ');
-    if (parts.length >= 2) {
-        return (parts[0][0] + parts[1][0]).toUpperCase();
-    }
-    return name.slice(0, 2).toUpperCase();
+    return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : name.slice(0, 2).toUpperCase();
   }
 
   getColorClass(name: string): string {
     const colors = ['bg-purple', 'bg-green', 'bg-blue', 'bg-orange'];
-    // Hash simple para que el color sea consistente por nombre
-    const index = name.length % colors.length;
-    return colors[index];
+    return colors[name.length % colors.length];
   }
 
   isAdmin() {
     return this.loginService.showRole().includes('ADMIN');
-  }
-
-  verPerfil(id: number) {
-    // Aquí iríamos a la vista de detalle/agenda de ese médico
-    // Por ahora, un alert o navegación futura
-    console.log("Ver perfil de:", id);
   }
 }

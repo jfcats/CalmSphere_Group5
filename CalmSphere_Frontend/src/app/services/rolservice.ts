@@ -19,9 +19,13 @@ export class Rolservice {
     return this.http.get<Rol[]>(this.url);
   }
 
-  // CORREGIDO: Agregado { responseType: 'text' }
   insert(r: Rol) {
     return this.http.post(this.url, r, { responseType: 'text' });
+  }
+  
+  // === NUEVO: Asignación Masiva ===
+  assignRoles(data: any) {
+    return this.http.post(`${this.url}/asignar`, data);
   }
 
   update(r: Rol) {
