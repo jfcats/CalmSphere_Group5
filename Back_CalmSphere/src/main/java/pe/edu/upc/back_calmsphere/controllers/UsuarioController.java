@@ -42,16 +42,23 @@ public class UsuarioController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')") // Comentado para registro público
     public ResponseEntity<String> insertar(@RequestBody UsuarioDTOInsert dto) {
-        if (dto.getNombre() == null || dto.getApellido() == null || dto.getEmail() == null || dto.getContraseña() == null || dto.getFechaNacimiento() == null || dto.getFechaRegistro() == null){
+        if (dto.getNombre() == null || dto.getApellido() == null || dto.getEmail() == null || dto.getContraseña() == null || dto.getFechaNacimiento() == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Por favor, complete todos los campos de forma válida.");
         }
+
         ModelMapper m = new ModelMapper();
         Usuario u = m.map(dto, Usuario.class);
+
+        // --- CORRECCIÓN CLAVE ---
+        // Al ser Integer, podemos asignar NULL.
+        // Esto garantiza 100% que Hibernate lo trate como INSERT y no busque ID 0.
+        u.setIdUsuario(null);
+
         service.insert(u);
-        return ResponseEntity.ok("El usurio con ID " + u.getIdUsuario() + " fue registrado correctamente");
+        return ResponseEntity.ok("El usuario fue registrado correctamente");
     }
 
     @GetMapping("/{id}")
@@ -83,21 +90,29 @@ public class UsuarioController {
     @PutMapping
     //@PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> modificar(@RequestBody UsuarioDTOInsert dto) {
-        if (dto.getNombre() == null || dto.getApellido() == null || dto.getEmail() == null || dto.getContraseña() == null || dto.getFechaNacimiento() == null || dto.getFechaRegistro() == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Por favor, complete todos los campos de forma válida.");
+        if (dto.getNombre() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Datos inválidos");
         }
-        ModelMapper m = new ModelMapper();
-        Usuario u = m.map(dto, Usuario.class);
 
-        // Validación de existencia
-        Usuario existente = service.listId(u.getIdUsuario());
+        // Para modificar, buscamos el original por ID
+        Usuario existente = service.listId(dto.getIdUsuario()); // Usamos el getter del DTO que devuelve int
+
         if (existente == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se puede modificar. No existe un usuario con el ID: " + u.getIdUsuario());
+                    .body("No se puede modificar. No existe un usuario con el ID: " + dto.getIdUsuario());
         }
 
-        // Actualización si pasa validaciones
+        // Actualizamos campos manualmente o con map, pero sobre el ID existente
+        ModelMapper m = new ModelMapper();
+        // Mapeamos el DTO al objeto Usuario (esto crea uno nuevo o sobreescribe)
+        Usuario u = m.map(dto, Usuario.class);
+
+        // Aseguramos que el ID sea el correcto (aunque el DTO ya lo traiga)
+        u.setIdUsuario(existente.getIdUsuario());
+
+        // Mantenemos roles antiguos si el DTO no los trae (opcional)
+        u.setRoles(existente.getRoles());
+
         service.update(u);
         return ResponseEntity.ok("El usuario con ID " + u.getIdUsuario() + " fue modificado correctamente.");
     }
@@ -106,17 +121,10 @@ public class UsuarioController {
     //@PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> buscar(@RequestParam String n) {
         List<Usuario> usuarios = service.buscarNombre(n);
-
         if (usuarios.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontraron Usuarios con el nombre: " + n);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron usuarios");
         }
-
-        List<UsuarioDTOList> listaDTO = usuarios.stream().map(x -> {
-            ModelMapper m = new ModelMapper();
-            return m.map(x, UsuarioDTOList.class);
-        }).collect(Collectors.toList());
-
+        List<UsuarioDTOList> listaDTO = usuarios.stream().map(x -> new ModelMapper().map(x, UsuarioDTOList.class)).collect(Collectors.toList());
         return ResponseEntity.ok(listaDTO);
     }
 
@@ -125,12 +133,9 @@ public class UsuarioController {
     public ResponseEntity<?> buscarEventoEstres() {
         List<String[]> usuarios = service.buscarEventoEstresPorUsuario();
         List<UsuarioEventoEstresDTO> listarPorEventoEstres = new ArrayList<>();
-
         if (usuarios.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontraron eventos de estrés registrados.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron eventos.");
         }
-
         for(String[] columna:usuarios){
             UsuarioEventoEstresDTO dto = new UsuarioEventoEstresDTO();
             dto.setNombre_Usuario(columna[0]);
@@ -140,7 +145,6 @@ public class UsuarioController {
             dto.setNivelEstres(Integer.parseInt(columna[4]));
             listarPorEventoEstres.add(dto);
         }
-
         return ResponseEntity.ok(listarPorEventoEstres);
     }
 }

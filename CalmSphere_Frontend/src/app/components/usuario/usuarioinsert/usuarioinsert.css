@@ -1,79 +1,172 @@
-.form-container {
+/* Contenedor Principal */
+.page-wrapper {
   min-height: calc(100vh - 64px);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 32px 16px;
-  background: radial-gradient(circle at top, #eef1ff 0, #f7f8ff 45%, #ffffff 100%);
+  align-items: center;
+  background-color: #F4F4F5; /* Fondo gris suave (Grayscale #F4F4F5) */
+  padding: 40px 20px;
+  font-family: 'Poppins', system-ui, sans-serif; 
 }
 
-.form-card {
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 24px 28px;
+/* Tarjeta */
+.register-card {
+  background: #FFFFFF;
   width: 100%;
-  max-width: 520px;
-  box-shadow: 0px 10px 30px rgba(25, 39, 89, 0.15);
+  max-width: 680px; /* Ancho generoso para desktop */
+  padding: 48px 56px;
+  border-radius: 24px;
+  box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.06); /* Sombra elegante */
+  border: 1px solid #E6E6E6;
 }
 
-.form-title {
+/* Cabecera */
+.card-header {
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #25306a;
+  margin-bottom: 40px;
 }
 
-.form-body {
+.card-header h2 {
+  font-family: 'Prompt', sans-serif; /* Si la tienes, sino usa sans-serif */
+  font-weight: 700; /* Bold */
+  font-size: 32px; /* Heading 1 size aprox */
+  color: #333333;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  color: #666666;
+  margin: 0;
+}
+
+/* Layout de Formulario */
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+  gap: 24px;
+  margin-bottom: 6px; /* Espacio entre filas */
+}
+
+.input-group {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  margin-bottom: 16px;
 }
 
-/* Campos */
-mat-form-field {
+.field-label {
+  font-size: 14px;
+  font-weight: 600; /* Semi Bold */
+  color: #333333;
+  margin-bottom: 8px;
+  margin-left: 4px;
+}
+
+/* Ajustes de Material Form Field para que parezca Figma */
+.custom-input {
   width: 100%;
 }
 
-/* Acciones (dos botones centrados, misma línea en desktop) */
-.actions {
-  margin-top: 12px;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
+/* Fondo blanco puro en inputs */
+.custom-input .mat-mdc-text-field-wrapper {
+  background-color: white !important;
 }
 
-@media (min-width: 560px) {
-  .actions {
-    grid-template-columns: 1fr 1fr;
-  }
+/* Ajuste para mensajes de error */
+.custom-input .mat-mdc-form-field-subscript-wrapper {
+  font-size: 11px; 
 }
 
-/* Botón base */
-.btn-submit {
+/* Quitar padding extra abajo */
+.no-bottom-space .mat-mdc-form-field-subscript-wrapper {
+  margin-top: 0;
+}
+
+.prefix-icon {
+  color: #999999;
+  margin-right: 8px;
+}
+
+.full-width {
   width: 100%;
-  border-radius: 25px;
-  padding: 10px 16px;
+}
+
+/* Botones (Inspirado en image_3c06ef.png) */
+.actions-container {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+/* Botón Primario (Guardar) */
+.btn-primary {
+  background-color: #8654FC; /* Primary color exacto */
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  padding: 0 32px;
+  height: 48px; /* Large Button size approx */
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  font-size: 0.95rem;
-  text-transform: none;
-  color: #ffffff !important;
-  background: linear-gradient(135deg, #6d82f7, #8f9bff);
-  box-shadow: 0px 6px 16px rgba(109, 130, 247, 0.5);
-  transition: 0.2s ease;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 180px;
+  box-shadow: 0 4px 12px rgba(134, 84, 252, 0.3);
 }
 
-.btn-submit:hover {
-  filter: brightness(1.05);
-  box-shadow: 0px 10px 24px rgba(109, 130, 247, 0.7);
+.btn-primary:hover {
+  background-color: #7440e0; /* Un tono más oscuro al hover */
+  transform: translateY(-2px);
 }
 
-/* Botón Cancelar con el mismo estilo, tono gris/lila suave */
-.btn-cancel {
-  background: linear-gradient(135deg, #9aa4c9, #b4b8d9);
-  box-shadow: 0px 6px 16px rgba(154, 164, 201, 0.5);
+.btn-primary:disabled {
+  background-color: #CCCCCC;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.btn-cancel:hover {
-  box-shadow: 0px 10px 24px rgba(154, 164, 201, 0.7);
+/* Botón Secundario (Cancelar) */
+.btn-secondary {
+  background-color: transparent;
+  color: #333333;
+  border: 1.5px solid #333333; /* Stroke Button Style */
+  border-radius: 12px;
+  padding: 0 32px;
+  height: 48px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.btn-secondary:hover {
+  background-color: #F4F4F5;
+  border-color: #000000;
+}
+
+/* Responsive: Adaptarse si la ventana se achica */
+@media (max-width: 768px) {
+  .input-row {
+    grid-template-columns: 1fr; /* Pasa a 1 columna */
+    gap: 0;
+  }
+  
+  .register-card {
+    padding: 32px 24px;
+  }
+
+  .actions-container {
+    flex-direction: column-reverse; /* Cancelar abajo en móviles */
+    gap: 16px;
+  }
+  
+  .btn-primary, .btn-secondary {
+    width: 100%;
+  }
 }

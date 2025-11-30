@@ -1,127 +1,129 @@
-<div class="form-container">
-  <div class="form-card">
+<div class="page-wrapper">
+  
+  <div class="register-card">
+    
+    <div class="card-header">
+      <h2>{{ titulo }}</h2>
+      <p class="subtitle">{{ subtitulo }}</p>
+    </div>
 
-    <h2 class="form-title">
-      {{ edicion ? 'Editar usuario' : 'Registrar usuario' }}
-    </h2>
+    <form [formGroup]="form" (submit)="aceptar()">
+      
+      <input type="hidden" formControlName="idUsuario">
 
-    <form [formGroup]="form" (submit)="aceptar()" class="form-body">
+      <!-- GRUPO 1: NOMBRES Y APELLIDOS -->
+      <div class="input-row">
+        
+        <!-- NOMBRE -->
+        <div class="input-group">
+          <label class="field-label">Nombres</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <input matInput placeholder="Ej. Juan Carlos" formControlName="nombre">
+            @if (form.get('nombre')?.hasError('required') && form.get('nombre')?.touched) {
+              <mat-error>Requerido</mat-error>
+            }
+            @if (form.get('nombre')?.hasError('minlength') && form.get('nombre')?.touched) {
+              <mat-error>Muy corto</mat-error>
+            }
+            @if (form.get('nombre')?.hasError('patternInvalido') && form.get('nombre')?.touched) {
+              <mat-error>Solo letras y espacios</mat-error>
+            }
+          </mat-form-field>
+        </div>
 
-      <!-- ID solo en edición -->
-      @if (edicion) {
-        <mat-form-field appearance="outline">
-          <mat-label>Código</mat-label>
-          <input matInput formControlName="idUsuario" />
-          @if (form.get('idUsuario')?.hasError('required')) {
-            <mat-error>El campo código es obligatorio.</mat-error>
+        <!-- APELLIDO -->
+        <div class="input-group">
+          <label class="field-label">Apellidos</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <input matInput placeholder="Ej. Pérez Gomez" formControlName="apellido">
+            @if (form.get('apellido')?.hasError('required') && form.get('apellido')?.touched) {
+              <mat-error>Requerido</mat-error>
+            }
+            @if (form.get('apellido')?.hasError('minlength') && form.get('apellido')?.touched) {
+              <mat-error>Muy corto</mat-error>
+            }
+            @if (form.get('apellido')?.hasError('patternInvalido') && form.get('apellido')?.touched) {
+              <mat-error>Solo letras y espacios</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- GRUPO 2: EMAIL -->
+      <div class="input-group">
+        <label class="field-label">Correo Electrónico</label>
+        <mat-form-field appearance="outline" class="custom-input full-width no-bottom-space">
+          <mat-icon matPrefix class="prefix-icon">email</mat-icon>
+          <input matInput placeholder="usuario@ejemplo.com" formControlName="email">
+          @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+            <mat-error>Obligatorio</mat-error>
+          }
+          @if (form.get('email')?.hasError('emailInvalido') || form.get('email')?.hasError('email')) {
+            <mat-error>Correo inválido</mat-error>
           }
         </mat-form-field>
-      }
+      </div>
 
-      <!-- Nombre -->
-      <mat-form-field appearance="outline">
-        <mat-label>Nombre</mat-label>
-        <input matInput formControlName="nombre" required />
-        @if (form.get('nombre')?.hasError('required') && form.get('nombre')?.touched) {
-          <mat-error>El nombre es obligatorio.</mat-error>
-        }
-        @if (form.get('nombre')?.hasError('minlength') && form.get('nombre')?.touched) {
-          <mat-error>El nombre es muy corto.</mat-error>
-        }
-      </mat-form-field>
-
-      <!-- Apellido -->
-      <mat-form-field appearance="outline">
-        <mat-label>Apellido</mat-label>
-        <input matInput formControlName="apellido" required />
-        @if (form.get('apellido')?.hasError('required') && form.get('apellido')?.touched) {
-          <mat-error>El apellido es obligatorio.</mat-error>
-        }
-      </mat-form-field>
-
-      <!-- Email -->
-      <mat-form-field appearance="outline">
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="email" placeholder="ejemplo@correo.com" required />
-        @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
-          <mat-error>El email es obligatorio.</mat-error>
-        }
-        @if (form.get('email')?.hasError('emailInvalido') && form.get('email')?.touched) {
-          <mat-error>Correo electrónico inválido.</mat-error>
-        }
-      </mat-form-field>
-
-      <!-- Contraseña 1 -->
-      <mat-form-field appearance="outline">
-        <mat-label>Contraseña</mat-label>
-        <!-- [type] dinámico para mostrar/ocultar -->
-        <input matInput [type]="hidePass ? 'password' : 'text'" formControlName="contrasena" required />
+      <!-- GRUPO 3: CONTRASEÑAS -->
+      <div class="input-row">
         
-        <!-- Botón del ojito -->
-        <button mat-icon-button matSuffix (click)="hidePass = !hidePass" [attr.aria-label]="'Ocultar contraseña'" type="button">
-          <mat-icon>{{hidePass ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
+        <div class="input-group">
+          <label class="field-label">Contraseña</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <mat-icon matPrefix class="prefix-icon">lock</mat-icon>
+            <input matInput [type]="hidePass ? 'password' : 'text'" formControlName="contrasena" placeholder="••••••••">
+            <button mat-icon-button matSuffix (click)="hidePass = !hidePass" type="button" tabindex="-1">
+              <mat-icon>{{hidePass ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            @if (form.get('contrasena')?.hasError('required') && form.get('contrasena')?.touched) {
+              <mat-error>Requerida</mat-error>
+            }
+            @if (form.get('contrasena')?.hasError('minlength') && form.get('contrasena')?.touched) {
+              <mat-error>Mín. 6 caracteres</mat-error>
+            }
+          </mat-form-field>
+        </div>
 
-        @if (form.get('contrasena')?.hasError('required') && form.get('contrasena')?.touched) {
-          <mat-error>La contraseña es obligatoria.</mat-error>
-        }
-        @if (form.get('contrasena')?.hasError('minlength') && form.get('contrasena')?.touched) {
-          <mat-error>Mínimo 6 caracteres.</mat-error>
-        }
-      </mat-form-field>
+        <div class="input-group">
+          <label class="field-label">Confirmar</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <input matInput [type]="hidePass2 ? 'password' : 'text'" formControlName="confirmarContrasena" placeholder="••••••••">
+            <button mat-icon-button matSuffix (click)="hidePass2 = !hidePass2" type="button" tabindex="-1">
+              <mat-icon>{{hidePass2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            @if (form.hasError('passwordNoCoincide') && form.get('confirmarContrasena')?.touched) {
+              <mat-error>No coinciden</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
 
-      <!-- Confirmar Contraseña -->
-      <mat-form-field appearance="outline">
-        <mat-label>Confirmar contraseña</mat-label>
-        <!-- [type] dinámico independiente -->
-        <input matInput [type]="hidePass2 ? 'password' : 'text'" formControlName="confirmarContrasena" required />
-        
-        <!-- Botón del ojito 2 -->
-        <button mat-icon-button matSuffix (click)="hidePass2 = !hidePass2" [attr.aria-label]="'Ocultar contraseña'" type="button">
-          <mat-icon>{{hidePass2 ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
+      <!-- GRUPO 4: FECHA -->
+      <div class="input-group">
+        <label class="field-label">Fecha de Nacimiento</label>
+        <mat-form-field appearance="outline" class="custom-input full-width no-bottom-space">
+          <mat-icon matPrefix class="prefix-icon">calendar_today</mat-icon>
+          <input matInput [matDatepicker]="picker" formControlName="fechaNacimiento" [max]="today" placeholder="DD/MM/AAAA" readonly>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          
+          @if (form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched) {
+            <mat-error>Requerida</mat-error>
+          }
+          @if (form.get('fechaNacimiento')?.hasError('menorDeEdad') && form.get('fechaNacimiento')?.touched) {
+            <mat-error>Debes ser mayor de 18 años</mat-error>
+          }
+        </mat-form-field>
+      </div>
 
-        @if (form.get('confirmarContrasena')?.hasError('required') && form.get('confirmarContrasena')?.touched) {
-          <mat-error>Confirme la contraseña.</mat-error>
-        }
-        
-        <!-- Mensaje de No Coincidencia (se muestra si el grupo tiene error y este campo fue tocado) -->
-        @if (form.hasError('passwordNoCoincide') && form.get('confirmarContrasena')?.touched && !form.get('confirmarContrasena')?.hasError('required')) {
-          <mat-error>Las contraseñas no coinciden.</mat-error>
-        }
-      </mat-form-field>
-
-      <!-- Fecha de nacimiento -->
-      <mat-form-field appearance="outline">
-        <mat-label>Fecha de nacimiento</mat-label>
-        <input matInput [matDatepicker]="picker1" formControlName="fechaNacimiento" [max]="today" required />
-        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-        <mat-datepicker #picker1></mat-datepicker>
-
-        @if (form.get('fechaNacimiento')?.hasError('required') && form.get('fechaNacimiento')?.touched) {
-          <mat-error>Campo obligatorio.</mat-error>
-        }
-        @if (form.get('fechaNacimiento')?.hasError('menorDeEdad') && form.get('fechaNacimiento')?.touched) {
-          <mat-error>Debes ser mayor de 18 años.</mat-error>
-        }
-      </mat-form-field>
-
-      <!-- Fecha registro (bloqueada visualmente) -->
-      <mat-form-field appearance="outline" class="hidden-date">
-        <mat-label>Fecha de registro</mat-label>
-        <input matInput [matDatepicker]="picker2" formControlName="fechaRegistro" [min]="today" [max]="today" readonly required />
-        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-        <mat-datepicker #picker2></mat-datepicker>
-      </mat-form-field>
-
-      <!-- Acciones -->
-      <div class="actions">
-        <button mat-raised-button color="primary" class="btn-submit" type="submit" [disabled]="form.invalid || isSaving">
-          {{ isSaving ? 'Guardando...' : (edicion ? 'Actualizar' : 'Registrar') }}
-        </button>
-
-        <button mat-button class="btn-cancel" type="button" (click)="cancel()">
+      <!-- BOTONES -->
+      <div class="actions-container">
+        <button type="button" class="btn-secondary" (click)="cancel()">
           Cancelar
+        </button>
+        
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || isSaving">
+          {{ textoBoton }}
         </button>
       </div>
 

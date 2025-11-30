@@ -1,55 +1,61 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon'; // <--- IMPORTANTE
+import { MatIconModule } from '@angular/material/icon';
 import { Usuario } from '../../../models/usuario';
 import { Usuarioservice } from '../../../services/usuarioservice';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
-/* ===== Helpers de validación ===== */
+/* ===== VALIDADORES PERSONALIZADOS ===== */
+
+// Validador: Solo letras y espacios (Permite nombres compuestos)
+function soloLetras() {
+  return (control: AbstractControl): ValidationErrors | null => {
+    // Regex: Letras (a-z), Ñ, tildes, y espacios en blanco
+    // ^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$
+    const regex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]+$/; 
+    if (!control.value) return null; 
+    return regex.test(control.value) ? null : { patternInvalido: true };
+  };
+}
+
 function emailValido() {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-  return (c: AbstractControl): ValidationErrors | null =>
-    !c.value || regex.test(c.value) ? null : { emailInvalido: true };
+  return (c: AbstractControl): ValidationErrors | null => {
+    // Regex estándar para email
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!c.value) return null;
+    return regex.test(c.value) ? null : { emailInvalido: true };
+  };
 }
 
 function passwordsIguales(group: AbstractControl): ValidationErrors | null {
   const pass = group.get('contrasena')?.value;
-  const rep  = group.get('confirmarContrasena')?.value;
-  // Solo devolvemos error si ambos campos tienen valor y son diferentes
-  return pass && rep && pass !== rep ? { passwordNoCoincide: true } : null;
+  const confirm = group.get('confirmarContrasena')?.value;
+  return pass === confirm ? null : { passwordNoCoincide: true };
 }
 
 function mayorDe18(control: AbstractControl): ValidationErrors | null {
-  const v = control.value;
-  if (!v) return null;
-  const nac = new Date(v);
+  if (!control.value) return null;
+  const fechaNac = new Date(control.value);
   const hoy = new Date();
-  let edad = hoy.getFullYear() - nac.getFullYear();
-  const m = hoy.getMonth() - nac.getMonth();
-  if (m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) edad--;
+  let edad = hoy.getFullYear() - fechaNac.getFullYear();
+  const mes = hoy.getMonth() - fechaNac.getMonth();
+  
+  if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+    edad--;
+  }
+  
   return edad >= 18 ? null : { menorDeEdad: true };
-}
-
-function fechaEsHoy(control: AbstractControl): ValidationErrors | null {
-  const v = control.value as Date | string | null;
-  if (!v) return { requerida: true };
-  const d = new Date(v);
-  const hoy = new Date();
-  const same =
-    d.getFullYear() === hoy.getFullYear() &&
-    d.getMonth() === hoy.getMonth() &&
-    d.getDate() === hoy.getDate();
-  return same ? null : { noEsHoy: true };
 }
 
 @Component({
   selector: 'app-usuarioinsert',
-  standalone: true, // Asegurando que sea standalone
+  standalone: true,
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -57,10 +63,11 @@ function fechaEsHoy(control: AbstractControl): ValidationErrors | null {
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatIconModule // <--- Agregado para el ícono del ojo
+    MatIconModule,
+    CommonModule
   ],
-  templateUrl: './usuarioinsert.html',
   providers: [provideNativeDateAdapter()],
+  templateUrl: './usuarioinsert.html',
   styleUrl: './usuarioinsert.css',
 })
 export class Usuarioinsert implements OnInit {
@@ -68,11 +75,12 @@ export class Usuarioinsert implements OnInit {
   usuario: Usuario = new Usuario();
   id: number = 0;
   edicion: boolean = false;
+  isPublic: boolean = false;
 
   today = new Date();
   isSaving = false;
 
-  // Variables para controlar la visibilidad de las contraseñas
+  // Visibilidad independiente
   hidePass = true;
   hidePass2 = true;
 
@@ -84,6 +92,8 @@ export class Usuarioinsert implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isPublic = this.router.url.includes('/registro');
+
     this.route.params.subscribe((data: Params) => {
       this.id = data['id'];
       this.edicion = data['id'] != null;
@@ -92,16 +102,16 @@ export class Usuarioinsert implements OnInit {
 
     this.form = this.formBuilder.group(
       {
-        idUsuario: [''],
-        nombre: ['', [Validators.required, Validators.minLength(2)]],
-        apellido: ['', [Validators.required, Validators.minLength(2)]],
+        idUsuario: [0], 
+        nombre: ['', [Validators.required, Validators.minLength(2), soloLetras()]],
+        apellido: ['', [Validators.required, Validators.minLength(2), soloLetras()]],
         email: ['', [Validators.required, Validators.email, emailValido()]],
-        contrasena: ['', [Validators.required, Validators.minLength(5)]],
+        contrasena: ['', [Validators.required, Validators.minLength(6)]],
         confirmarContrasena: ['', [Validators.required]],
         fechaNacimiento: ['', [Validators.required, mayorDe18]],
-        fechaRegistro: [{ value: this.onlyDate(this.today), disabled: true }, [fechaEsHoy]],
+        fechaRegistro: [this.onlyDate(this.today)],
       },
-      { validators: [passwordsIguales] }
+      { validators: [passwordsIguales] } 
     );
   }
 
@@ -120,10 +130,8 @@ export class Usuarioinsert implements OnInit {
 
   aceptar(): void {
     if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      // Pequeña mejora: No usar alert nativo si podemos evitarlo, 
-      // pero por ahora lo dejamos como fallback seguro.
-      return; 
+      this.form.markAllAsTouched(); 
+      return;
     }
 
     const v = this.form.getRawValue();
@@ -141,32 +149,36 @@ export class Usuarioinsert implements OnInit {
     this.isSaving = true;
 
     const obs = this.edicion ? this.uS.update(dto) : this.uS.insert(dto);
-    
+
     obs.subscribe({
       next: () => {
-        if (this.edicion || !this.router.url.includes('/registro')) {
-           this.uS.list().subscribe((data) => {
+        if (this.isPublic) {
+          this.isSaving = false;
+          alert('¡Bienvenido a CalmSphere! Tu cuenta ha sido creada.');
+          this.router.navigate(['login']);
+        } else {
+          this.uS.list().subscribe((data) => {
             this.uS.setList(data);
             this.isSaving = false;
-            this.router.navigate(['usuarios']); 
+            this.router.navigate(['usuarios']);
           });
-        } 
-        else {
-          this.isSaving = false;
-          alert('¡Registro exitoso! Por favor inicia sesión.');
-          this.router.navigate(['login']); 
         }
       },
       error: (err) => {
         console.error(err);
         this.isSaving = false;
-        alert('Ocurrió un error al registrar/actualizar el usuario.');
+        // Mensaje más descriptivo si es error 500
+        if(err.status === 500) {
+             alert('Error interno del servidor. Verifica que el correo no esté duplicado o que los datos sean correctos.');
+        } else {
+             alert('Ocurrió un error al procesar la solicitud.');
+        }
       },
     });
   }
 
   cancel(): void {
-    if (this.router.url.includes('/registro')) {
+    if (this.isPublic) {
       this.router.navigate(['landing']);
     } else {
       this.router.navigate(['usuarios']);
@@ -177,17 +189,33 @@ export class Usuarioinsert implements OnInit {
     if (this.edicion) {
       this.uS.listId(this.id).subscribe((data) => {
         this.form.patchValue({
-            idUsuario: data.idUsuario,
-            nombre: data.nombre,
-            apellido: data.apellido,
-            email: data.email,
-            contrasena: data.contraseña,
-            confirmarContrasena: data.contraseña,
-            fechaNacimiento: data.fechaNacimiento,
-            fechaRegistro: this.onlyDate(new Date())
+          idUsuario: data.idUsuario,
+          nombre: data.nombre,
+          apellido: data.apellido,
+          email: data.email,
+          contrasena: data.contraseña,
+          confirmarContrasena: data.contraseña,
+          fechaNacimiento: data.fechaNacimiento,
+          fechaRegistro: this.onlyDate(new Date())
         });
-        this.form.get('fechaRegistro')?.disable();
       });
     }
+  }
+  
+  get titulo(): string {
+    if (this.edicion) return 'Editar Perfil';
+    return this.isPublic ? 'Crear mi Cuenta' : 'Registrar Nuevo Usuario';
+  }
+
+  get subtitulo(): string {
+    if (this.edicion) return 'Actualiza la información del usuario.';
+    return this.isPublic 
+      ? 'Completa tus datos para unirte a CalmSphere.'
+      : 'Ingresa los datos para dar de alta un usuario en el sistema.';
+  }
+
+  get textoBoton(): string {
+    if (this.edicion) return 'Guardar Cambios';
+    return this.isPublic ? 'Registrarme' : 'Crear Usuario';
   }
 }

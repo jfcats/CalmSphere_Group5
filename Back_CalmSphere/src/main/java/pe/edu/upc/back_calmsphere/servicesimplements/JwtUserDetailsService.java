@@ -13,20 +13,19 @@ import pe.edu.upc.back_calmsphere.repositories.IUsuarioRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-
 //Clase 2
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
     @Autowired
     private IUsuarioRepository repo;
 
-
     @Override
-    public UserDetails loadUserByUsername(String nombre) throws UsernameNotFoundException {
-        Usuario user = repo.findOneByNombre(nombre);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException { // Cambiado nombre del parametro para claridad
+        // CAMBIO: Buscamos por EMAIL en lugar de por nombre/username
+        Usuario user = repo.findOneByEmail(email);
 
         if (user == null) {
-            throw new UsernameNotFoundException(String.format("User not exists", nombre));
+            throw new UsernameNotFoundException(String.format("User not exists with email: %s", email));
         }
 
         List<GrantedAuthority> roles = new ArrayList<>();
@@ -35,7 +34,13 @@ public class JwtUserDetailsService implements UserDetailsService {
             roles.add(new SimpleGrantedAuthority(rol.getTipoRol()));
         });
 
-        UserDetails ud = new org.springframework.security.core.userdetails.User(user.getNombre(), user.getContraseña(), true, true, true, true, roles);
+        // Aquí pasamos el email como "username" para Spring Security
+        UserDetails ud = new org.springframework.security.core.userdetails.User(
+                user.getEmail(), // Usamos el email como identificador principal
+                user.getContraseña(),
+                true, true, true, true,
+                roles
+        );
 
         return ud;
     }

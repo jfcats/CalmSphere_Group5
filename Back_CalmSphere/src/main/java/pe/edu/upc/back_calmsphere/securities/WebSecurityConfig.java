@@ -69,6 +69,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(req -> req
                         .requestMatchers("/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+                        .requestMatchers("/error").permitAll() // <--- AGREGADO: Permite ver el error real
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())

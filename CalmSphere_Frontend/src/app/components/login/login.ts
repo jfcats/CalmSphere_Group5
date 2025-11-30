@@ -26,7 +26,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 })
 export class Login implements OnInit {
 
-  username: string = '';
+  email: string = ''; // Cambiado de username a email para claridad
   password: string = '';
   hidePassword: boolean = true;
   isLoading: boolean = false;
@@ -52,15 +52,16 @@ export class Login implements OnInit {
   }
 
   login(): void {
-    if (!this.username || !this.password) {
-      alert('Ingresa usuario y contraseña');
+    if (!this.email || !this.password) {
+      alert('Ingresa tu correo y contraseña');
       return;
     }
 
     this.isLoading = true;
 
     const request = new JwtRequest();
-    request.username = this.username;
+    // El backend espera "username" en el DTO, pero le enviamos el email
+    request.username = this.email; 
     request.password = this.password;
 
     this.loginservice.login(request).subscribe({
@@ -75,7 +76,7 @@ export class Login implements OnInit {
       error: (error) => {
         console.error('ERROR LOGIN:', error);
         this.isLoading = false;
-        alert('Credenciales incorrectas');
+        alert('Credenciales incorrectas. Verifica tu correo y contraseña.');
       }
     });
   }

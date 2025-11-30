@@ -48,12 +48,12 @@ public class UsuarioServiceImplement implements IUsuarioService {
     }
 
     @Override
-    public Usuario listId(int id) {
+    public Usuario listId(Integer id) {
         return repository.findById(id).orElse(null);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(Integer id) {
         repository.deleteById(id);
     }
 
