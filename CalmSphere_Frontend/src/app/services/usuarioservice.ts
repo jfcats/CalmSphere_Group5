@@ -60,4 +60,8 @@ export class Usuarioservice {
   getList() {
     return this.listaCambio.asObservable();
   }
+
+  listByEmail(email: string): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.url}/buscarPorEmail/${email}`);
+  }
 }

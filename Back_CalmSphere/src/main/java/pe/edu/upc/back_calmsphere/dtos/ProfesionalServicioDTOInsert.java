@@ -5,8 +5,7 @@ public class ProfesionalServicioDTOInsert {
     private String nombre;
     private int duracionMin;
     private double precioBase;
-    private int idDisponibilidad;
-    private int idUsuario;
+    private int idUsuario; // <--- ESTO ES LO IMPORTANTE
 
     public int getIdProfesionalServicio() {
         return idProfesionalServicio;
@@ -38,14 +37,6 @@ public class ProfesionalServicioDTOInsert {
 
     public void setPrecioBase(double precioBase) {
         this.precioBase = precioBase;
-    }
-
-    public int getIdDisponibilidad() {
-        return idDisponibilidad;
-    }
-
-    public void setIdDisponibilidad(int idDisponibilidad) {
-        this.idDisponibilidad = idDisponibilidad;
     }
 
     public int getIdUsuario() {

@@ -1,86 +1,112 @@
-<div class="form-container">
-  <div class="form-card">
+<div class="booking-layout">
+  <div class="booking-card">
+    
+    <div class="header">
+      <h2>Agendar Cita</h2>
+      <p>Completa los datos para confirmar tu sesión.</p>
+    </div>
 
-    <h2 class="form-title">
-      {{ edicion ? 'Editar evento / cita' : 'Registrar evento / cita' }}
-    </h2>
+    <form [formGroup]="form" (submit)="aceptar()">
+      <input type="hidden" formControlName="idUsuario">
 
-    <form [formGroup]="form" (submit)="aceptar()" class="form-body">
+      <div class="section-block">
+        <label class="block-label">1. Selección del Profesional</label>
+        
+        <div class="form-grid">
+          <div class="full-width">
+            <mat-form-field appearance="outline">
+              <mat-label>Profesional</mat-label>
+              <mat-select formControlName="idDoctorSeleccionado" (selectionChange)="alElegirDoctor($event.value)">
+                <mat-option *ngFor="let doc of listaProfesionales" [value]="doc.id">
+                  {{ doc.nombreCompleto }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>account_circle</mat-icon>
+            </mat-form-field>
+          </div>
 
-      @if (edicion) {
-        <mat-form-field appearance="outline">
-          <mat-label>ID</mat-label>
-          <input matInput formControlName="id" />
-        </mat-form-field>
-      }
-
-      <mat-form-field appearance="outline">
-        <mat-label>ID Usuario</mat-label>
-        <input matInput type="number" formControlName="idUsuario" required />
-        @if (form.get('idUsuario')?.hasError('required')) {
-          <mat-error>El usuario es obligatorio.</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>ID Profesional</mat-label>
-        <input matInput type="number" formControlName="idProfesionalServicio" required />
-        @if (form.get('idProfesionalServicio')?.hasError('required')) {
-          <mat-error>El profesional es obligatorio.</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>ID Método de pago</mat-label>
-        <input matInput type="number" formControlName="idMetodoPago" required />
-        @if (form.get('idMetodoPago')?.hasError('required')) {
-          <mat-error>El método de pago es obligatorio.</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Inicio</mat-label>
-        <input matInput type="datetime-local" formControlName="inicio" required />
-        @if (form.get('inicio')?.hasError('required')) {
-          <mat-error>La fecha/hora de inicio es obligatoria.</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Fin</mat-label>
-        <input matInput type="datetime-local" formControlName="fin" required />
-        @if (form.get('fin')?.hasError('required')) {
-          <mat-error>La fecha/hora de fin es obligatoria.</mat-error>
-        }
-      </mat-form-field>
-
-      <div class="estado-group">
-        <span>Estado</span>
-        <mat-radio-group formControlName="estado" aria-label="Estado">
-          <mat-radio-button [value]="true">Activo</mat-radio-button>
-          <mat-radio-button [value]="false">Inactivo</mat-radio-button>
-        </mat-radio-group>
+          <div class="full-width" *ngIf="serviciosDelDoctor.length > 0">
+            <mat-form-field appearance="outline">
+              <mat-label>Servicio</mat-label>
+              <mat-select formControlName="idProfesionalServicio" (selectionChange)="alElegirServicio($event.value)">
+                <mat-option *ngFor="let s of serviciosDelDoctor" [value]="s.idProfesionalServicio">
+                  <div class="option-row space-between">
+                    <span>{{ s.nombre }}</span>
+                    <span class="price-badge">S/ {{ s.precioBase }}</span>
+                  </div>
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>medical_services</mat-icon>
+            </mat-form-field>
+          </div>
+        </div>
       </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Motivo</mat-label>
-        <input matInput formControlName="motivo" required />
-        @if (form.get('motivo')?.hasError('required')) {
-          <mat-error>El motivo es obligatorio.</mat-error>
-        }
-      </mat-form-field>
+      <div class="section-block">
+        <label class="block-label">2. Fecha y Hora</label>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Fecha</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="fecha" 
+                   [matDatepickerFilter]="filtroFechas" (dateChange)="alCambiarFecha($event)">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Hora Inicio</mat-label>
+            <mat-select formControlName="horaInicio">
+              <mat-option *ngFor="let slot of slotsDeTiempo" [value]="slot">
+                {{ slot }}
+              </mat-option>
+              <mat-option *ngIf="slotsDeTiempo.length === 0" disabled>
+                Elija una fecha primero
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>schedule</mat-icon>
+          </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Monto (S/)</mat-label>
-        <input matInput type="number" formControlName="monto" required />
-        @if (form.get('monto')?.hasError('required')) {
-          <mat-error>El monto es obligatorio.</mat-error>
-        }
-      </mat-form-field>
+          <div class="full-width">
+             <mat-form-field appearance="outline">
+                <mat-label>Motivo de la visita</mat-label>
+                <textarea matInput formControlName="motivo" rows="3" placeholder="Ej: Me he sentido ansioso últimamente..."></textarea>
+             </mat-form-field>
+          </div>
+        </div>
+      </div>
 
-      <button mat-button class="btn-submit">
-        {{ edicion ? 'Actualizar evento' : 'Registrar evento' }}
-      </button>
+      <div class="section-block">
+         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <mat-checkbox formControlName="pagarAhoraCheck" (change)="togglePago($event.checked)" color="primary">
+               Quiero pagar ahora online
+            </mat-checkbox>
+            <h3 *ngIf="form.get('monto')?.value" style="color: #4f46e5; margin:0;">
+               Total: S/ {{ form.get('monto')?.value }}
+            </h3>
+         </div>
+
+         <div *ngIf="pagarAhora" style="background: #f9fafb; padding: 20px; border-radius: 10px;">
+            <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 15px;">
+               <mat-label>Método de Pago</mat-label>
+               <mat-select formControlName="idMetodoPago" (selectionChange)="verificarMetodoPago($event.value)">
+                  <mat-option *ngFor="let mp of listaPagos" [value]="mp.idMetodoPago">
+                     {{ mp.nombre }}
+                  </mat-option>
+               </mat-select>
+            </mat-form-field>
+
+            <div *ngIf="mostrarStripe">
+               <ngx-stripe-card [options]="cardOptions" [elementsOptions]="elementsOptions"></ngx-stripe-card>
+            </div>
+         </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn-ghost" routerLink="/eventos">Cancelar</button>
+        <button type="submit" class="btn-save" [disabled]="form.invalid || loading">
+          {{ pagarAhora ? 'Pagar y Reservar' : 'Confirmar Cita' }}
+        </button>
+      </div>
 
     </form>
   </div>

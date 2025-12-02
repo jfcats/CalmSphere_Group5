@@ -1,90 +1,83 @@
-<div class="page-container">
-  
+<div class="list-container">
+
   <div class="header-section">
-    <div class="title-box">
-      <h1>Agenda de Citas</h1>
-      <p>Gestiona tus próximas sesiones y el historial.</p>
-    </div>
-    
-    <button mat-flat-button class="btn-primary" routerLink="news">
+    <h1>Agenda de Citas</h1>
+    <button class="btn-primary" mat-button routerLink="/eventos/news">
       <mat-icon>add</mat-icon> Nueva Cita
     </button>
   </div>
 
-  <!-- BARRA DE BÚSQUEDA -->
-  <div class="search-bar">
-    <mat-icon>search</mat-icon>
-    <input type="text" placeholder="Buscar por motivo, profesional o paciente..." [(ngModel)]="filtroTexto" (keyup)="filtrar()">
-  </div>
-
-  <!-- GRID DE CITAS -->
-  <div class="cards-grid">
-    
-    <div class="appointment-card" *ngFor="let e of eventosFiltrados">
-      
-      <!-- CABECERA DE TARJETA -->
-      <div class="card-header">
-        <div class="avatar-circle bg-purple">
-          {{ getInitials(e.nombreProfesional || 'Profesional') }}
-        </div>
-        <div class="header-info">
-          <h3>{{ e.nombreProfesional || 'Profesional Desconocido' }}</h3>
-          <span class="role-label">Profesional</span>
-        </div>
-        
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item [routerLink]="['edits', e.idEvento]">
-                <mat-icon>edit</mat-icon> Editar
-            </button>
-            <button mat-menu-item (click)="eliminar(e.idEvento)">
-                <mat-icon color="warn">cancel</mat-icon> Cancelar
-            </button>
-        </mat-menu>
-      </div>
-
-      <!-- CUERPO -->
-      <div class="card-body">
-        <div class="info-row">
-            <mat-icon>person</mat-icon>
-            <span><strong>Paciente:</strong> {{ e.nombreUsuario || 'Sin nombre' }}</span>
-        </div>
-        <div class="info-row">
-            <mat-icon>event</mat-icon>
-            <span>{{ e.inicio | date:'dd MMM yyyy' }}</span>
-        </div>
-        <div class="info-row">
-            <mat-icon>schedule</mat-icon>
-            <span>{{ e.inicio | date:'HH:mm' }} - {{ e.fin | date:'HH:mm' }}</span>
-        </div>
-        <div class="info-row highlight">
-            <mat-icon>payments</mat-icon>
-            <span>S/ {{ e.monto }} ({{ e.nombreMetodoPago }})</span>
-        </div>
-        
-        <div class="motivo-box">
-            <small>Motivo:</small>
-            <p>{{ e.motivo }}</p>
-        </div>
-      </div>
-
-      <!-- FOOTER / ESTADO -->
-      <div class="card-footer">
-        <span class="status-badge" [ngClass]="e.estado ? 'status-active' : 'status-inactive'">
-            {{ e.estado ? 'Confirmada' : 'Cancelada/Inactiva' }}
-        </span>
-      </div>
-
+  <div class="filters-container">
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input type="text" (keyup)="filtrar($event)" placeholder="Buscar por paciente, doctor o motivo...">
     </div>
-
-  </div>
-  
-  <!-- Estado vacío -->
-  <div class="empty-state" *ngIf="eventosFiltrados.length === 0">
-    <mat-icon>event_busy</mat-icon>
-    <p>No se encontraron citas.</p>
   </div>
 
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="dataSource" matSort class="users-table">
+
+      <ng-container matColumnDef="fecha">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
+        <td mat-cell *matCellDef="let element" class="text-dark"> 
+          {{ element.inicio | date:'dd/MM/yyyy' }} <br>
+          <small class="text-muted">{{ element.inicio | date:'HH:mm a' }}</small>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="paciente">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Paciente / Motivo </th>
+        <td mat-cell *matCellDef="let element">
+          <div style="display: flex; flex-direction: column;">
+            <span class="text-dark" style="font-weight: 600;">{{ element.nombreUsuario }}</span>
+            <span class="text-muted" style="font-size: 0.85rem;">{{ element.motivo }}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="profesional">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Profesional </th>
+        <td mat-cell *matCellDef="let element" class="text-muted"> 
+          {{ element.nombreProfesional }} 
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+        <td mat-cell *matCellDef="let element">
+          <span class="role-badge" 
+                [class.badge-pro]="element.estado" 
+                [class.badge-default]="!element.estado">
+            {{ element.estado ? 'Confirmada' : 'Cancelada' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="monto">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Monto </th>
+        <td mat-cell *matCellDef="let element" style="font-weight: 600; color: #4b5563;">
+           S/ {{ element.monto }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="actions-row">
+            <button class="btn-icon" [routerLink]="['/eventos/edits', element.idEvento]" title="Editar">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button class="btn-icon" (click)="eliminar(element.idEvento)" title="Eliminar" style="color: #ef4444; border-color: #fca5a5;">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="table-header"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
 </div>

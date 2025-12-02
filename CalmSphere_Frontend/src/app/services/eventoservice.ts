@@ -21,17 +21,20 @@ export class Eventoservice {
 
   constructor(private http: HttpClient) {}
 
-  // === MÉTODOS CRUD EXISTENTES ===
+  // === MÉTODOS CRUD ===
   list() {
     return this.http.get<Evento[]>(this.url);
   }
 
-  insert(e: Evento) {
-    return this.http.post(this.url, this.toDTO(e), { responseType: 'text' });
+  // CAMBIO 1: Aceptamos 'any' y enviamos el objeto DIRECTO (sin toDTO)
+  insert(e: any) {
+    // Ya no usamos this.toDTO(e), porque el componente ya construyó el JSON correcto
+    return this.http.post(this.url, e, { responseType: 'text' });
   }
 
-  update(e: Evento) {
-    return this.http.put(`${this.url}`, this.toDTO(e), { responseType: 'text' });
+  // CAMBIO 2: También actualizamos el update para usar el DTO plano
+  update(e: any) {
+    return this.http.put(`${this.url}`, this.toDTOPlano(e), { responseType: 'text' });
   }
 
   delete(id: number) {
@@ -42,8 +45,7 @@ export class Eventoservice {
     return this.http.get<Evento>(`${this.url}/${id}`);
   }
 
-  // === MÉTODOS DE REPORTES (NUEVOS) ===
-  
+  // === MÉTODOS DE REPORTES ===
   getReporteProfesional(): Observable<ReporteDTO[]> {
     return this.http.get<ReporteDTO[]>(`${this.url}/reporte-profesional`);
   }
@@ -77,17 +79,19 @@ export class Eventoservice {
     return this.listaCambio.asObservable();
   }
 
-  private toDTO(e: Evento): any {
+  // CAMBIO 3: Actualizamos este método por si lo usas en el futuro para editar
+  // Ahora genera la estructura plana que el backend espera
+  private toDTOPlano(e: Evento): any {
     return {
       idEvento: e.idEvento,
-      idUsuario: { idUsuario: e.idUsuario },
-      idProfesionalServicio: { idProfesionalServicio: e.idProfesionalServicio },
-      idMetodoPago: { idMetodoPago: e.idMetodoPago },
+      idUsuario: e.idUsuario, // Solo ID
+      idProfesionalServicio: e.idProfesionalServicio, // Solo ID
+      idMetodoPago: e.idMetodoPago, // Solo ID
       inicio: e.inicio,
       fin: e.fin,
       estado: e.estado,
       motivo: e.motivo,
-      monto: e.monto,
+      monto: e.monto.toString(), // Convertimos a String por seguridad
     };
   }
 }

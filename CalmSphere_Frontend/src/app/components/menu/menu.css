@@ -5,8 +5,6 @@
   --cs-main: #021b20;
   --cs-secondary: #eac0d5;
   --cs-accent: #8428ff;
-  --cs-text-light: #ffffff;
-  --cs-text-muted: #d1d5db;
 }
 
 /* ============================
@@ -16,7 +14,7 @@
   background: linear-gradient(90deg, #0b1120 0%, #111e3d 40%, #4f46e5 100%);
   display: flex;
   align-items: center;
-  padding: 0 24px; /* Un poco más de padding */
+  padding: 0 24px;
   min-height: 64px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   position: sticky;
@@ -24,13 +22,13 @@
   z-index: 1000;
 }
 
-/* Forzar color blanco en textos e iconos */
+/* Textos e iconos del Toolbar en blanco */
 .custom-toolbar * {
   color: white !important;
 }
 
 /* ============================
-   BOTONES DE NAVEGACIÓN (Izquierda)
+   BOTONES
 ============================ */
 .btn-rojo {
   background-color: transparent;
@@ -48,25 +46,18 @@
   background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Iconos alineados */
 .btn-rojo mat-icon {
   margin-right: 6px;
   font-size: 20px;
 }
 
-/* ============================
-   SPACER (LA CLAVE PARA SEPARAR)
-============================ */
 .spacer {
-  flex: 1 1 auto; /* Esto empuja todo lo siguiente hacia la derecha */
+  flex: 1 1 auto;
 }
 
-/* ============================
-   BOTÓN DE USUARIO (DERECHA)
-============================ */
 .btn-user {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 50px; /* Redondo estilo píldora */
+  border-radius: 50px;
   padding: 4px 16px 4px 12px;
   margin-left: 16px;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -85,28 +76,47 @@
 .btn-user mat-icon {
   font-size: 24px;
   margin-right: 8px;
-  color: var(--cs-secondary) !important; /* Icono rosado */
+  color: var(--cs-secondary) !important;
 }
 
 .user-label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #fff;
 }
 
 /* ============================
-   MENÚ DESPLEGABLE
+   CORRECCIÓN DE MENÚS (IMPORTANTE)
 ============================ */
-.mat-mdc-menu-panel {
-  background-color: rgba(11, 17, 32, 0.95) !important; /* Oscuro */
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+
+/* Fondo BLANCO para legibilidad total */
+::ng-deep .mat-mdc-menu-panel {
+  background-color: #ffffff !important;
+  border-radius: 8px !important;
+  box-shadow: 0px 5px 20px rgba(0,0,0,0.2) !important;
+  min-width: 180px;
 }
 
-.mat-mdc-menu-item {
-  color: white !important;
+/* Texto OSCURO para contraste */
+::ng-deep .mat-mdc-menu-item {
+  color: #333333 !important;
+  font-weight: 500;
 }
 
-.mat-mdc-menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.1) !important;
+/* Iconos con color del tema */
+::ng-deep .mat-mdc-menu-item .mat-icon {
+  color: #5b4dbb !important;
+  margin-right: 12px;
+}
+
+/* Hover suave */
+::ng-deep .mat-mdc-menu-item:hover {
+  background-color: #f5f3ff !important; /* Lila muy suave */
+}
+
+/* Texto pequeño en el menú de usuario */
+::ng-deep .mat-mdc-menu-content small {
+    color: #888 !important;
+}
+::ng-deep .mat-mdc-menu-content span {
+    color: #000 !important;
 }

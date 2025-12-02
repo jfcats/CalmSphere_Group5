@@ -1,73 +1,68 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { Evento } from '../../../models/evento';
-import { Eventoservice } from '../../../services/eventoservice';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { FormsModule } from '@angular/forms';
+import { Eventoservice } from '../../../services/eventoservice';
 
 @Component({
   selector: 'app-eventolistar',
-  standalone: true, // Asegúrate de que sea standalone
-  imports: [CommonModule, RouterLink, MatButtonModule, MatIconModule, MatMenuModule, FormsModule],
+  standalone: true,
+  imports: [
+    CommonModule, RouterLink, MatButtonModule, MatIconModule, 
+    MatTableModule, MatPaginatorModule, MatSortModule, FormsModule
+  ],
   templateUrl: './eventolistar.html',
   styleUrl: './eventolistar.css',
 })
 export class Eventolistar implements OnInit {
   
-  eventos: any[] = []; // Usamos 'any' temporalmente porque el modelo Evento en front aun no tiene los nombres extras
-  eventosFiltrados: any[] = [];
-  filtroTexto: string = '';
+  // Fuente de datos para la tabla
+  dataSource: MatTableDataSource<any> = new MatTableDataSource();
+  
+  // Columnas exactas del diseño
+  displayedColumns: string[] = ['fecha', 'paciente', 'profesional', 'estado', 'monto', 'acciones'];
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private eS: Eventoservice) {}
 
   ngOnInit(): void {
     this.cargarDatos();
-    this.eS.getList().subscribe((data) => {
-      this.eventos = data;
-      this.filtrar();
-    });
+    this.eS.getList().subscribe(data => this.actualizarTabla(data));
   }
 
   cargarDatos() {
-    this.eS.list().subscribe((data) => {
-      this.eventos = data;
-      this.filtrar();
-    });
+    this.eS.list().subscribe(data => this.actualizarTabla(data));
   }
 
-  filtrar() {
-    if (!this.filtroTexto) {
-      this.eventosFiltrados = this.eventos;
-    } else {
-      const texto = this.filtroTexto.toLowerCase();
-      this.eventosFiltrados = this.eventos.filter(e => 
-        e.motivo.toLowerCase().includes(texto) ||
-        (e.nombreProfesional && e.nombreProfesional.toLowerCase().includes(texto)) ||
-        (e.nombreUsuario && e.nombreUsuario.toLowerCase().includes(texto))
-      );
-    }
+  actualizarTabla(data: any[]) {
+    this.dataSource = new MatTableDataSource(data);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    
+    // Filtro personalizado (opcional) para buscar en campos anidados
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+      const acumulado = (data.nombreUsuario + data.nombreProfesional + data.motivo).toLowerCase();
+      return acumulado.indexOf(filter) !== -1;
+    };
+  }
+
+  filtrar(event: Event) {
+    const valor = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = valor.trim().toLowerCase();
   }
 
   eliminar(id: number) {
-    if(confirm('¿Deseas cancelar esta cita?')) {
-        this.eS.delete(id).subscribe(() => {
-            this.cargarDatos();
-        });
+    if (confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
+      this.eS.delete(id).subscribe(() => {
+        this.cargarDatos(); // Recargar la tabla tras eliminar
+      });
     }
-  }
-
-  // Helpers visuales
-  getInitials(name: string): string {
-    if (!name) return 'C';
-    const parts = name.split(' ');
-    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-    return name.slice(0, 2).toUpperCase();
-  }
-
-  getColorClass(estado: boolean): string {
-    return estado ? 'bg-green' : 'bg-gray'; // Activo vs Inactivo
   }
 }

@@ -25,7 +25,7 @@ export class Rolservice {
   
   // === NUEVO: Asignación Masiva ===
   assignRoles(data: any) {
-    return this.http.post(`${this.url}/asignar`, data);
+    return this.http.post(`${this.url}/asignar`, data, { responseType: 'text' });
   }
 
   update(r: Rol) {

@@ -24,15 +24,15 @@ export class Metodopagoservice {
 
   // CORREGIDO: Agregado { responseType: 'text' }
   insert(m: MetodoPago) {
-    return this.http.post(this.url, m, { responseType: 'text' });
+    return this.http.post(this.url, m, { responseType: 'text' }); // <--- CORREGIR
   }
 
   update(m: MetodoPago) {
-    return this.http.put(this.url, m, { responseType: 'text' });
+    return this.http.put(this.url, m, { responseType: 'text' }); // <--- CORREGIR
   }
 
   delete(id: number) {
-    return this.http.delete(`${this.url}/${id}`, { responseType: 'text' });
+    return this.http.delete(`${this.url}/${id}`, { responseType: 'text' }); // <--- CORREGIR
   }
 
   listId(id: number): Observable<MetodoPago> {

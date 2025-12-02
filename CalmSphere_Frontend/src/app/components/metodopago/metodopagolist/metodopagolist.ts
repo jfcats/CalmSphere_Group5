@@ -1,39 +1,60 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
-import { MetodoPago } from '../../../models/metodopago';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTooltipModule } from '@angular/material/tooltip'; 
 import { Metodopagoservice } from '../../../services/metodopagoservice';
 
 @Component({
   selector: 'app-metodopagolist',
-  imports: [CommonModule, MatTableModule, RouterLink, MatButtonModule, MatIconModule],
+  standalone: true,
+  imports: [
+    CommonModule, MatTableModule, RouterLink, MatButtonModule, 
+    MatIconModule, MatTooltipModule, MatPaginatorModule, MatSortModule
+  ],
   templateUrl: './metodopagolist.html',
   styleUrl: './metodopagolist.css',
 })
 export class Metodopagolist implements OnInit {
-  dataSource: MatTableDataSource<MetodoPago> = new MatTableDataSource();
-  displayedColumns: string[] = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6'];
+  dataSource: MatTableDataSource<any> = new MatTableDataSource();
+  
+  // SIN ID, CON ESTADO
+  displayedColumns: string[] = ['nombre', 'tipo', 'estado', 'acciones'];
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private mS: Metodopagoservice) {}
 
   ngOnInit(): void {
-    this.mS.list().subscribe((data) => {
-      this.dataSource = new MatTableDataSource(data);
-    });
+    this.cargarDatos();
+    this.mS.getList().subscribe(data => this.actualizarTabla(data));
+  }
 
-    this.mS.getList().subscribe((data) => {
-      this.dataSource = new MatTableDataSource(data);
-    });
+  cargarDatos() {
+    this.mS.list().subscribe(data => this.actualizarTabla(data));
+  }
+
+  actualizarTabla(data: any[]) {
+    this.dataSource = new MatTableDataSource(data);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
+  filtrar(event: Event) {
+    const valor = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = valor.trim().toLowerCase();
   }
 
   eliminar(id: number) {
-    this.mS.delete(id).subscribe(() => {
-      this.mS.list().subscribe((data) => {
-        this.mS.setList(data);
-      });
-    });
+    if(confirm('¿Seguro que deseas desactivar este método de pago?')) {
+        this.mS.delete(id).subscribe(() => {
+            this.cargarDatos();
+        });
+    }
   }
 }

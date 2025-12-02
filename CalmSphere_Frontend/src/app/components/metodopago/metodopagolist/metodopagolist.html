@@ -1,67 +1,65 @@
 <div class="list-container">
 
-  <div class="header-row">
-    <h2>Métodos de pago</h2>
-
-    <button class="btn-primary" mat-button routerLink="news">
-      <mat-icon>add</mat-icon>
-      Nuevo método de pago
+  <div class="header-section">
+    <h1>Métodos de Pago</h1>
+    <button class="btn-primary" mat-button routerLink="/metodopagos/news">
+      <mat-icon>add</mat-icon> Nuevo Método
     </button>
   </div>
 
-  <div class="table-wrapper">
-    <table mat-table [dataSource]="dataSource" class="custom-table mat-elevation-z8">
-
-      <!-- ID -->
-      <ng-container matColumnDef="c1">
-        <th mat-header-cell *matHeaderCellDef>ID</th>
-        <td mat-cell *matCellDef="let m">{{ m.idMetodoPago }}</td>
-      </ng-container>
-
-      <!-- Nombre -->
-      <ng-container matColumnDef="c2">
-        <th mat-header-cell *matHeaderCellDef>Nombre</th>
-        <td mat-cell *matCellDef="let m">{{ m.nombre }}</td>
-      </ng-container>
-
-      <!-- Tipo -->
-      <ng-container matColumnDef="c3">
-        <th mat-header-cell *matHeaderCellDef>Tipo</th>
-        <td mat-cell *matCellDef="let m">{{ m.tipo }}</td>
-      </ng-container>
-
-      <!-- Estado -->
-      <ng-container matColumnDef="c4">
-        <th mat-header-cell *matHeaderCellDef>Estado</th>
-        <td mat-cell *matCellDef="let m">
-          {{ m.estado ? "Activo" : "Inactivo" }}
-        </td>
-      </ng-container>
-
-      <!-- Editar -->
-      <ng-container matColumnDef="c5">
-        <th mat-header-cell *matHeaderCellDef>Editar</th>
-        <td mat-cell *matCellDef="let m">
-          <button class="btn-edit" mat-icon-button [routerLink]="['edits', m.idMetodoPago]">
-            <mat-icon>edit</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <!-- Eliminar -->
-      <ng-container matColumnDef="c6">
-        <th mat-header-cell *matHeaderCellDef>Eliminar</th>
-        <td mat-cell *matCellDef="let m">
-          <button class="btn-delete" mat-icon-button (click)="eliminar(m.idMetodoPago)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-
-    </table>
+  <div class="filters-container">
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input type="text" (keyup)="filtrar($event)" placeholder="Buscar por nombre o tipo...">
+    </div>
   </div>
 
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="dataSource" matSort class="users-table">
+
+      <ng-container matColumnDef="nombre">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+        <td mat-cell *matCellDef="let element" class="text-dark" style="font-weight: 600;"> 
+          {{ element.nombre }} 
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="tipo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo </th>
+        <td mat-cell *matCellDef="let element" class="text-muted">
+           {{ element.tipo }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
+        <td mat-cell *matCellDef="let element">
+           <span class="role-badge" 
+                 [class.badge-pro]="element.estado" 
+                 [class.badge-default]="!element.estado">
+             {{ element.estado ? 'Activo' : 'Inactivo' }}
+           </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="actions-row">
+            <button class="btn-icon" [routerLink]="['/metodopagos/edits', element.idMetodoPago]" matTooltip="Editar">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button class="btn-icon" (click)="eliminar(element.idMetodoPago)" style="color: #ef4444; border-color: #fca5a5;" matTooltip="Eliminar">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="table-header"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10]" showFirstLastButtons></mat-paginator>
+  </div>
 </div>

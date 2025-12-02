@@ -1,103 +1,317 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatRadioModule } from '@angular/material/radio';
-import { Evento } from '../../../models/evento';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule, MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Params, Router, RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
+import { StripeCardComponent, NgxStripeModule, StripeService } from 'ngx-stripe';
+import { StripeCardElementOptions, StripeElementsOptions } from '@stripe/stripe-js';
+
+import { MetodoPago } from '../../../models/metodopago';
+import { Disponibilidad } from '../../../models/disponibilidad';
+
 import { Eventoservice } from '../../../services/eventoservice';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Profesionalservicioservice } from '../../../services/profesionalservicioservice';
+import { Metodopagoservice } from '../../../services/metodopagoservice';
+import { Loginservice } from '../../../services/loginservice';
+import { Usuarioservice } from '../../../services/usuarioservice';
+import { Disponibilidadservice } from '../../../services/disponibilidadservice';
 
 @Component({
   selector: 'app-eventoinsert',
-  imports: [MatFormFieldModule, ReactiveFormsModule, MatButtonModule, MatInputModule, MatRadioModule],
+  standalone: true,
+  imports: [
+    MatFormFieldModule, ReactiveFormsModule, MatButtonModule, 
+    MatInputModule, MatSelectModule, CommonModule, MatDatepickerModule, 
+    MatNativeDateModule, NgxStripeModule, MatIconModule, MatCheckboxModule, RouterModule
+  ],
   templateUrl: './eventoinsert.html',
   styleUrl: './eventoinsert.css',
 })
 export class Eventoinsert implements OnInit {
+  @ViewChild(StripeCardComponent) card!: StripeCardComponent;
+
   form: FormGroup = new FormGroup({});
-  eve: Evento = new Evento();
   id: number = 0;
   edicion: boolean = false;
+  loading: boolean = false;
+
+  // Datos
+  todosLosServicios: any[] = []; 
+  listaProfesionales: any[] = [];
+  serviciosDelDoctor: any[] = [];
+  listaPagos: MetodoPago[] = [];
+  
+  // Disponibilidad
+  diasDisponibles: number[] = []; 
+  horariosDisponiblesDelDoctor: Disponibilidad[] = [];
+  
+  // Slots
+  slotsDeTiempo: string[] = []; 
+  servicioSeleccionado: any = null;
+
+  // UI
+  pagarAhora: boolean = false;
+  mostrarStripe: boolean = false;
+
+  cardOptions: StripeCardElementOptions = {
+    style: {
+      base: {
+        iconColor: '#4f46e5',
+        color: '#31325F',
+        fontWeight: '400',
+        fontFamily: '"Inter", sans-serif',
+        fontSize: '16px',
+        '::placeholder': { color: '#aab7c4' }
+      }
+    },
+    hidePostalCode: true
+  };
+  elementsOptions: StripeElementsOptions = { locale: 'es' };
 
   constructor(
     private eS: Eventoservice,
+    private psS: Profesionalservicioservice,
+    private mpS: Metodopagoservice,
+    private uS: Usuarioservice,
+    private dS: Disponibilidadservice,
+    private loginService: Loginservice,
     private router: Router,
     private formBuilder: FormBuilder,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private stripeService: StripeService
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe((data: Params) => {
-      this.id = data['id'];
-      this.edicion = data['id'] != null;
-      this.init();
-    });
+    this.cargarDatosIniciales();
 
     this.form = this.formBuilder.group({
       id: [''],
       idUsuario: ['', Validators.required],
-      idProfesionalServicio: ['', Validators.required],
-      idMetodoPago: ['', Validators.required],
-      inicio: ['', Validators.required],
-      fin: ['', Validators.required],
-      estado: [true, Validators.required],
+      idDoctorSeleccionado: ['', Validators.required], 
+      idProfesionalServicio: [{value: '', disabled: true}, Validators.required], 
+      fecha: ['', Validators.required],
+      horaInicio: ['', Validators.required],
       motivo: ['', Validators.required],
-      monto: ['', Validators.required],
+      idMetodoPago: [''], 
+      monto: [{value: '', disabled: true}, Validators.required],
+      pagarAhoraCheck: [false]
+    });
+
+    this.route.params.subscribe((data: Params) => {
+      this.id = data['id'];
+      this.edicion = data['id'] != null;
+      if (!this.edicion) this.detectarPaciente();
     });
   }
 
-  aceptar(): void {
-    if (this.form.valid) {
-      this.eve.idEvento = this.form.value.id;
-      this.eve.idUsuario = this.form.value.idUsuario;
-      this.eve.idProfesionalServicio = this.form.value.idProfesionalServicio;
-      this.eve.idMetodoPago = this.form.value.idMetodoPago;
-      this.eve.inicio = this.form.value.inicio;
-      this.eve.fin = this.form.value.fin;
-      this.eve.estado = this.form.value.estado;
-      this.eve.motivo = this.form.value.motivo;
-      this.eve.monto = this.form.value.monto;
+  cargarDatosIniciales() {
+    this.psS.list().subscribe({
+      next: (data) => {
+        this.todosLosServicios = data;
+        const mapDoctores = new Map();
+        data.forEach((s: any) => {
+          if (s.idUsuario && !mapDoctores.has(s.idUsuario)) {
+            mapDoctores.set(s.idUsuario, {
+              id: s.idUsuario,
+              nombreCompleto: s.nombreProfesional ? `${s.nombreProfesional} ${s.apellidoProfesional || ''}` : 'Doctor'
+            });
+          }
+        });
+        this.listaProfesionales = Array.from(mapDoctores.values());
+      },
+      error: (e) => console.error("Error cargando servicios:", e)
+    });
 
-      // 1. Definir la petición
-      const request = this.edicion 
-        ? this.eS.update(this.eve) 
-        : this.eS.insert(this.eve);
+    this.mpS.list().subscribe(data => {
+      this.listaPagos = data.filter(m => m.estado === true);
+    });
+  }
 
-      // 2. Ejecutar y esperar respuesta
-      request.subscribe({
-        next: () => {
-          // 3. Refrescar lista y navegar SOLO cuando sea exitoso
-          this.eS.list().subscribe((data) => {
-            this.eS.setList(data);
-            this.router.navigate(['eventos']); // <--- Movido aquí dentro
-          });
-        },
-        error: (err) => {
-          console.error('Error al guardar evento:', err);
-          // Aquí podrías poner un alert o snackbar de error
-        }
+  detectarPaciente() {
+    const email = this.loginService.getUsername();
+    if(email) {
+      this.uS.listByEmail(email).subscribe(u => {
+        this.form.patchValue({ idUsuario: u.idUsuario });
       });
     }
   }
 
-  init() {
-    if (this.edicion) {
-      this.eS.listId(this.id).subscribe((data) => {
-        this.form = new FormGroup({
-          id: new FormControl(data.idEvento),
-          // Nota: Asegúrate que 'data.idUsuario' sea el ID (number) o el objeto.
-          // Si tu backend devuelve objeto completo en listId, tal vez necesites 'data.idUsuario.idUsuario'
-          idUsuario: new FormControl(data.idUsuario || data.idUsuario), 
-          idProfesionalServicio: new FormControl(data.idProfesionalServicio || data.idProfesionalServicio),
-          idMetodoPago: new FormControl(data.idMetodoPago || data.idMetodoPago),
-          inicio: new FormControl(data.inicio),
-          fin: new FormControl(data.fin),
-          estado: new FormControl(data.estado),
-          motivo: new FormControl(data.motivo),
-          monto: new FormControl(data.monto),
-        });
-      });
+  alElegirDoctor(idDoctor: number) {
+    this.serviciosDelDoctor = this.todosLosServicios.filter(s => s.idUsuario === idDoctor);
+    this.form.get('idProfesionalServicio')?.enable();
+    this.form.get('idProfesionalServicio')?.setValue('');
+    this.form.patchValue({ monto: '', horaInicio: '' }); 
+    this.slotsDeTiempo = []; 
+    this.cargarDisponibilidadDoctor(idDoctor);
+  }
+
+  alElegirServicio(idServicio: number) {
+    this.servicioSeleccionado = this.serviciosDelDoctor.find(s => s.idProfesionalServicio === idServicio);
+    if(this.servicioSeleccionado) {
+      this.form.patchValue({ monto: this.servicioSeleccionado.precioBase });
+      const fechaActual = this.form.get('fecha')?.value;
+      if (fechaActual) {
+        this.generarHorariosParaFecha(fechaActual);
+      }
     }
+  }
+
+  cargarDisponibilidadDoctor(idDoctor: number) {
+    this.dS.list().subscribe(all => {
+       const idsServiciosDoctor = this.serviciosDelDoctor.map(s => s.idProfesionalServicio);
+       this.horariosDisponiblesDelDoctor = all.filter(d => 
+         idsServiciosDoctor.includes(d.idProfesionalServicio)
+       );
+       this.diasDisponibles = [...new Set(this.horariosDisponiblesDelDoctor.map(h => h.diaSemana))];
+    });
+  }
+
+  filtroFechas = (d: Date | null): boolean => {
+    if (!d || this.diasDisponibles.length === 0) return false;
+    const dia = d.getDay() || 7; 
+    return this.diasDisponibles.includes(dia);
+  };
+
+  alCambiarFecha(event: MatDatepickerInputEvent<Date>) {
+    if (event.value) {
+      this.generarHorariosParaFecha(event.value);
+    }
+  }
+
+  generarHorariosParaFecha(fecha: Date) {
+    this.slotsDeTiempo = [];
+    const diaSemana = fecha.getDay() || 7;
+    const idServicioActual = this.form.get('idProfesionalServicio')?.value;
+
+    if (!idServicioActual) return;
+
+    const disponibilidades = this.horariosDisponiblesDelDoctor.filter(
+      d => d.diaSemana === diaSemana && d.idProfesionalServicio === idServicioActual
+    );
+
+    const duracion = this.servicioSeleccionado?.duracionMin || 60;
+
+    disponibilidades.forEach(disp => {
+      const inicioParts = disp.horaInicio.split(':');
+      const finParts = disp.horaFin.split(':');
+      
+      let inicioMin = parseInt(inicioParts[0]) * 60 + parseInt(inicioParts[1]);
+      let finMin = parseInt(finParts[0]) * 60 + parseInt(finParts[1]);
+
+      while (inicioMin + duracion <= finMin) {
+        const h = Math.floor(inicioMin / 60);
+        const m = inicioMin % 60;
+        const slot = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+        this.slotsDeTiempo.push(slot);
+        inicioMin += duracion;
+      }
+    });
+    
+    this.slotsDeTiempo.sort();
+  }
+
+  togglePago(checked: boolean) {
+    this.pagarAhora = checked;
+    const controlMetodo = this.form.get('idMetodoPago');
+    if(checked) {
+      controlMetodo?.setValidators(Validators.required);
+    } else {
+      controlMetodo?.clearValidators();
+      controlMetodo?.setValue('');
+    }
+    controlMetodo?.updateValueAndValidity();
+  }
+
+  verificarMetodoPago(idMetodo: number) {
+    const metodo = this.listaPagos.find(m => m.idMetodoPago === idMetodo);
+    this.mostrarStripe = metodo ? metodo.nombre.toLowerCase().includes('tarjeta') : false;
+  }
+
+  aceptar(): void {
+    if (this.form.invalid) return;
+
+    this.loading = true;
+
+    if (this.pagarAhora && this.mostrarStripe) {
+      this.stripeService.createToken(this.card.element).subscribe((result) => {
+        if (result.token) {
+          this.guardarCita(result.token.id);
+        } else { 
+          this.loading = false; 
+          alert(result.error?.message || "Error procesando tarjeta"); 
+        }
+      });
+    } else {
+      this.guardarCita(''); 
+    }
+  }
+
+  // --- LÓGICA FINAL CONECTADA CON FORMULARIO REAL ---
+  guardarCita(tokenPago: string) {
+    const formValue = this.form.getRawValue();
+
+    // 1. Calcular Fechas Reales
+    const fechaBase = formValue.fecha; 
+    const [hora, min] = formValue.horaInicio.split(':');
+    
+    const fechaInicio = new Date(fechaBase);
+    fechaInicio.setHours(Number(hora), Number(min), 0);
+    
+    const duracion = this.servicioSeleccionado?.duracionMin || 60;
+    const fechaFin = new Date(fechaInicio.getTime() + duracion * 60000); // Sumar minutos
+
+    // Función para formato "2025-12-08T19:00:00"
+    const toLocalISO = (date: Date) => {
+        const tzOffset = date.getTimezoneOffset() * 60000;
+        return new Date(date.getTime() - tzOffset).toISOString().slice(0, -1);
+    };
+
+    // 2. Determinar método de pago
+    let metodoPagoId = 1; // Default: Pendiente/Efectivo
+    if (this.pagarAhora) {
+        metodoPagoId = Number(formValue.idMetodoPago);
+    }
+
+    // 3. Crear Objeto Plano (NÚMEROS y STRINGS)
+    const datosReales = {
+        idEvento: 0,
+        
+        // IDs como NÚMEROS (Integer en Java)
+        idUsuario: Number(formValue.idUsuario),
+        idProfesionalServicio: Number(formValue.idProfesionalServicio),
+        idMetodoPago: metodoPagoId,
+        
+        // Fechas y Monto como STRINGS (Para evitar error de parseo)
+        inicio: toLocalISO(fechaInicio),
+        fin: toLocalISO(fechaFin),
+        monto: String(formValue.monto), 
+        
+        estado: true,
+        motivo: formValue.motivo,
+        tokenPago: tokenPago 
+    };
+
+    console.log("ENVIANDO DATOS REALES:", datosReales);
+
+    this.eS.insert(datosReales).subscribe({
+      next: () => {
+        alert(tokenPago ? "¡Pago procesado con éxito!" : "Cita reservada correctamente.");
+        this.router.navigate(['eventos']);
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error("Error backend:", err);
+        const msg = typeof err.error === 'string' ? err.error : err.error?.message;
+        alert("Error: " + (msg || "No se pudo reservar la cita."));
+      }
+    });
   }
 }

@@ -12,7 +12,7 @@ import { Disponibilidad } from '../../../models/disponibilidad';
 import { Disponibilidadservice } from '../../../services/disponibilidadservice';
 import { Profesionalservicioservice } from '../../../services/profesionalservicioservice';
 import { Loginservice } from '../../../services/loginservice';
-import { Usuarioservice } from '../../../services/usuarioservice'; // Necesario para buscar por email
+import { Usuarioservice } from '../../../services/usuarioservice';
 
 @Component({
   selector: 'app-disponibilidadlist',
@@ -38,44 +38,50 @@ export class Disponibilidadlist implements OnInit {
 
   ngOnInit(): void {
     this.cargarMisHorarios();
-    // Nos suscribimos a cambios en la lista base
     this.dS.getList().subscribe(() => {
       this.cargarMisHorarios();
     });
   }
 
   cargarMisHorarios() {
-    // PASO 1: Saber quién soy (Email desde el Token)
-    const myEmail = this.loginService.getUsername(); 
+    const email = this.loginService.getUsername(); 
 
-    if (!myEmail) return; // Si no hay usuario, no hacemos nada
+    if (email) {
+        this.uS.listByEmail(email).subscribe(myUser => {
+            if (myUser) {
+                // Buscamos TODOS los servicios asociados a este usuario
+                this.psS.searchByUsuario(myUser.idUsuario).subscribe(servicios => {
+                    
+                    if (servicios.length > 0) {
+                        
+                        // CAMBIO CRÍTICO: Obtenemos una lista de IDs de TODOS tus servicios
+                        // Ej: [1, 2, 5] (Psicología, Terapia, Coaching)
+                        const misIdsDeServicio = servicios.map(s => s.idProfesionalServicio);
+                        
+                        this.dS.list().subscribe({
+                            next: (allDisponibilidades) => {
+                                // Filtramos si el ID del horario está incluido en TU lista de servicios
+                                const misHorarios = allDisponibilidades.filter(d => 
+                                    misIdsDeServicio.includes(d.idProfesionalServicio)
+                                );
+                                this.organizarCalendario(misHorarios);
+                            },
+                            error: (err) => {
+                                console.log("Lista vacía o error de conexión");
+                                this.organizarCalendario([]); 
+                            }
+                        });
 
-    // PASO 2: Buscar mi objeto Usuario usando el email
-    this.uS.list().subscribe(users => {
-      const myUser = users.find(u => u.email === myEmail);
-      
-      if (myUser) {
-        // PASO 3: Buscar si tengo un Servicio Profesional creado
-        this.psS.list().subscribe(servicios => {
-          // El servicio que tenga mi ID de usuario
-          const myService = servicios.find(s => s.idUsuario === myUser.idUsuario);
-          
-          if (myService) {
-             // PASO 4: Cargar horarios de ESE servicio
-             this.dS.list().subscribe(allDisponibilidades => {
-               const misHorarios = allDisponibilidades.filter(d => d.idProfesionalServicio === myService.idProfesionalServicio);
-               this.organizarCalendario(misHorarios);
-             });
-          } else {
-            console.log("Este usuario no tiene un perfil profesional creado.");
-          }
+                    } else {
+                        console.log("Aún no tienes un servicio profesional creado.");
+                    }
+                });
+            }
         });
-      }
-    });
+    }
   }
 
   organizarCalendario(lista: Disponibilidad[]) {
-    // Reiniciamos calendario
     this.calendario = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [] };
     
     lista.forEach(d => {
@@ -84,7 +90,6 @@ export class Disponibilidadlist implements OnInit {
       }
     });
 
-    // Ordenamos visualmente por hora
     for (let i = 1; i <= 7; i++) {
         this.calendario[i].sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
     }
@@ -93,7 +98,7 @@ export class Disponibilidadlist implements OnInit {
   eliminar(id: number) {
     if(confirm('¿Deseas eliminar este horario?')) {
         this.dS.delete(id).subscribe(() => {
-             // Al eliminar, getList() disparará la recarga en ngOnInit
+             this.dS.list().subscribe(data => this.dS.setList(data));
         });
     }
   }

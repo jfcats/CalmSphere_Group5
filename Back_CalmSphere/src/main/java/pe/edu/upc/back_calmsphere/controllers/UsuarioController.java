@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder; // IMPORTANTE
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.back_calmsphere.dtos.UsuarioDTOInsert;
 import pe.edu.upc.back_calmsphere.dtos.UsuarioDTOList;
 import pe.edu.upc.back_calmsphere.dtos.UsuarioEventoEstresDTO;
+import pe.edu.upc.back_calmsphere.entities.Rol; // IMPORTANTE
 import pe.edu.upc.back_calmsphere.entities.Usuario;
+import pe.edu.upc.back_calmsphere.servicesinterfaces.IRolService; // IMPORTANTE
 import pe.edu.upc.back_calmsphere.servicesinterfaces.IUsuarioService;
 
 import java.time.LocalDate;
@@ -20,8 +23,15 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
+
     @Autowired
     private IUsuarioService service;
+
+    @Autowired
+    private IRolService rolService; // <--- AGREGADO: Para asignar rol
+
+    @Autowired
+    private PasswordEncoder passwordEncoder; // <--- AGREGADO: Para encriptar password
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -42,23 +52,27 @@ public class UsuarioController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAuthority('ADMIN')") // Comentado para registro público
     public ResponseEntity<String> insertar(@RequestBody UsuarioDTOInsert dto) {
-        if (dto.getNombre() == null || dto.getApellido() == null || dto.getEmail() == null || dto.getContraseña() == null || dto.getFechaNacimiento() == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Por favor, complete todos los campos de forma válida.");
-        }
-
+        // ... validaciones ...
         ModelMapper m = new ModelMapper();
         Usuario u = m.map(dto, Usuario.class);
 
-        // --- CORRECCIÓN CLAVE ---
-        // Al ser Integer, podemos asignar NULL.
-        // Esto garantiza 100% que Hibernate lo trate como INSERT y no busque ID 0.
         u.setIdUsuario(null);
+        u.setFechaRegistro(LocalDate.now());
+
+        // --- ESTA LÍNEA ES LA QUE ARREGLA EL LOGIN ---
+        u.setContraseña(passwordEncoder.encode(u.getContraseña()));
+        // ---------------------------------------------
 
         service.insert(u);
-        return ResponseEntity.ok("El usuario fue registrado correctamente");
+
+        // --- ESTO ASIGNA EL ROL ---
+        Rol rolPaciente = new Rol();
+        rolPaciente.setTipoRol("PACIENTE");
+        rolPaciente.setUsuario(u);
+        rolService.insert(rolPaciente);
+
+        return ResponseEntity.ok("Usuario registrado exitosamente");
     }
 
     @GetMapping("/{id}")
@@ -94,24 +108,27 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Datos inválidos");
         }
 
-        // Para modificar, buscamos el original por ID
-        Usuario existente = service.listId(dto.getIdUsuario()); // Usamos el getter del DTO que devuelve int
+        Usuario existente = service.listId(dto.getIdUsuario());
 
         if (existente == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("No se puede modificar. No existe un usuario con el ID: " + dto.getIdUsuario());
         }
 
-        // Actualizamos campos manualmente o con map, pero sobre el ID existente
         ModelMapper m = new ModelMapper();
-        // Mapeamos el DTO al objeto Usuario (esto crea uno nuevo o sobreescribe)
         Usuario u = m.map(dto, Usuario.class);
 
-        // Aseguramos que el ID sea el correcto (aunque el DTO ya lo traiga)
         u.setIdUsuario(existente.getIdUsuario());
 
-        // Mantenemos roles antiguos si el DTO no los trae (opcional)
+        // Mantenemos datos sensibles del original
+        u.setFechaRegistro(existente.getFechaRegistro());
         u.setRoles(existente.getRoles());
+
+        // Solo encriptamos si la contraseña cambió (esto es una simplificación)
+        // Lo ideal es validar si dto.password es diferente a existente.password
+        if(!u.getContraseña().equals(existente.getContraseña())){
+            u.setContraseña(passwordEncoder.encode(u.getContraseña()));
+        }
 
         service.update(u);
         return ResponseEntity.ok("El usuario con ID " + u.getIdUsuario() + " fue modificado correctamente.");
@@ -146,5 +163,15 @@ public class UsuarioController {
             listarPorEventoEstres.add(dto);
         }
         return ResponseEntity.ok(listarPorEventoEstres);
+    }
+
+    @GetMapping("/buscarPorEmail/{email}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'PROFESIONAL', 'PACIENTE')")
+    public ResponseEntity<?> buscarPorEmail(@PathVariable("email") String email) {
+        Usuario u = service.listarPorEmail(email);
+        if (u == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+        }
+        return ResponseEntity.ok(u);
     }
 }

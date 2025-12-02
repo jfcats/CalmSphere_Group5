@@ -32,28 +32,26 @@ export class Profesionalserviciolistar implements OnInit {
     });
   }
 
+
   cargarDatos() {
-    // 1. Si es ADMIN, traemos todo
-    if (this.isAdmin()) {
-        this.psS.list().subscribe(data => {
-            this.dataSource = new MatTableDataSource(data);
-        });
-    } 
-    // 2. Si es PROFESIONAL, filtramos solo EL SUYO
-    else {
-        const email = this.loginService.getUsername();
-        if(email) {
-            this.uS.list().subscribe(users => {
-                const me = users.find(u => u.email === email);
-                if(me) {
-                    // Opción A: Usar el endpoint searchByUsuario que ya tienes en el service
-                    this.psS.searchByUsuario(me.idUsuario).subscribe(servicios => {
-                        this.dataSource = new MatTableDataSource(servicios);
-                    });
-                }
-            });
-        }
-    }
+      if (this.isAdmin()) {
+          this.psS.list().subscribe(data => {
+              this.dataSource = new MatTableDataSource(data);
+          });
+      } 
+      else {
+          const email = this.loginService.getUsername();
+          if(email) {
+              // CAMBIO: Búsqueda directa y eficiente
+              this.uS.listByEmail(email).subscribe(me => {
+                  if(me) {
+                      this.psS.searchByUsuario(me.idUsuario).subscribe(servicios => {
+                          this.dataSource = new MatTableDataSource(servicios);
+                      });
+                  }
+              });
+          }
+      }
   }
 
   filtrar(event: Event) {

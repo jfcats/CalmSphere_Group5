@@ -2,18 +2,15 @@
   @if(verificar()){
   <mat-toolbar class="custom-toolbar">
 
-    <!-- LOGO Y BRANDING -->
     <div style="display: flex; align-items: center; margin-right: 20px; cursor: pointer;" [routerLink]="['/inicio']">
         <img src="assets/img/logoCalmSphere.png" alt="Logo" style="height: 30px; margin-right: 10px;">
         <span style="font-weight: 700; letter-spacing: 0.5px; font-size: 1.1rem;">CalmSphere</span>
     </div>
 
-    <!-- BOTONES PRINCIPALES -->
     <button mat-button [routerLink]="['/inicio']" class="btn-rojo">
       <mat-icon>home</mat-icon>Inicio
     </button>
 
-    <!-- ADMIN -->
     @if(isAdmin()){
     <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuUsuarios">
       <mat-icon>group</mat-icon>Usuarios
@@ -21,46 +18,34 @@
     <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuRoles">
       <mat-icon>admin_panel_settings</mat-icon>Roles
     </button>
-    
-    <!-- BOTÓN DE REPORTES (NUEVO) -->
     <button mat-button class="btn-rojo" routerLink="/reportes">
       <mat-icon>bar_chart</mat-icon>Reportes
     </button>
     }
 
-    <!-- PROFESIONAL -->
     @if(isProfesional()){
-    <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuDisponibilidad">
-      <mat-icon>schedule</mat-icon>Disponibilidad
-    </button>
+      
+      <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuServicio">
+        <mat-icon>medical_services</mat-icon> Mi Servicio
+      </button>
+
+      <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuDisponibilidad">
+        <mat-icon>schedule</mat-icon>Disponibilidad
+      </button>
     }
 
-    @if(isProfesional()){
-    
-    <button mat-button class="btn-rojo" routerLink="/profesional-servicios">
-      <mat-icon>medical_services</mat-icon> Mi Servicio
-    </button>
-
-    <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuDisponibilidad">
-      <mat-icon>schedule</mat-icon>Disponibilidad
-    </button>
-    }
-
-    <!-- PACIENTE -->
     @if(isPaciente()){
     <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuMetodoPago">
       <mat-icon>credit_card</mat-icon>Pagos
     </button>
     }
 
-    <!-- EVENTOS (TODOS) -->
     <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuEventos">
       <mat-icon>event</mat-icon>Agenda
     </button>
 
     <span class="spacer"></span>
 
-    <!-- USUARIO -->
     <button mat-button class="btn-user" [matMenuTriggerFor]="menuSalir">
       <mat-icon>account_circle</mat-icon>
       <span class="user-label">Mi Cuenta</span>
@@ -69,7 +54,6 @@
   </mat-toolbar>
   }
 
-  <!-- SUBMENÚS -->
   <mat-menu #menuUsuarios="matMenu">
     <button mat-menu-item routerLink="/usuarios"><mat-icon>list</mat-icon>Listar</button>
     <button mat-menu-item routerLink="/usuarios/news"><mat-icon>add</mat-icon>Registrar</button>
@@ -95,11 +79,20 @@
     <button mat-menu-item routerLink="/eventos/news"><mat-icon>add</mat-icon>Registrar</button>
   </mat-menu>
 
-  <!-- SALIR -->
+  <mat-menu #menuServicio="matMenu">
+      <button mat-menu-item routerLink="/profesional-servicios">
+          <mat-icon>list</mat-icon>Listar
+      </button>
+      
+      <button mat-menu-item routerLink="/profesional-servicios/news">
+          <mat-icon>add</mat-icon>Registrar
+      </button>
+    </mat-menu>
+  
   <mat-menu #menuSalir="matMenu">
-    <div style="padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 5px;">
-        <small style="color: #aaa; display: block;">Roles actuales</small>
-        <span style="font-weight: bold; color: #eac0d5; font-size: 0.8rem;">
+    <div style="padding: 10px 16px; border-bottom: 1px solid #eee; margin-bottom: 5px;">
+        <small style="color: #666; display: block;">Roles actuales</small>
+        <span style="font-weight: bold; color: #333; font-size: 0.8rem;">
             {{ roles.join(' | ') }}
         </span>
     </div>

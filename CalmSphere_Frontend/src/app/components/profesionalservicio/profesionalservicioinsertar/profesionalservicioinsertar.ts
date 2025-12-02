@@ -32,13 +32,13 @@ export class Profesionalservicioinsertar implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // CORRECCIÓN: Quitamos Validators.required de idUsuario para no bloquear el botón
     this.form = this.formBuilder.group({
       id: [''],
       nombre: ['', Validators.required],
       duracionMin: ['', Validators.required],
       precioBase: ['', Validators.required],
-      // idDisponibilidad: ELIMINADO - Ya no existe en la entidad
-      idUsuario: ['', Validators.required],
+      idUsuario: [''], // Sin validador, lo controlamos en 'aceptar'
     });
 
     this.route.params.subscribe((data: Params) => {
@@ -47,33 +47,44 @@ export class Profesionalservicioinsertar implements OnInit {
       this.init();
     });
 
-    // Si es nuevo registro, detectamos automáticamente quién es el usuario
     if (!this.edicion) {
       this.detectarUsuario();
     }
   }
 
   detectarUsuario() {
-    const email = this.loginService.getUsername();
-    if (email) {
-      this.uS.list().subscribe(users => {
-        const myUser = users.find(u => u.email === email);
-        if (myUser) {
-          this.form.patchValue({ idUsuario: myUser.idUsuario });
-          this.form.controls['idUsuario'].disable(); // Lo bloqueamos para que no se edite
-        }
-      });
+      const email = this.loginService.getUsername();
+      if (email) {
+        // CAMBIO: Usamos listByEmail en lugar de traer toda la lista
+        this.uS.listByEmail(email).subscribe({
+          next: (myUser) => {
+            if (myUser) {
+              this.form.patchValue({ idUsuario: myUser.idUsuario });
+              // El campo está oculto en el HTML, así que ya está listo.
+            }
+          },
+          error: (err) => {
+            console.error("No se pudo obtener el usuario por email", err);
+          }
+        });
+      }
     }
-  }
 
   aceptar(): void {
-    if (this.form.valid || (this.form.disabled && this.form.getRawValue().idUsuario)) { // Permitir disabled
+    if (this.form.valid) {
+      // Validamos manualmente que el usuario se haya detectado
+      const usuarioDetectado = this.form.value.idUsuario;
+      
+      if (!usuarioDetectado && !this.edicion) {
+        alert("Error: No se pudo identificar tu usuario. Por favor recarga la página.");
+        return;
+      }
+
       this.ps.idProfesionalServicio = this.form.value.id;
       this.ps.nombre = this.form.value.nombre;
       this.ps.duracionMin = this.form.value.duracionMin;
       this.ps.precioBase = this.form.value.precioBase;
-      // Usamos getRawValue() por si el input está disabled
-      this.ps.idUsuario = this.form.getRawValue().idUsuario;
+      this.ps.idUsuario = usuarioDetectado;
 
       const request = this.edicion 
         ? this.psS.update(this.ps) 
@@ -99,9 +110,8 @@ export class Profesionalservicioinsertar implements OnInit {
           nombre: data.nombre,
           duracionMin: data.duracionMin,
           precioBase: data.precioBase,
-          idUsuario: data.idUsuario // Mantenemos el usuario original
+          idUsuario: data.idUsuario
         });
-        this.form.controls['idUsuario'].disable();
       });
     }
   }

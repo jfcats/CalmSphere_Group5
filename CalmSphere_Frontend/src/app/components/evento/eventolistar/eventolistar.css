@@ -1,197 +1,203 @@
-.page-container {
-  padding: 30px;
-  background-color: #f8fafc;
+.list-container {
+  padding: 40px;
+  background-color: #f4f4f5;
   min-height: calc(100vh - 64px);
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
+/* HEADER */
 .header-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 30px;
 }
 
 .header-section h1 {
-  font-size: 2rem;
-  color: #1e1b4b;
-  margin: 0;
-  font-weight: 700;
-}
-
-.header-section p {
-  color: #64748b;
+  font-size: 2.5rem;
+  color: #1f2937;
+  font-weight: 500;
   margin: 0;
 }
 
 .btn-primary {
-  background-color: #8b5cf6;
-  color: white;
-  border-radius: 999px;
-  padding: 0 20px;
-  height: 45px;
+  background-color: #d8b4fe;
+  color: #581c87 !important;
+  border-radius: 12px;
+  padding: 0 24px;
+  height: 48px;
+  font-weight: 600;
+  box-shadow: none;
+  transition: all 0.2s;
 }
 
-/* SEARCH BAR */
-.search-bar {
+.btn-primary:hover {
+  background-color: #c084fc;
+}
+
+/* FILTROS */
+.filters-container {
   background: white;
-  padding: 12px 20px;
-  border-radius: 12px;
+  padding: 20px 30px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid #e5e7eb;
+}
+
+.search-box {
   display: flex;
   align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-  margin-bottom: 30px;
-  border: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 10px;
+  color: #9ca3af;
 }
 
-.search-bar input {
+.search-box input {
   border: none;
   outline: none;
+  font-size: 1rem;
   width: 100%;
-  font-size: 1rem;
-  color: #475569;
+  margin-left: 10px;
+  color: #374151;
 }
 
-/* GRID */
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
+.dropdowns {
+    display: flex;
+    gap: 30px;
 }
 
-/* CARD DISEÑO */
-.appointment-card {
-  background: white;
-  border-radius: 20px;
-  padding: 24px;
-  box-shadow: 0 10px 30px -5px rgba(0,0,0,0.05);
-  border: 1px solid transparent;
-  transition: transform 0.2s;
-  display: flex;
-  flex-direction: column;
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-.appointment-card:hover {
-  transform: translateY(-5px);
-  border-color: #d8b4fe;
+.filter-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4b5563;
 }
 
-/* HEADER CARD */
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #f1f5f9;
+.custom-select {
+    padding: 10px 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background-color: #f9fafb;
+    color: #374151;
+    font-size: 0.95rem;
+    outline: none;
+    min-width: 180px;
+    cursor: pointer;
 }
 
-.avatar-circle {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: #5b21b6;
-  background-color: #ede9fe; /* Lila suave */
+/* TABLA */
+.table-wrapper {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
 }
 
-.header-info h3 {
-  margin: 0;
-  font-size: 1rem;
-  color: #1e293b;
+.users-table {
+    background: transparent;
+    width: 100%;
+    border-spacing: 0 10px !important;
+    border-collapse: separate !important;
 }
 
-.role-label {
-  font-size: 0.8rem;
-  color: #94a3b8;
+.table-header th {
+    background: transparent;
+    color: #1f2937;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-bottom: none;
+    padding-bottom: 10px;
 }
 
-/* BODY CARD */
-.card-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.table-row {
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    transition: transform 0.2s;
 }
 
-.info-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #475569;
-  font-size: 0.9rem;
+.table-row:hover {
+    transform: scale(1.005);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-.info-row mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  color: #a855f7;
+.table-row td {
+    border-top: 1px solid #f3f4f6;
+    border-bottom: 1px solid #f3f4f6;
+    padding: 20px;
+    vertical-align: middle;
 }
 
-.highlight {
-  color: #059669; /* Verde para dinero */
-  font-weight: 600;
+.table-row td:first-child {
+    border-left: 1px solid #f3f4f6;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
 }
 
-.motivo-box {
-  background-color: #f8fafc;
-  padding: 10px;
-  border-radius: 8px;
-  margin-top: 10px;
+.table-row td:last-child {
+    border-right: 1px solid #f3f4f6;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
-.motivo-box small {
-  color: #94a3b8;
-  font-size: 0.75rem;
-  display: block;
+/* TEXTOS */
+.text-dark { color: #111827; font-weight: 500; }
+.text-muted { color: #6b7280; }
+
+/* BADGES */
+.role-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
 }
 
-.motivo-box p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #334155;
-  font-style: italic;
+.badge-admin { background-color: #111827; color: white; }
+.badge-pro { background-color: #e9d5ff; color: #7e22ce; }
+.badge-cliente { background-color: #f3f4f6; color: #4b5563; }
+.badge-default { background-color: #e5e7eb; color: #374151; }
+
+/* ACCIONES */
+.actions-row {
+    display: flex;
+    gap: 8px;
 }
 
-/* FOOTER / STATUS */
-.card-footer {
-  margin-top: 20px;
-  text-align: right;
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.status-badge {
-  padding: 6px 12px;
-  border-radius: 50px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
+.btn-icon:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    color: #374151;
 }
 
-.status-active {
-  background-color: #d1fae5;
-  color: #047857;
+.btn-icon mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
 }
 
-.status-inactive {
-  background-color: #fee2e2;
-  color: #b91c1c;
-}
-
-/* EMPTY STATE */
-.empty-state {
-  text-align: center;
-  padding: 40px;
-  color: #94a3b8;
-}
-
-.empty-state mat-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 10px;
+/* PAGINADOR */
+.mat-mdc-paginator {
+    background: transparent !important;
+    margin-top: 20px;
 }

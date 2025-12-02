@@ -30,8 +30,13 @@ public class ProfesionalServicioController {
         dto.setNombre(ps.getNombre());
         dto.setDuracionMin(ps.getDuracionMin());
         dto.setPrecioBase(ps.getPrecioBase());
-        // Ya no mapeamos idDisponibilidad
-        dto.setIdUsuario(ps.getUsuario() != null ? ps.getUsuario().getIdUsuario() : 0);
+
+        if (ps.getUsuario() != null) {
+            dto.setIdUsuario(ps.getUsuario().getIdUsuario());
+            // --- NUEVO: Mapear nombres ---
+            dto.setNombreProfesional(ps.getUsuario().getNombre());
+            dto.setApellidoProfesional(ps.getUsuario().getApellido());
+        }
         return dto;
     }
 

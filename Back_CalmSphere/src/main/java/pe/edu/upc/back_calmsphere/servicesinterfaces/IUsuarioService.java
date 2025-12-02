@@ -12,4 +12,5 @@ public interface IUsuarioService {
     public void update(Usuario u);
     public List<Usuario> buscarNombre(String nombre);
     public List<String[]> buscarEventoEstresPorUsuario();
+    public Usuario listarPorEmail(String email);
 }
