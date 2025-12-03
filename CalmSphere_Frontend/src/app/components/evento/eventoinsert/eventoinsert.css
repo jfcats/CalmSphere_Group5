@@ -1,136 +1,218 @@
-/* Contenedor principal centrado */
-.booking-layout {
-  background-color: #f3f4f6; /* Fondo gris claro */
-  min-height: 90vh;
+/* === SISTEMA DE DISEÑO UNIFICADO (Igual que Usuario/Pagos) === */
+
+.page-wrapper {
+  min-height: calc(100vh - 64px);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: flex-start; /* Alineado arriba para forms largos */
+  background-color: #F4F4F5;
   padding: 40px 20px;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
-/* Tarjeta blanca */
-.booking-card {
-  background: white;
+.register-card {
+  background: #FFFFFF;
   width: 100%;
-  max-width: 800px; /* Ancho máximo para que no se vea estirado */
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  max-width: 800px; /* Más ancho porque la agenda necesita espacio */
+  padding: 48px 56px;
+  border-radius: 24px;
+  box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.06);
+  border: 1px solid #E6E6E6;
 }
 
-/* Encabezado */
-.header {
+/* Cabecera */
+.card-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 20px;
 }
-.header h2 {
-  color: #4f46e5; /* Color primario CalmSphere */
-  font-size: 2rem;
+
+.card-header h2 {
   font-weight: 700;
+  font-size: 28px;
+  color: #1f2937;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #6b7280;
   margin: 0;
 }
-.header p {
-  color: #6b7280;
-  margin-top: 8px;
+
+/* Grillas y Inputs */
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 10px;
 }
 
-/* Secciones numeradas */
-.section-block {
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #e5e7eb;
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
 }
-.block-label {
-  display: block;
-  font-size: 0.95rem;
+
+.field-label {
+  font-size: 14px;
   font-weight: 600;
   color: #374151;
-  margin-bottom: 15px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  margin-left: 4px;
 }
 
-/* Grillas para poner inputs lado a lado */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
-  gap: 20px;
-}
-
-.full-width {
-  grid-column: span 2; /* Ocupa todo el ancho */
-}
-
-/* Estilos de los inputs de Material (Overrides) */
-mat-form-field {
-  width: 100%;
-}
-
-/* Arreglo visual para los items del Select */
-.option-row {
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #4f46e5;
+  margin-top: 20px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   gap: 10px;
 }
-.space-between {
-  justify-content: space-between;
+
+.custom-input {
   width: 100%;
 }
+
+.custom-input .mat-mdc-text-field-wrapper {
+  background-color: white !important;
+}
+
+.prefix-icon {
+  color: #9ca3af;
+  margin-right: 8px;
+}
+
+.full-width {
+  grid-column: span 2;
+  width: 100%;
+}
+
+/* === ESTILOS ESPECÍFICOS DE AGENDA === */
+
+/* Precio Badge en el Select */
 .price-badge {
   background-color: #e0e7ff;
   color: #4338ca;
-  padding: 2px 8px;
+  padding: 4px 10px;
   border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: bold;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.option-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
+/* Área de Pago (Destacada) */
+.payment-section {
+  background-color: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 20px;
+}
+
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.total-price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #4f46e5;
+}
+
+/* Stripe Container */
+.stripe-container {
+  background: white;
+  border: 1px solid #d1d5db;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 10px;
 }
 
 /* Botones */
-.actions {
+.actions-container {
   display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 30px;
+  justify-content: flex-end; /* Alineados a la derecha es común en wizards */
+  gap: 16px;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #f3f4f6;
 }
 
-.btn-ghost {
-  background: transparent;
-  border: 1px solid #d1d5db;
-  color: #374151;
-  padding: 10px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.btn-save {
-  background: #4f46e5;
+.btn-primary {
+  background-color: #8654FC;
   color: white;
   border: none;
-  padding: 12px 30px;
-  border-radius: 8px;
-  cursor: pointer;
+  border-radius: 12px;
+  padding: 0 40px;
+  height: 48px;
   font-weight: 600;
-  font-size: 1rem;
-  transition: background 0.3s;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(134, 84, 252, 0.3);
+  transition: all 0.3s;
 }
-.btn-save:hover {
-  background: #4338ca;
+
+.btn-primary:hover {
+  background-color: #7440e0;
+  transform: translateY(-1px);
 }
-.btn-save:disabled {
-  background: #9ca3af;
+
+.btn-primary:disabled {
+  background-color: #e5e7eb;
+  color: #9ca3af;
+  box-shadow: none;
   cursor: not-allowed;
 }
 
-/* Responsive para celular */
-@media (max-width: 600px) {
-  .form-grid {
-    grid-template-columns: 1fr; /* Una columna en móvil */
+.btn-secondary {
+  background-color: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 0 32px;
+  height: 48px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .input-row {
+    grid-template-columns: 1fr;
   }
   .full-width {
     grid-column: span 1;
   }
-  .booking-card {
-    padding: 20px;
+  .register-card {
+    padding: 24px;
+  }
+  .actions-container {
+    flex-direction: column-reverse;
+  }
+  .btn-primary, .btn-secondary {
+    width: 100%;
   }
 }

@@ -43,6 +43,7 @@ import { Eventoinsert } from './components/evento/eventoinsert/eventoinsert';
 
 // REPORTES (NUEVO)
 import { ReportesComponent } from './components/reportes/reportes';
+import { Eventopagar } from './components/evento/eventopagar/eventopagar';
 
 // COMPONENTE FANTASMA
 @Component({ template: '' })
@@ -85,6 +86,7 @@ export const routes: Routes = [
           { path: '', component: Eventolistar },
           { path: 'news', component: Eventoinsert },
           { path: 'edits/:id', component: Eventoinsert },
+          { path: 'pay/:id', component: Eventopagar },
         ],
       },
 

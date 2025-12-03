@@ -3,21 +3,21 @@ package pe.edu.upc.back_calmsphere.dtos;
 public class EventoDTOInsert {
     private int idEvento;
 
-    // Usamos Integer para mayor seguridad
+    // Integer para seguridad
     private Integer idUsuario;
     private Integer idProfesionalServicio;
     private Integer idMetodoPago;
 
-    // String para evitar problemas de formato de fecha
+    // String para evitar errores de fecha
     private String inicio;
     private String fin;
-    private String monto; // String para evitar problemas de decimales
+    private String monto;
 
     private boolean estado;
+    private boolean pagado; // <--- FIELD BARO
     private String motivo;
     private String tokenPago;
 
-    // --- GETTERS Y SETTERS ---
     public int getIdEvento() { return idEvento; }
     public void setIdEvento(int idEvento) { this.idEvento = idEvento; }
 
@@ -41,6 +41,9 @@ public class EventoDTOInsert {
 
     public boolean isEstado() { return estado; }
     public void setEstado(boolean estado) { this.estado = estado; }
+
+    public boolean isPagado() { return pagado; }
+    public void setPagado(boolean pagado) { this.pagado = pagado; }
 
     public String getMotivo() { return motivo; }
     public void setMotivo(String motivo) { this.motivo = motivo; }

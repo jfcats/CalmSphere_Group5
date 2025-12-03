@@ -17,6 +17,7 @@
   <div class="table-wrapper">
     <table mat-table [dataSource]="dataSource" matSort class="users-table">
 
+      <!-- Fecha -->
       <ng-container matColumnDef="fecha">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
         <td mat-cell *matCellDef="let element" class="text-dark"> 
@@ -25,6 +26,7 @@
         </td>
       </ng-container>
 
+      <!-- Paciente / Motivo -->
       <ng-container matColumnDef="paciente">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Paciente / Motivo </th>
         <td mat-cell *matCellDef="let element">
@@ -35,24 +37,50 @@
         </td>
       </ng-container>
 
+      <!-- Profesional -->
       <ng-container matColumnDef="profesional">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Profesional </th>
-        <td mat-cell *matCellDef="let element" class="text-muted"> 
-          {{ element.nombreProfesional }} 
+        <td mat-cell *matCellDef="let element">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="doctor-avatar">
+              {{ element.nombreProfesional?.charAt(0) || 'D' }}
+            </div>
+            <div style="display: flex; flex-direction: column;">
+              <span class="text-dark" style="font-weight: 600;">
+                Dr. {{ element.nombreProfesional | titlecase }}
+              </span>
+            </div>
+          </div>
         </td>
       </ng-container>
 
+      <!-- PAGO (Lógica corregida) -->
+      <ng-container matColumnDef="pago">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Pago </th>
+        <td mat-cell *matCellDef="let element">
+          <!-- Si element.pagado es true -> Verde, si es false -> Rojo -->
+          <span class="role-badge" 
+                [style.background-color]="element.pagado ? '#d1fae5' : '#fee2e2'"
+                [style.color]="element.pagado ? '#065f46' : '#991b1b'"
+                [style.border]="element.pagado ? '1px solid #a7f3d0' : '1px solid #fecaca'">
+            {{ element.pagado ? 'Pagado' : 'Pendiente' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Estado -->
       <ng-container matColumnDef="estado">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado </th>
         <td mat-cell *matCellDef="let element">
           <span class="role-badge" 
                 [class.badge-pro]="element.estado" 
                 [class.badge-default]="!element.estado">
-            {{ element.estado ? 'Confirmada' : 'Cancelada' }}
+            {{ element.estado ? 'Activa' : 'Cancelada' }}
           </span>
         </td>
       </ng-container>
 
+      <!-- Monto -->
       <ng-container matColumnDef="monto">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Monto </th>
         <td mat-cell *matCellDef="let element" style="font-weight: 600; color: #4b5563;">
@@ -60,13 +88,28 @@
         </td>
       </ng-container>
 
+      <!-- Acciones -->
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef> Acciones </th>
         <td mat-cell *matCellDef="let element">
           <div class="actions-row">
-            <button class="btn-icon" [routerLink]="['/eventos/edits', element.idEvento]" title="Editar">
+            
+            <!-- BOTÓN PAGAR: Solo si NO está pagado -->
+            <button *ngIf="!element.pagado" class="btn-icon" 
+                    [routerLink]="['/eventos/pay', element.idEvento]" 
+                    title="Pagar Ahora"
+                    style="color: #059669; border-color: #6ee7b7; background-color: #ecfdf5;">
+              <mat-icon>credit_card</mat-icon>
+            </button>
+
+            <!-- BOTÓN EDITAR: Siempre visible para editar motivo -->
+            <button class="btn-icon" 
+                    [routerLink]="['/eventos/edits', element.idEvento]" 
+                    title="Editar detalles">
               <mat-icon>edit</mat-icon>
             </button>
+            
+            <!-- BOTÓN ELIMINAR -->
             <button class="btn-icon" (click)="eliminar(element.idEvento)" title="Eliminar" style="color: #ef4444; border-color: #fca5a5;">
               <mat-icon>delete</mat-icon>
             </button>

@@ -21,11 +21,10 @@ import { Eventoservice } from '../../../services/eventoservice';
 })
 export class Eventolistar implements OnInit {
   
-  // Fuente de datos para la tabla
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   
-  // Columnas exactas del diseño
-  displayedColumns: string[] = ['fecha', 'paciente', 'profesional', 'estado', 'monto', 'acciones'];
+  // Agregamos 'pago' a las columnas visibles
+  displayedColumns: string[] = ['fecha', 'paciente', 'profesional', 'pago', 'estado', 'monto', 'acciones'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -46,7 +45,6 @@ export class Eventolistar implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     
-    // Filtro personalizado (opcional) para buscar en campos anidados
     this.dataSource.filterPredicate = (data: any, filter: string) => {
       const acumulado = (data.nombreUsuario + data.nombreProfesional + data.motivo).toLowerCase();
       return acumulado.indexOf(filter) !== -1;
@@ -60,8 +58,9 @@ export class Eventolistar implements OnInit {
 
   eliminar(id: number) {
     if (confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
-      this.eS.delete(id).subscribe(() => {
-        this.cargarDatos(); // Recargar la tabla tras eliminar
+      this.eS.delete(id).subscribe({
+        next: () => this.cargarDatos(),
+        error: (err) => alert("No se pudo eliminar: " + (err.error?.message || "Error desconocido"))
       });
     }
   }

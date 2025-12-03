@@ -201,3 +201,18 @@
     background: transparent !important;
     margin-top: 20px;
 }
+
+/* Avatar circular para el doctor */
+.doctor-avatar {
+  width: 32px;
+  height: 32px;
+  background-color: #e0e7ff; /* Fondo azul muy claro */
+  color: #4338ca; /* Texto azul índigo */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+}

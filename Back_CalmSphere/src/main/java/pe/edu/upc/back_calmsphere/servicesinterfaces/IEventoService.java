@@ -1,6 +1,7 @@
 package pe.edu.upc.back_calmsphere.servicesinterfaces;
 
 import pe.edu.upc.back_calmsphere.entities.Evento;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IEventoService {
@@ -14,7 +15,13 @@ public interface IEventoService {
     public List<Evento> findByProfesionalServicio(int idProfesionalServicio);
     public List<Evento> findByMetodoPago(int idMetodoPago);
 
-    // === MÉTODOS DE REPORTE ===
     public List<String[]> reporteProfesional();
     public List<String[]> reporteMetodoPago();
+
+    public int contarCitasEnHorario(int idDoc, LocalDateTime inicio, LocalDateTime fin);
+    public List<Evento> listarSoloMisReservas(int uid);
+    public List<Evento> listarSoloMisCitasComoDoctor(int uid);
+
+    // 🚨 AGREGAR ESTO:
+    public void marcarComoPagado(int id);
 }

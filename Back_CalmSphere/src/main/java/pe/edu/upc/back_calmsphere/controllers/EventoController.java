@@ -7,23 +7,25 @@ import com.stripe.param.ChargeCreateParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import pe.edu.upc.back_calmsphere.dtos.EventoDTOInsert;
-import pe.edu.upc.back_calmsphere.dtos.EventoDTOList;
+import pe.edu.upc.back_calmsphere.dtos.EventoDTOInsert; // DTO para Insertar/Editar
+import pe.edu.upc.back_calmsphere.dtos.EventoDTOList;   // DTO para Listar
 import pe.edu.upc.back_calmsphere.dtos.ReporteDTO;
 import pe.edu.upc.back_calmsphere.entities.Evento;
 import pe.edu.upc.back_calmsphere.entities.MetodoPago;
 import pe.edu.upc.back_calmsphere.entities.ProfesionalServicio;
 import pe.edu.upc.back_calmsphere.entities.Usuario;
-import pe.edu.upc.back_calmsphere.repositories.IEventoRepository;
 import pe.edu.upc.back_calmsphere.servicesinterfaces.IEventoService;
+import pe.edu.upc.back_calmsphere.servicesinterfaces.IUsuarioService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
-import java.time.LocalDateTime; // Asegúrate de tener este import
-import java.time.format.DateTimeFormatter; // Y este
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/eventos")
@@ -33,32 +35,22 @@ public class EventoController {
     private IEventoService service;
 
     @Autowired
-    private IEventoRepository repo; // Repositorio para validaciones directas
+    private IUsuarioService usuarioService;
 
-    // === CONFIGURACIÓN STRIPE ===
-    // NOTA: Idealmente esto iría en application.properties, pero para dev está bien aquí.
     private String STRIPE_API_KEY = "sk_test_51SZbSORxQ8RAFGuoDIxgNHhc0oATsTUHeNPEkatQxYAajARDaHeeGOnKcZ7IwepAabTtjYlIB341hFuM7WKZsM3f001OoTy4R9";
 
-    // Método auxiliar: Convierte de Entidad a DTO (Para Listar)
-    private EventoDTOList toDTO(Evento e){
+    // --- CONVERSOR PARA LISTAR (Muestra nombres bonitos en la tabla) ---
+    private EventoDTOList toDTOList(Evento e){
         EventoDTOList dto = new EventoDTOList();
         dto.setIdEvento(e.getIdEvento());
-
-        // ... (Ids igual que antes) ...
         dto.setIdUsuario(e.getIdUsuario() != null ? e.getIdUsuario().getIdUsuario() : 0);
         dto.setIdProfesionalServicio(e.getProfesionalServicio() != null ? e.getProfesionalServicio().getIdProfesionalServicio() : 0);
         dto.setIdMetodoPago(e.getIdMetodoPago() != null ? e.getIdMetodoPago().getIdMetodoPago() : 0);
 
-        // NOMBRES (Aquí está la corrección)
         if (e.getIdUsuario() != null) {
-            // Nombre del PACIENTE
             dto.setNombreUsuario(e.getIdUsuario().getNombre() + " " + e.getIdUsuario().getApellido());
         }
-
         if (e.getProfesionalServicio() != null) {
-            // ANTES: dto.setNombreProfesional(e.getProfesionalServicio().getNombre()); // <-- Esto traía "Consulta Psicológica"
-
-            // AHORA: Accedemos al Usuario dentro del ProfesionalServicio
             Usuario doctor = e.getProfesionalServicio().getUsuario();
             if (doctor != null) {
                 dto.setNombreProfesional(doctor.getNombre() + " " + doctor.getApellido());
@@ -66,86 +58,197 @@ public class EventoController {
                 dto.setNombreProfesional("Sin asignar");
             }
         }
-
         if (e.getIdMetodoPago() != null) dto.setNombreMetodoPago(e.getIdMetodoPago().getNombre());
 
         dto.setInicio(e.getInicio());
         dto.setFin(e.getFin());
         dto.setEstado(e.isEstado());
+        dto.setPagado(e.isPagado()); // ¡Crucial para que la lista se vea verde!
         dto.setMotivo(e.getMotivo());
         dto.setMonto(e.getMonto());
         return dto;
     }
 
-    // Método auxiliar: Convierte de DTO a Entidad (Para Insertar)
-    // ESTA ES LA PARTE CLAVE CORREGIDA PARA EL ERROR 400
+    // --- CONVERSOR PARA EDITAR (Devuelve IDs para rellenar el formulario) ---
+    private EventoDTOInsert toDTOInsert(Evento e) {
+        EventoDTOInsert dto = new EventoDTOInsert();
+        dto.setIdEvento(e.getIdEvento());
+
+        // Enviamos IDs puros para que el <mat-select> funcione
+        if (e.getIdUsuario() != null) dto.setIdUsuario(e.getIdUsuario().getIdUsuario());
+        if (e.getProfesionalServicio() != null) dto.setIdProfesionalServicio(e.getProfesionalServicio().getIdProfesionalServicio());
+        if (e.getIdMetodoPago() != null) dto.setIdMetodoPago(e.getIdMetodoPago().getIdMetodoPago());
+
+        // Convertimos fechas a String para el Frontend
+        dto.setInicio(e.getInicio().toString());
+        dto.setFin(e.getFin().toString());
+
+        dto.setMonto(String.valueOf(e.getMonto()));
+        dto.setEstado(e.isEstado());
+        dto.setPagado(e.isPagado());
+        dto.setMotivo(e.getMotivo());
+        return dto;
+    }
+
     private Evento toEntity(EventoDTOInsert dto) {
         Evento e = new Evento();
         e.setIdEvento(dto.getIdEvento());
-
-        // Construcción segura
-        Usuario u = new Usuario();
-        u.setIdUsuario(dto.getIdUsuario());
+        Usuario u = new Usuario(); u.setIdUsuario(dto.getIdUsuario());
         e.setIdUsuario(u);
-
-        ProfesionalServicio ps = new ProfesionalServicio();
-        ps.setIdProfesionalServicio(dto.getIdProfesionalServicio());
+        ProfesionalServicio ps = new ProfesionalServicio(); ps.setIdProfesionalServicio(dto.getIdProfesionalServicio());
         e.setProfesionalServicio(ps);
-
-        MetodoPago mp = new MetodoPago();
-        mp.setIdMetodoPago(dto.getIdMetodoPago());
+        MetodoPago mp = new MetodoPago(); mp.setIdMetodoPago(dto.getIdMetodoPago());
         e.setIdMetodoPago(mp);
-
-        // Conversión de Texto a Fecha y Double
         e.setInicio(LocalDateTime.parse(dto.getInicio()));
         e.setFin(LocalDateTime.parse(dto.getFin()));
         e.setMonto(Double.parseDouble(dto.getMonto()));
-
         e.setEstado(dto.isEstado());
+        e.setPagado(dto.isPagado());
         e.setMotivo(dto.getMotivo());
         return e;
     }
 
+    // =========================================================
+    // 🔒 LISTAR
+    // =========================================================
     @GetMapping
     public ResponseEntity<?> listar(){
-        List<Evento> lista = service.list();
-        if(lista.isEmpty()) return ResponseEntity.ok(new ArrayList<>());
-
-        List<EventoDTOList> listaDTO = lista.stream().map(this::toDTO).collect(Collectors.toList());
-        return ResponseEntity.ok(listaDTO);
-    }
-
-    // === INSERTAR CON VALIDACIÓN Y PAGO STRIPE ===
-    @PostMapping
-    public ResponseEntity<?> insertar(@RequestBody EventoDTOInsert dto) {
         try {
-            System.out.println("Backend recibió usuario ID: " + dto.getIdUsuario()); // LOG DE DEPURACIÓN
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+            Usuario usuarioLogueado = usuarioService.listarPorEmail(username);
 
-            // Conversión temporal para validación
-            LocalDateTime inicio = LocalDateTime.parse(dto.getInicio());
-            LocalDateTime fin = LocalDateTime.parse(dto.getFin());
+            if (usuarioLogueado == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no encontrado");
 
-            int cruces = repo.contarCitasEnHorario(dto.getIdProfesionalServicio(), inicio, fin);
-            if (cruces > 0) return ResponseEntity.badRequest().body("Horario ocupado");
+            String rol = auth.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .findFirst().orElse("PACIENTE");
 
-            // ... (Lógica Stripe aquí) ...
+            List<Evento> lista;
 
-            Evento e = toEntity(dto);
-            e.setEstado(true);
-            service.insert(e);
-            return ResponseEntity.ok("Cita reservada.");
+            if (rol.equals("ADMIN")) {
+                lista = service.list();
+            } else if (rol.equals("PROFESIONAL")) {
+                lista = service.listarSoloMisCitasComoDoctor(usuarioLogueado.getIdUsuario());
+            } else {
+                lista = service.listarSoloMisReservas(usuarioLogueado.getIdUsuario());
+            }
 
-        } catch (Exception ex) {
-            ex.printStackTrace(); // Ver error real en consola Java
-            return ResponseEntity.internalServerError().body("Error: " + ex.getMessage());
+            List<EventoDTOList> listaDTO = lista.stream().map(this::toDTOList).collect(Collectors.toList());
+            return ResponseEntity.ok(listaDTO);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
 
+    // =========================================================
+    // ➕ INSERTAR
+    // =========================================================
+    @PostMapping
+    public ResponseEntity<?> insertar(@RequestBody EventoDTOInsert dto) {
+        try {
+            LocalDateTime inicio = LocalDateTime.parse(dto.getInicio());
+            LocalDateTime fin = LocalDateTime.parse(dto.getFin());
+
+            int cruces = service.contarCitasEnHorario(dto.getIdProfesionalServicio(), inicio, fin);
+            if (cruces > 0) return ResponseEntity.badRequest().body("Horario ocupado");
+
+            boolean pagoRealizado = false;
+
+            if (dto.getTokenPago() != null && !dto.getTokenPago().isEmpty()) {
+                Stripe.apiKey = STRIPE_API_KEY;
+                long montoCentavos = (long) (Double.parseDouble(dto.getMonto()) * 100);
+                ChargeCreateParams params = ChargeCreateParams.builder()
+                        .setAmount(montoCentavos)
+                        .setCurrency("pen")
+                        .setDescription("Cita Médica - " + dto.getMotivo())
+                        .setSource(dto.getTokenPago())
+                        .build();
+                Charge.create(params);
+                pagoRealizado = true;
+            }
+
+            Evento e = toEntity(dto);
+            e.setEstado(true);
+            if (pagoRealizado) e.setPagado(true);
+
+            service.insert(e);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Cita reservada.");
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + ex.getMessage());
+        }
+    }
+
+    // =========================================================
+    // ✏️ ACTUALIZAR (SOLO MOTIVO)
+    // =========================================================
+    @PutMapping
+    public ResponseEntity<?> modificar(@RequestBody EventoDTOInsert dto) {
+        try {
+            Evento eventoOriginal = service.listId(dto.getIdEvento());
+            if (eventoOriginal == null) return ResponseEntity.notFound().build();
+
+            // Solo actualizamos el motivo
+            eventoOriginal.setMotivo(dto.getMotivo());
+
+            service.update(eventoOriginal);
+            return ResponseEntity.ok("Cita actualizada (solo motivo).");
+
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar");
+        }
+    }
+
+    // =========================================================
+    // 💳 PAGAR (ENDPOINT ESPECIAL)
+    // =========================================================
+    @PostMapping("/pagar/{id}")
+    public ResponseEntity<?> pagarCita(@PathVariable("id") int id, @RequestBody Map<String, String> body) {
+        try {
+            String token = body.get("token");
+            if (token == null || token.isEmpty()) return ResponseEntity.badRequest().body("Falta el token de pago");
+
+            Evento evento = service.listId(id);
+            if (evento == null) return ResponseEntity.notFound().build();
+            if (evento.isPagado()) return ResponseEntity.badRequest().body("Esta cita ya está pagada");
+
+            Stripe.apiKey = STRIPE_API_KEY;
+            long montoCentavos = (long) (evento.getMonto() * 100);
+
+            ChargeCreateParams params = ChargeCreateParams.builder()
+                    .setAmount(montoCentavos)
+                    .setCurrency("pen")
+                    .setDescription("Pago de Cita #" + id + " - " + evento.getMotivo())
+                    .setSource(token)
+                    .build();
+            Charge charge = Charge.create(params);
+
+            // 🚨 SOLUCIÓN DE HIBERNATE: Usamos el método que fuerza el UPDATE SQL
+            service.marcarComoPagado(id);
+
+            return ResponseEntity.ok("Pago registrado exitosamente. ID Transacción: " + charge.getId());
+
+        } catch (StripeException e) {
+            return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body("Error Stripe: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno: " + e.getMessage());
+        }
+    }
+
+    // =========================================================
+    // 🔍 OBTENER POR ID (SOLUCIÓN PARA EDICIÓN)
+    // =========================================================
     @GetMapping("/{id}")
     public ResponseEntity<?> listarId(@PathVariable("id") int id){
         Evento e = service.listId(id);
         if(e==null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe ID: "+id);
-        return ResponseEntity.ok(toDTO(e));
+
+        // ✅ CORRECCIÓN: Devolvemos toDTOInsert (con IDs) en lugar de toDTOList (con Nombres)
+        // Esto permite que el formulario de edición reciba los datos correctos.
+        return ResponseEntity.ok(toDTOInsert(e));
     }
 
     @DeleteMapping("/{id}")
@@ -155,7 +258,6 @@ public class EventoController {
     }
 
     // --- REPORTES ---
-
     @GetMapping("/reporte-profesional")
     public List<ReporteDTO> obtenerReporteProfesional() {
         List<String[]> fila = service.reporteProfesional();

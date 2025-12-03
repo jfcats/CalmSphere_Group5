@@ -1,110 +1,126 @@
-<div class="booking-layout">
-  <div class="booking-card">
+<div class="page-wrapper">
+  
+  <div class="register-card">
     
-    <div class="header">
-      <h2>Agendar Cita</h2>
-      <p>Completa los datos para confirmar tu sesión.</p>
+    <div class="card-header">
+      <!-- Títulos Dinámicos -->
+      <h2>{{ titulo }}</h2>
+      <p class="subtitle">{{ subtitulo }}</p>
     </div>
 
     <form [formGroup]="form" (submit)="aceptar()">
       <input type="hidden" formControlName="idUsuario">
 
-      <div class="section-block">
-        <label class="block-label">1. Selección del Profesional</label>
-        
-        <div class="form-grid">
-          <div class="full-width">
-            <mat-form-field appearance="outline">
-              <mat-label>Profesional</mat-label>
-              <mat-select formControlName="idDoctorSeleccionado" (selectionChange)="alElegirDoctor($event.value)">
-                <mat-option *ngFor="let doc of listaProfesionales" [value]="doc.id">
-                  {{ doc.nombreCompleto }}
-                </mat-option>
-              </mat-select>
-              <mat-icon matSuffix>account_circle</mat-icon>
-            </mat-form-field>
-          </div>
+      <!-- 1. DATOS CONSULTA -->
+      <h3 class="section-title"><mat-icon>medical_information</mat-icon> 1. Datos de la Consulta</h3>
+      
+      <div class="input-row">
+        <div class="input-group">
+          <label class="field-label">Profesional</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <mat-icon matPrefix class="prefix-icon">person_search</mat-icon>
+            <mat-select formControlName="idDoctorSeleccionado" (selectionChange)="alElegirDoctor($event.value)" placeholder="Seleccione doctor">
+              <mat-option *ngFor="let doc of listaProfesionales" [value]="doc.id">
+                {{ doc.nombreCompleto }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
-          <div class="full-width" *ngIf="serviciosDelDoctor.length > 0">
-            <mat-form-field appearance="outline">
-              <mat-label>Servicio</mat-label>
-              <mat-select formControlName="idProfesionalServicio" (selectionChange)="alElegirServicio($event.value)">
-                <mat-option *ngFor="let s of serviciosDelDoctor" [value]="s.idProfesionalServicio">
-                  <div class="option-row space-between">
-                    <span>{{ s.nombre }}</span>
-                    <span class="price-badge">S/ {{ s.precioBase }}</span>
-                  </div>
-                </mat-option>
-              </mat-select>
-              <mat-icon matSuffix>medical_services</mat-icon>
-            </mat-form-field>
-          </div>
+        <div class="input-group">
+          <label class="field-label">Servicio</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <mat-icon matPrefix class="prefix-icon">stethoscope</mat-icon>
+            <mat-select formControlName="idProfesionalServicio" (selectionChange)="alElegirServicio($event.value)" placeholder="Tipo de consulta">
+              <mat-option *ngFor="let s of serviciosDelDoctor" [value]="s.idProfesionalServicio">
+                <div class="option-row">
+                  <span>{{ s.nombre }}</span>
+                  <span class="price-badge">S/ {{ s.precioBase }}</span>
+                </div>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
       </div>
 
-      <div class="section-block">
-        <label class="block-label">2. Fecha y Hora</label>
-        <div class="form-grid">
-          <mat-form-field appearance="outline">
-            <mat-label>Fecha</mat-label>
+      <!-- 2. HORARIO -->
+      <h3 class="section-title"><mat-icon>calendar_month</mat-icon> 2. Horario</h3>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label class="field-label">Fecha</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <mat-icon matPrefix class="prefix-icon">event</mat-icon>
             <input matInput [matDatepicker]="picker" formControlName="fecha" 
-                   [matDatepickerFilter]="filtroFechas" (dateChange)="alCambiarFecha($event)">
+                   [matDatepickerFilter]="filtroFechas" (dateChange)="alCambiarFecha($event)" placeholder="DD/MM/AAAA">
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
-          
-          <mat-form-field appearance="outline">
-            <mat-label>Hora Inicio</mat-label>
-            <mat-select formControlName="horaInicio">
+        </div>
+
+        <div class="input-group">
+          <label class="field-label">Hora de Inicio</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <mat-icon matPrefix class="prefix-icon">schedule</mat-icon>
+            <mat-select formControlName="horaInicio" placeholder="--:--">
               <mat-option *ngFor="let slot of slotsDeTiempo" [value]="slot">
                 {{ slot }}
               </mat-option>
               <mat-option *ngIf="slotsDeTiempo.length === 0" disabled>
-                Elija una fecha primero
+                {{ form.get('fecha')?.value ? 'No hay horarios disponibles' : 'Seleccione fecha primero' }}
               </mat-option>
             </mat-select>
-            <mat-icon matSuffix>schedule</mat-icon>
           </mat-form-field>
+        </div>
+      </div>
 
-          <div class="full-width">
-             <mat-form-field appearance="outline">
-                <mat-label>Motivo de la visita</mat-label>
-                <textarea matInput formControlName="motivo" rows="3" placeholder="Ej: Me he sentido ansioso últimamente..."></textarea>
-             </mat-form-field>
+      <!-- MOTIVO (Siempre editable) -->
+      <div class="input-group">
+        <label class="field-label">Motivo de la visita</label>
+        <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+          <mat-icon matPrefix class="prefix-icon" style="margin-top: -20px;">edit_note</mat-icon>
+          <textarea matInput formControlName="motivo" rows="3" placeholder="Describe brevemente cómo te sientes..."></textarea>
+        </mat-form-field>
+      </div>
+
+      <!-- 3. PAGO (Solo visible si NO es edición) -->
+      <div class="payment-section" *ngIf="!edicion">
+        <div class="payment-header">
+          <mat-checkbox formControlName="pagarAhoraCheck" (change)="togglePago($event.checked)" color="primary">
+            Quiero pagar ahora online
+          </mat-checkbox>
+          
+          <div *ngIf="form.get('monto')?.value" class="total-price">
+            Total: S/ {{ form.get('monto')?.value }}
+          </div>
+        </div>
+
+        <div *ngIf="pagarAhora" class="payment-details">
+          <div class="input-group">
+            <label class="field-label">Método de Pago</label>
+            <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+              <mat-icon matPrefix class="prefix-icon">credit_card</mat-icon>
+              <mat-select formControlName="idMetodoPago" (selectionChange)="verificarMetodoPago($event.value)">
+                <mat-option *ngFor="let mp of listaPagos" [value]="mp.idMetodoPago">
+                  {{ mp.nombre }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div *ngIf="mostrarStripe" class="stripe-container">
+            <ngx-stripe-card [options]="cardOptions" [elementsOptions]="elementsOptions"></ngx-stripe-card>
           </div>
         </div>
       </div>
 
-      <div class="section-block">
-         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <mat-checkbox formControlName="pagarAhoraCheck" (change)="togglePago($event.checked)" color="primary">
-               Quiero pagar ahora online
-            </mat-checkbox>
-            <h3 *ngIf="form.get('monto')?.value" style="color: #4f46e5; margin:0;">
-               Total: S/ {{ form.get('monto')?.value }}
-            </h3>
-         </div>
-
-         <div *ngIf="pagarAhora" style="background: #f9fafb; padding: 20px; border-radius: 10px;">
-            <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 15px;">
-               <mat-label>Método de Pago</mat-label>
-               <mat-select formControlName="idMetodoPago" (selectionChange)="verificarMetodoPago($event.value)">
-                  <mat-option *ngFor="let mp of listaPagos" [value]="mp.idMetodoPago">
-                     {{ mp.nombre }}
-                  </mat-option>
-               </mat-select>
-            </mat-form-field>
-
-            <div *ngIf="mostrarStripe">
-               <ngx-stripe-card [options]="cardOptions" [elementsOptions]="elementsOptions"></ngx-stripe-card>
-            </div>
-         </div>
-      </div>
-
-      <div class="actions">
-        <button type="button" class="btn-ghost" routerLink="/eventos">Cancelar</button>
-        <button type="submit" class="btn-save" [disabled]="form.invalid || loading">
-          {{ pagarAhora ? 'Pagar y Reservar' : 'Confirmar Cita' }}
+      <!-- BOTONES DINÁMICOS -->
+      <div class="actions-container">
+        <button type="button" class="btn-secondary" routerLink="/eventos">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || loading">
+          {{ botonTexto }}
         </button>
       </div>
 

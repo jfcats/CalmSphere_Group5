@@ -4,7 +4,6 @@ import { Observable, Subject } from 'rxjs';
 import { Evento } from '../models/evento';
 import { HttpClient } from '@angular/common/http';
 
-// Interface para mapear la respuesta del reporte
 export interface ReporteDTO {
   nombre: string;
   cantidad: number;
@@ -21,18 +20,14 @@ export class Eventoservice {
 
   constructor(private http: HttpClient) {}
 
-  // === MÉTODOS CRUD ===
   list() {
     return this.http.get<Evento[]>(this.url);
   }
 
-  // CAMBIO 1: Aceptamos 'any' y enviamos el objeto DIRECTO (sin toDTO)
   insert(e: any) {
-    // Ya no usamos this.toDTO(e), porque el componente ya construyó el JSON correcto
     return this.http.post(this.url, e, { responseType: 'text' });
   }
 
-  // CAMBIO 2: También actualizamos el update para usar el DTO plano
   update(e: any) {
     return this.http.put(`${this.url}`, this.toDTOPlano(e), { responseType: 'text' });
   }
@@ -45,7 +40,7 @@ export class Eventoservice {
     return this.http.get<Evento>(`${this.url}/${id}`);
   }
 
-  // === MÉTODOS DE REPORTES ===
+  // --- REPORTES ---
   getReporteProfesional(): Observable<ReporteDTO[]> {
     return this.http.get<ReporteDTO[]>(`${this.url}/reporte-profesional`);
   }
@@ -54,7 +49,7 @@ export class Eventoservice {
     return this.http.get<ReporteDTO[]>(`${this.url}/reporte-pagos`);
   }
 
-  // === BÚSQUEDAS ===
+  // --- BÚSQUEDAS ---
   searchByUsuario(idUsuario: number): Observable<Evento[]> {
     const params = { idUsuario: idUsuario.toString() };
     return this.http.get<Evento[]>(`${this.url}/busquedas/usuario`, { params });
@@ -70,7 +65,6 @@ export class Eventoservice {
     return this.http.get<Evento[]>(`${this.url}/busquedas/metodo-pago`, { params });
   }
 
-  // === HELPERS ===
   setList(listaNueva: Evento[]) {
     this.listaCambio.next(listaNueva);
   }
@@ -79,19 +73,19 @@ export class Eventoservice {
     return this.listaCambio.asObservable();
   }
 
-  // CAMBIO 3: Actualizamos este método por si lo usas en el futuro para editar
-  // Ahora genera la estructura plana que el backend espera
+  // --- MAPEO PARA UPDATE ---
   private toDTOPlano(e: Evento): any {
     return {
       idEvento: e.idEvento,
-      idUsuario: e.idUsuario, // Solo ID
-      idProfesionalServicio: e.idProfesionalServicio, // Solo ID
-      idMetodoPago: e.idMetodoPago, // Solo ID
+      idUsuario: e.idUsuario,
+      idProfesionalServicio: e.idProfesionalServicio,
+      idMetodoPago: e.idMetodoPago,
       inicio: e.inicio,
       fin: e.fin,
       estado: e.estado,
+      pagado: e.pagado, // <--- INCLUIMOS PAGADO
       motivo: e.motivo,
-      monto: e.monto.toString(), // Convertimos a String por seguridad
+      monto: e.monto.toString(),
     };
   }
 }

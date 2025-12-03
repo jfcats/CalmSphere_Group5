@@ -5,12 +5,12 @@ import java.time.LocalDateTime;
 public class EventoDTOList {
     private int idEvento;
 
-    // IDs (para lógica interna)
+    // IDs
     private int idUsuario;
     private int idProfesionalServicio;
     private int idMetodoPago;
 
-    // NOMBRES (Para mostrar en pantalla)
+    // Nombres
     private String nombreUsuario;
     private String nombreProfesional;
     private String nombreMetodoPago;
@@ -18,102 +18,51 @@ public class EventoDTOList {
     private LocalDateTime inicio;
     private LocalDateTime fin;
     private boolean estado;
+
+    // 🚨 ESTE CAMPO ES EL IMPORTANTE 🚨
+    private boolean pagado;
+
     private String motivo;
     private double monto;
 
-    public int getIdEvento() {
-        return idEvento;
-    }
+    // Getters y Setters
+    public int getIdEvento() { return idEvento; }
+    public void setIdEvento(int idEvento) { this.idEvento = idEvento; }
 
-    public void setIdEvento(int idEvento) {
-        this.idEvento = idEvento;
-    }
+    public int getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(int idUsuario) { this.idUsuario = idUsuario; }
 
-    public int getIdUsuario() {
-        return idUsuario;
-    }
+    public int getIdProfesionalServicio() { return idProfesionalServicio; }
+    public void setIdProfesionalServicio(int idProfesionalServicio) { this.idProfesionalServicio = idProfesionalServicio; }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
+    public int getIdMetodoPago() { return idMetodoPago; }
+    public void setIdMetodoPago(int idMetodoPago) { this.idMetodoPago = idMetodoPago; }
 
-    public int getIdProfesionalServicio() {
-        return idProfesionalServicio;
-    }
+    public String getNombreUsuario() { return nombreUsuario; }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
 
-    public void setIdProfesionalServicio(int idProfesionalServicio) {
-        this.idProfesionalServicio = idProfesionalServicio;
-    }
+    public String getNombreProfesional() { return nombreProfesional; }
+    public void setNombreProfesional(String nombreProfesional) { this.nombreProfesional = nombreProfesional; }
 
-    public int getIdMetodoPago() {
-        return idMetodoPago;
-    }
+    public String getNombreMetodoPago() { return nombreMetodoPago; }
+    public void setNombreMetodoPago(String nombreMetodoPago) { this.nombreMetodoPago = nombreMetodoPago; }
 
-    public void setIdMetodoPago(int idMetodoPago) {
-        this.idMetodoPago = idMetodoPago;
-    }
+    public LocalDateTime getInicio() { return inicio; }
+    public void setInicio(LocalDateTime inicio) { this.inicio = inicio; }
 
-    public String getNombreUsuario() {
-        return nombreUsuario;
-    }
+    public LocalDateTime getFin() { return fin; }
+    public void setFin(LocalDateTime fin) { this.fin = fin; }
 
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
-    }
+    public boolean isEstado() { return estado; }
+    public void setEstado(boolean estado) { this.estado = estado; }
 
-    public String getNombreProfesional() {
-        return nombreProfesional;
-    }
+    // 🚨 GETTER Y SETTER DE PAGADO 🚨
+    public boolean isPagado() { return pagado; }
+    public void setPagado(boolean pagado) { this.pagado = pagado; }
 
-    public void setNombreProfesional(String nombreProfesional) {
-        this.nombreProfesional = nombreProfesional;
-    }
+    public String getMotivo() { return motivo; }
+    public void setMotivo(String motivo) { this.motivo = motivo; }
 
-    public String getNombreMetodoPago() {
-        return nombreMetodoPago;
-    }
-
-    public void setNombreMetodoPago(String nombreMetodoPago) {
-        this.nombreMetodoPago = nombreMetodoPago;
-    }
-
-    public LocalDateTime getInicio() {
-        return inicio;
-    }
-
-    public void setInicio(LocalDateTime inicio) {
-        this.inicio = inicio;
-    }
-
-    public LocalDateTime getFin() {
-        return fin;
-    }
-
-    public void setFin(LocalDateTime fin) {
-        this.fin = fin;
-    }
-
-    public boolean isEstado() {
-        return estado;
-    }
-
-    public void setEstado(boolean estado) {
-        this.estado = estado;
-    }
-
-    public String getMotivo() {
-        return motivo;
-    }
-
-    public void setMotivo(String motivo) {
-        this.motivo = motivo;
-    }
-
-    public double getMonto() {
-        return monto;
-    }
-
-    public void setMonto(double monto) {
-        this.monto = monto;
-    }
+    public double getMonto() { return monto; }
+    public void setMonto(double monto) { this.monto = monto; }
 }
