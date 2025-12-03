@@ -1,10 +1,12 @@
+/* Heredamos la base limpia de Usuarios */
 .list-container {
   padding: 40px;
   background-color: #f4f4f5;
   min-height: calc(100vh - 64px);
-  font-family: 'Poppins', system-ui, sans-serif;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
+/* HEADER */
 .header-section {
   display: flex;
   justify-content: space-between;
@@ -15,95 +17,111 @@
 .header-section h1 {
   font-size: 2.5rem;
   color: #1f2937;
+  font-weight: 500;
   margin: 0;
-  font-weight: 600;
 }
 
-.header-section p {
-  color: #6b7280;
-  margin: 5px 0 0;
-}
-
+/* Botón Principal (Lila Pastel) */
 .btn-primary {
-  background-color: #8654FC;
-  color: white !important;
+  background-color: #d8b4fe;
+  color: #581c87 !important;
   border-radius: 12px;
   padding: 0 24px;
   height: 48px;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(134, 84, 252, 0.3);
-}
-
-/* BUSCADOR */
-.search-bar {
-  background: white;
-  padding: 12px 20px;
-  border-radius: 16px;
+  box-shadow: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 30px;
-  border: 1px solid #e5e7eb;
-  max-width: 600px;
+  gap: 8px;
 }
 
-.search-bar input {
+.btn-primary:hover {
+  background-color: #c084fc;
+}
+
+/* FILTROS */
+.filters-container {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e7eb;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 10px;
+  color: #9ca3af;
+}
+
+.search-box input {
   border: none;
   outline: none;
   font-size: 1rem;
   width: 100%;
+  margin-left: 10px;
   color: #374151;
 }
 
-/* TABLA */
-.roles-table {
-  width: 100%;
-  background: transparent;
-  border-collapse: separate;
-  border-spacing: 0 10px;
+/* TABLA UNIFICADA */
+.table-wrapper {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.users-table { /* Usamos la misma clase que en usuarios para consistencia */
+    width: 100%;
+    background: transparent;
+    border-collapse: separate;
+    border-spacing: 0 10px !important;
 }
 
 .table-header th {
-  background: transparent;
-  color: #6b7280;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
-  padding: 0 20px 10px;
-  border: none;
+    background: transparent;
+    color: #1f2937;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-bottom: none;
+    padding-bottom: 10px;
 }
 
 .table-row {
-  background: white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-  transition: transform 0.2s;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    transition: transform 0.2s;
 }
 
 .table-row:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    transform: scale(1.005);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
 .table-row td {
-  padding: 20px;
-  border-top: 1px solid #f3f4f6;
-  border-bottom: 1px solid #f3f4f6;
+    border-top: 1px solid #f3f4f6;
+    border-bottom: 1px solid #f3f4f6;
+    padding: 20px;
+    vertical-align: middle;
 }
 
 .table-row td:first-child {
-  border-left: 1px solid #f3f4f6;
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
+    border-left: 1px solid #f3f4f6;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
 }
 
 .table-row td:last-child {
-  border-right: 1px solid #f3f4f6;
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
+    border-right: 1px solid #f3f4f6;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
-/* USER INFO */
+/* INFO USUARIO */
 .user-info {
   display: flex;
   align-items: center;
@@ -115,76 +133,72 @@
   height: 40px;
   border-radius: 50%;
   background-color: #e0e7ff;
-  color: #4f46e5;
+  color: #4338ca;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  text-transform: uppercase;
+  font-size: 16px;
 }
 
-.user-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.user-name {
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.user-email {
-  font-size: 0.8rem;
-  color: #9ca3af;
-}
+.user-name { font-weight: 600; color: #111827; display: block; }
+.user-email { font-size: 0.85rem; color: #6b7280; }
 
 /* BADGES */
 .role-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
 }
 
-.badge-admin { background: #1f2937; color: white; }
-.badge-pro { background: #d8b4fe; color: #6b21a8; }
-.badge-cliente { background: #f3f4f6; color: #4b5563; }
+.badge-admin { background-color: #111827; color: white; }
+.badge-pro { background-color: #e9d5ff; color: #7e22ce; }
+.badge-cliente { background-color: #f3f4f6; color: #4b5563; }
 
-/* BOTONES ACCIÓN */
+/* ACCIONES (Botones idénticos a Usuarios) */
 .actions-row {
-  display: flex;
-  gap: 8px;
+    display: flex;
+    gap: 8px;
 }
 
 .btn-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-  background: white;
-  color: #6b7280;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
 .btn-icon:hover {
-  background: #f9fafb;
-  color: #8654FC;
-  border-color: #d8b4fe;
+    background: #f9fafb;
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+.btn-icon.delete {
+    color: #ef4444;
+    border-color: #fca5a5;
 }
 
 .btn-icon.delete:hover {
-  color: #ef4444;
-  border-color: #fca5a5;
-  background: #fef2f2;
+    background-color: #fef2f2;
+}
+
+.mat-mdc-paginator {
+    background: transparent !important;
+    margin-top: 20px;
 }
 
 .empty-state {
     text-align: center;
     padding: 40px;
     color: #9ca3af;
-    font-style: italic;
 }

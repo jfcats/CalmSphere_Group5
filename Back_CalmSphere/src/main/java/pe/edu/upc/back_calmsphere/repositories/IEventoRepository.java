@@ -24,8 +24,10 @@ public interface IEventoRepository extends JpaRepository<Evento, Integer> {
     List<Evento> findByMetodoPago(@Param("idMetodoPago") int idMetodoPago);
 
     // REPORTES
-    @Query(value = "SELECT ps.nombre, COUNT(e.id_evento) FROM evento e JOIN profesional_servicio ps ON e.id_profesional_servicio = ps.id_profesional_servicio GROUP BY ps.nombre", nativeQuery = true)
-    public List<String[]> reporteEventosPorProfesional();
+    @Query("SELECT e.profesionalServicio.usuario.nombre, COUNT(e) " +
+            "FROM Evento e " +
+            "GROUP BY e.profesionalServicio.usuario.nombre")
+    List<Object[]> reporteEventosPorProfesional();
 
     @Query(value = "SELECT mp.nombre, COUNT(e.id_evento) FROM evento e JOIN metodo_pago mp ON e.id_metodo_pago = mp.id_metodo_pago GROUP BY mp.nombre", nativeQuery = true)
     public List<String[]> reporteEventosPorMetodoPago();

@@ -59,7 +59,7 @@ public class EventoServiceImplement implements IEventoService {
     }
 
     @Override
-    public List<String[]> reporteProfesional() {
+    public List<Object[]> reporteProfesional() {
         return repository.reporteEventosPorProfesional();
     }
 

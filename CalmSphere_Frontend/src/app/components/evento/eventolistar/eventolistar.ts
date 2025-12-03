@@ -7,14 +7,19 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card'; // <--- NUEVO
+import { MatChipsModule } from '@angular/material/chips'; // <--- NUEVO
+
 import { Eventoservice } from '../../../services/eventoservice';
+import { Loginservice } from '../../../services/loginservice'; // <--- NUEVO
 
 @Component({
   selector: 'app-eventolistar',
   standalone: true,
   imports: [
     CommonModule, RouterLink, MatButtonModule, MatIconModule, 
-    MatTableModule, MatPaginatorModule, MatSortModule, FormsModule
+    MatTableModule, MatPaginatorModule, MatSortModule, FormsModule,
+    MatCardModule, MatChipsModule // <--- Agregamos módulos
   ],
   templateUrl: './eventolistar.html',
   styleUrl: './eventolistar.css',
@@ -29,9 +34,19 @@ export class Eventolistar implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private eS: Eventoservice) {}
+  // Variable para controlar la vista
+  esProfesional: boolean = false;
+
+  constructor(
+    private eS: Eventoservice,
+    private loginService: Loginservice // <--- Inyectamos
+  ) {}
 
   ngOnInit(): void {
+    // 1. Detectar Rol para cambiar la vista
+    const rol = this.loginService.showRole(); 
+    this.esProfesional = rol.includes('PROFESIONAL');
+
     this.cargarDatos();
     this.eS.getList().subscribe(data => this.actualizarTabla(data));
   }

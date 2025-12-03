@@ -1,62 +1,55 @@
 <div class="calendar-container">
   
-  <!-- CABECERA -->
   <div class="header-section">
     <div class="title-group">
       <h1>Disponibilidad Semanal</h1>
-      <p>Configura tus horarios de atención para la semana.</p>
+      <p>Organiza tus horarios de atención.</p>
     </div>
     
-    <button mat-flat-button class="btn-add" routerLink="news">
+    <button class="btn-primary" routerLink="news">
       <mat-icon>add</mat-icon> Nuevo Horario
     </button>
   </div>
 
-  <!-- GRID DEL CALENDARIO -->
-  <div class="calendar-grid">
-    
-    <!-- Columna por cada día -->
-    <div class="day-column" *ngFor="let dia of diasSemana">
+  <div class="calendar-wrapper">
+    <div class="calendar-grid">
       
-      <!-- Título del día -->
-      <div class="day-header">
-        <span class="day-name">{{ dia.nombre }}</span>
-      </div>
-
-      <!-- Contenedor de bloques de tiempo -->
-      <div class="slots-area">
+      <div class="day-column" *ngFor="let dia of diasSemana">
         
-        <!-- Estado vacío (Como en tu diseño "No disponible") -->
-        <div class="empty-state" *ngIf="calendario[dia.id]?.length === 0">
-          No disponible
+        <div class="day-header" [class.today]="false"> <span class="day-name">{{ dia.nombre }}</span>
         </div>
 
-        <!-- Tarjetas de Horario (Rosadas) -->
-        <div class="time-card" *ngFor="let item of calendario[dia.id]">
-          <div class="card-content">
-            <mat-icon class="clock-icon">schedule</mat-icon>
-            <span class="time-text">
-              {{ item.horaInicio | slice:0:5 }} - {{ item.horaFin | slice:0:5 }}
-            </span>
+        <div class="slots-area">
+          
+          <div class="time-card" *ngFor="let item of calendario[dia.id]">
+            <div class="card-content">
+              <mat-icon class="clock-icon">schedule</mat-icon>
+              <div class="time-info">
+                  <span class="time-range">{{ item.horaInicio | slice:0:5 }} - {{ item.horaFin | slice:0:5 }}</span>
+                  </div>
+            </div>
+            
+            <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-options">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item [routerLink]="['edits', item.disponibilidadId]">
+                <mat-icon>edit</mat-icon> Editar
+              </button>
+              <button mat-menu-item (click)="eliminar(item.disponibilidadId)">
+                <mat-icon color="warn">delete</mat-icon> Eliminar
+              </button>
+            </mat-menu>
           </div>
-          
-          <!-- Menú de acciones (Editar/Borrar) -->
-          <button mat-icon-button [matMenuTriggerFor]="menu" class="btn-options">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item [routerLink]="['edits', item.disponibilidadId]">
-              <mat-icon>edit</mat-icon> Editar
-            </button>
-            <button mat-menu-item (click)="eliminar(item.disponibilidadId)">
-              <mat-icon color="warn">delete</mat-icon> Eliminar
-            </button>
-          </mat-menu>
+
+          <div class="empty-slot" *ngIf="!calendario[dia.id] || calendario[dia.id].length === 0">
+            -
+          </div>
+
         </div>
-
       </div>
-    </div>
 
+    </div>
   </div>
 </div>

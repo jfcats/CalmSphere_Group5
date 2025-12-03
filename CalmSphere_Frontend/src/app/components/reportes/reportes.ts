@@ -15,7 +15,16 @@ import { CommonModule } from '@angular/common';
 export class ReportesComponent implements OnInit {
   
   // --- GRÁFICO 1: PROFESIONALES (BARRAS) ---
-  barChartOptions: ChartOptions = { responsive: true };
+  barChartOptions: ChartOptions = { 
+    responsive: true,
+    scales: {
+      y: {
+        ticks: {
+          stepSize: 1 // <--- Esto fuerza a contar de 1 en 1
+        }
+      }
+    }
+  };
   barChartLabels: string[] = [];
   barChartType: ChartType = 'bar';
   barChartLegend = true;
@@ -33,16 +42,23 @@ export class ReportesComponent implements OnInit {
 
   ngOnInit(): void {
     // Cargar Reporte 1
-    this.eS.getReporteProfesional().subscribe(data => {
-      if(data.length > 0) {
-        this.hasDataProfesional = true;
-        this.barChartLabels = data.map(item => item.nombre);
-        this.barChartData = [
-          { data: data.map(item => item.cantidad), label: 'Citas Atendidas', backgroundColor: '#8428ff' }
-        ];
+  this.eS.getReporteProfesional().subscribe({
+      next: (data) => {
+        console.log("Datos recibidos Profesionales:", data); // <--- OJO AQUÍ
+        if(data && data.length > 0) {
+          this.hasDataProfesional = true;
+          this.barChartLabels = data.map(item => item.nombre);
+          this.barChartData = [
+            { data: data.map(item => item.cantidad), label: 'Citas Atendidas', backgroundColor: '#8428ff' }
+          ];
+        } else {
+          console.warn("La lista de profesionales llegó vacía.");
+        }
+      },
+      error: (err) => {
+        console.error("Error al pedir reporte profesionales:", err); // <--- SI SALE ESTO, ES ERROR 401/403
       }
     });
-
     // Cargar Reporte 2
     this.eS.getReportePagos().subscribe(data => {
         if(data.length > 0) {

@@ -1,58 +1,95 @@
 /* Contenedor general */
 .layout-wrapper {
-  background-color: #f8fafc;
+  background-color: #f8fafc; /* Gris muy claro */
   min-height: 100vh;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Espaciado para el dashboard */
 .dashboard-content {
   padding: 40px;
   animation: fadeIn 0.5s ease-out;
+  flex: 1;
 }
 
-/* BANNER DE BIENVENIDA */
+/* Si no es dashboard, el router container ocupa el espacio */
+.router-container {
+    flex: 1;
+}
+
+/* ========================================= */
+/* BANNER DE BIENVENIDA (Dashboard)          */
+/* ========================================= */
 .welcome-card {
-  background: linear-gradient(135deg, #021b20 0%, #1a2e4e 100%);
+  /* Gradiente Morado Oscuro Oficial */
+  background: linear-gradient(135deg, #1e1b4b 0%, #581c87 100%);
   border-radius: 24px;
   padding: 40px 60px;
   color: white;
+  
+  /* Flexbox para alinear Texto a la Izquierda e Imagen a la Derecha */
   display: flex;
   justify-content: space-between;
   align-items: center;
+  
   margin-bottom: 40px;
-  box-shadow: 0 10px 25px rgba(2, 27, 32, 0.2);
+  box-shadow: 0 10px 25px rgba(88, 28, 135, 0.25);
   position: relative;
   overflow: hidden;
+}
+
+.text-section {
+    z-index: 2; /* Asegura que el texto esté encima si se solapan */
+    max-width: 70%; /* Deja espacio para la imagen */
 }
 
 .welcome-card h1 {
   font-size: 2rem;
   margin-bottom: 12px;
   font-weight: 700;
+  margin-top: 0;
 }
 
 .brand {
-  color: #eac0d5; /* Tono secundario CalmSphere */
+  color: #d8b4fe; /* Lila claro para resaltar 'CalmSphere' */
 }
 
 .role-badge {
-  background: #8428ff;
+  background: rgba(255, 255, 255, 0.2);
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 0.9em;
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  border: 1px solid rgba(255,255,255,0.3);
 }
 
+/* IMAGEN FLOTANTE (LOGO GRANDE) */
 .floating-logo {
-  width: 120px;
-  filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
-  opacity: 0.9;
+  height: 120px; /* Tamaño fijo de altura */
+  width: auto;   /* Ancho automático para no deformar */
+  
+  /* Sombra suave para darle profundidad, pero SIN cambiar el color de la imagen */
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+  
+  /* Efecto sutil de opacidad */
+  opacity: 0.95;
+  
+  transition: all 0.3s ease;
+  z-index: 1;
 }
 
-/* GRID DE ACCIONES */
+.welcome-card:hover .floating-logo {
+    transform: scale(1.05) rotate(5deg); /* Efecto divertido al pasar el mouse */
+    opacity: 1;
+}
+
+/* ========================================= */
+/* GRID DE ACCIONES (Tarjetas)               */
+/* ========================================= */
 .actions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -63,7 +100,7 @@
   background: white;
   border-radius: 20px;
   padding: 30px;
-  text-decoration: none;
+  text-decoration: none; /* Quita el subrayado de los links */
   color: #111827;
   border: 1px solid #e5e7eb;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -72,22 +109,25 @@
   align-items: flex-start;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  cursor: pointer; /* Manito al pasar el mouse */
 }
 
 .card-action:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.08);
-  border-color: #8428ff;
+  box-shadow: 0 15px 30px rgba(88, 28, 135, 0.1); /* Sombra morada */
+  border-color: #d8b4fe; /* Borde lila */
 }
 
 .card-action h3 {
   margin: 15px 0 8px;
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
+  color: #1e293b;
 }
 
 .card-action p {
-  color: #6b7280;
+  color: #64748b;
   font-size: 0.95rem;
   margin: 0;
   line-height: 1.5;
@@ -106,12 +146,13 @@
   margin-bottom: 5px;
 }
 
+/* Colores de Iconos */
 .purple { background: linear-gradient(135deg, #a855f7, #7e22ce); }
 .green { background: linear-gradient(135deg, #4ade80, #16a34a); }
 .orange { background: linear-gradient(135deg, #fbbf24, #d97706); }
 .blue { background: linear-gradient(135deg, #60a5fa, #2563eb); }
 
-/* ANIMACIÓN SUAVE */
+/* ANIMACIÓN SUAVE DE ENTRADA */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -120,6 +161,19 @@
 /* Responsive */
 @media (max-width: 768px) {
   .dashboard-content { padding: 20px; }
-  .welcome-card { flex-direction: column; text-align: center; padding: 30px; gap: 20px; }
-  .floating-logo { width: 80px; }
+  
+  .welcome-card { 
+      flex-direction: column; 
+      text-align: center; 
+      padding: 30px; 
+      gap: 20px; 
+  }
+  
+  .text-section {
+      max-width: 100%;
+  }
+  
+  .floating-logo { 
+      height: 80px; /* Más pequeño en celular */
+  }
 }

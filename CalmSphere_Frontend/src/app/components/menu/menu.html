@@ -12,18 +12,24 @@
     </button>
 
     @if(isAdmin()){
-    <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuUsuarios">
-      <mat-icon>group</mat-icon>Usuarios
-    </button>
-    <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuRoles">
-      <mat-icon>admin_panel_settings</mat-icon>Roles
-    </button>
-    <button mat-button class="btn-rojo" routerLink="/reportes">
-      <mat-icon>bar_chart</mat-icon>Reportes
-    </button>
+      <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuUsuarios">
+        <mat-icon>group</mat-icon>Usuarios
+      </button>
+      <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuRoles">
+        <mat-icon>admin_panel_settings</mat-icon>Roles
+      </button>
+      <button mat-button class="btn-rojo" routerLink="/reportes">
+        <mat-icon>bar_chart</mat-icon>Reportes
+      </button>
+      <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuEventos">
+        <mat-icon>event</mat-icon>Agenda
+      </button>
     }
 
     @if(isProfesional()){
+      <button mat-button class="btn-rojo" routerLink="/eventos">
+        <mat-icon>calendar_month</mat-icon> Mi Agenda
+      </button>
       
       <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuServicio">
         <mat-icon>medical_services</mat-icon> Mi Servicio
@@ -35,14 +41,14 @@
     }
 
     @if(isPaciente()){
-    <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuMetodoPago">
-      <mat-icon>credit_card</mat-icon>Pagos
-    </button>
-    }
+      <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuEventos">
+        <mat-icon>event</mat-icon>Citas
+      </button>
 
-    <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuEventos">
-      <mat-icon>event</mat-icon>Agenda
-    </button>
+      <button mat-button class="btn-rojo" [matMenuTriggerFor]="menuMetodoPago">
+        <mat-icon>credit_card</mat-icon>Pagos
+      </button>
+    }
 
     <span class="spacer"></span>
 
@@ -80,14 +86,9 @@
   </mat-menu>
 
   <mat-menu #menuServicio="matMenu">
-      <button mat-menu-item routerLink="/profesional-servicios">
-          <mat-icon>list</mat-icon>Listar
-      </button>
-      
-      <button mat-menu-item routerLink="/profesional-servicios/news">
-          <mat-icon>add</mat-icon>Registrar
-      </button>
-    </mat-menu>
+      <button mat-menu-item routerLink="/profesional-servicios"><mat-icon>list</mat-icon>Listar</button>
+      <button mat-menu-item routerLink="/profesional-servicios/news"><mat-icon>add</mat-icon>Registrar</button>
+  </mat-menu>
   
   <mat-menu #menuSalir="matMenu">
     <div style="padding: 10px 16px; border-bottom: 1px solid #eee; margin-bottom: 5px;">

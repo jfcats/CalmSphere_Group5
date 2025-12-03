@@ -5,7 +5,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { Loginservice } from '../../services/loginservice';
-import { CommonModule } from '@angular/common'; // Importante para el template
+import { CommonModule } from '@angular/common'; 
 
 @Component({
   selector: 'app-menu',
@@ -16,12 +16,11 @@ import { CommonModule } from '@angular/common'; // Importante para el template
 })
 export class Menu implements OnInit {
 
-  roles: string[] = []; // Ahora es un array
+  roles: string[] = []; 
 
   constructor(private loginService: Loginservice) {}
 
   ngOnInit(): void {
-      // Cargamos roles al iniciar
       if(this.verificar()){
         this.roles = this.loginService.showRole();
       }
@@ -35,10 +34,8 @@ export class Menu implements OnInit {
     sessionStorage.clear();
   }
 
-  // ===== LÓGICA MULTI-ROL (CORREGIDA) =====
-  
+  // Comprobaciones seguras con .includes()
   isAdmin() {
-    // Verifica si 'ADMIN' está dentro de la lista de roles
     return this.roles.includes('ADMIN'); 
   }
 

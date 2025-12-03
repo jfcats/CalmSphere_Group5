@@ -7,12 +7,12 @@ import { ProfesionalServicio } from '../../../models/profesionalservicio';
 import { Profesionalservicioservice } from '../../../services/profesionalservicioservice';
 import { Loginservice } from '../../../services/loginservice';
 import { Usuarioservice } from '../../../services/usuarioservice';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-profesionalservicioinsertar',
   standalone: true,
-  imports: [MatFormFieldModule, ReactiveFormsModule, MatButtonModule, MatInputModule],
+  imports: [MatFormFieldModule, ReactiveFormsModule, MatButtonModule, MatInputModule, RouterLink],
   templateUrl: './profesionalservicioinsertar.html',
   styleUrl: './profesionalservicioinsertar.css',
 })

@@ -1,159 +1,183 @@
-.form-wrapper {
+/* Base heredada de usuarioinsert.css */
+.page-wrapper {
   min-height: calc(100vh - 64px);
   display: flex;
   justify-content: center;
-  align-items: center;
-  background-color: #f4f4f5;
-  padding: 20px;
-  font-family: 'Poppins', sans-serif;
+  align-items: center; /* Centrado vertical */
+  background-color: #F4F4F5;
+  padding: 40px 20px;
+  font-family: 'Poppins', system-ui, sans-serif; 
 }
 
-.form-card {
-  background: white;
+.register-card {
+  background: #FFFFFF;
   width: 100%;
-  max-width: 520px;
-  padding: 40px;
+  max-width: 600px; /* Un poco más angosto porque tiene menos campos */
+  padding: 48px 56px;
   border-radius: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-  border: 1px solid #e5e7eb;
+  box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.06);
+  border: 1px solid #E6E6E6;
 }
 
-.form-header {
+.card-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
-.form-header h2 {
-  font-size: 1.8rem;
-  color: #1f2937;
-  margin-bottom: 8px;
+.card-header h2 {
   font-weight: 700;
+  font-size: 32px;
+  color: #333333;
+  margin: 0 0 8px 0;
 }
 
-.form-header p {
-  color: #6b7280;
-  font-size: 0.95rem;
+.subtitle {
+  font-size: 16px;
+  color: #666666;
+  margin: 0;
 }
 
-.field-group label {
-  display: block;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 12px;
-  font-size: 0.9rem;
-}
-
-.custom-select { width: 100%; }
-.custom-select .mat-mdc-text-field-wrapper { background-color: white !important; }
-
-/* CHIPS PERSONALIZADOS */
-.chips-container {
+/* Inputs */
+.input-group {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  margin-bottom: 24px;
 }
 
-.role-chip {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border-radius: 50px;
-  border: 1px solid #e5e7eb;
-  background-color: white;
-  color: #6b7280;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-  font-weight: 500;
-}
-
-.role-chip mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-.role-chip:hover {
-  background-color: #f9fafb;
-  border-color: #d1d5db;
-}
-
-/* Chip Seleccionado */
-.role-chip.selected {
-  background-color: #f3e8ff; /* Fondo lila claro */
-  border-color: #8654FC;      /* Borde morado */
-  color: #6b21a8;             /* Texto morado oscuro */
+.field-label {
+  font-size: 14px;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(134, 84, 252, 0.15);
-}
-
-.role-chip.selected mat-icon {
-  color: #8654FC;
-}
-
-.check-icon {
+  color: #333333;
+  margin-bottom: 8px;
   margin-left: 4px;
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
 }
 
-/* INFO BOX */
-.info-box {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  background-color: #f0f9ff;
-  padding: 12px;
-  border-radius: 12px;
-  color: #0369a1;
-  font-size: 0.85rem;
-  margin-top: 20px;
-  margin-bottom: 30px;
-  border: 1px solid #bae6fd;
+.custom-input { width: 100%; }
+.custom-input .mat-mdc-text-field-wrapper { background-color: white !important; }
+.prefix-icon { color: #999; margin-right: 8px; }
+
+/* CHIPS COMO TARJETAS (NUEVO DISEÑO) */
+.chips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
 }
 
-.info-box mat-icon { font-size: 20px; width: 20px; height: 20px;}
-.info-box p { margin: 0; line-height: 1.4; }
+.role-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    background: white;
+}
 
-/* BOTONES */
+.role-card:hover {
+    border-color: #d8b4fe;
+    background-color: #faf5ff;
+}
+
+/* Estado Seleccionado */
+.role-card.selected {
+    border-color: #8654FC;
+    background-color: #f3e8ff;
+    box-shadow: 0 4px 12px rgba(134, 84, 252, 0.15);
+}
+
+.role-name {
+    font-weight: 600;
+    color: #374151;
+}
+
+.role-card.selected .role-name {
+    color: #581c87;
+}
+
+/* Iconos de Rol */
+.icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.icon-box mat-icon { font-size: 20px; width: 20px; height: 20px; }
+
+.admin { background-color: #1f2937; }
+.profesional { background-color: #8b5cf6; }
+.paciente { background-color: #10b981; }
+
+/* Check Circle */
+.check-circle {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #8654FC;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.check-circle mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+/* BOTONES (Idénticos a Usuario) */
 .actions-container {
   display: flex;
-  gap: 15px;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 32px;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 24px;
 }
 
-.btn-cancel {
-  flex: 1;
-  background: white;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  height: 48px;
-  font-weight: 600;
-  color: #374151;
-  cursor: pointer;
-}
-
-.btn-save {
-  flex: 2;
-  background: #8654FC;
-  color: white;
+.btn-primary {
+  background-color: #8654FC;
+  color: #FFFFFF;
   border: none;
   border-radius: 12px;
+  padding: 0 32px;
   height: 48px;
   font-weight: 600;
+  font-size: 16px;
   cursor: pointer;
+  min-width: 160px;
   box-shadow: 0 4px 12px rgba(134, 84, 252, 0.3);
+  transition: all 0.2s;
 }
 
-.btn-save:disabled {
-  background: #e5e7eb;
-  box-shadow: none;
-  cursor: not-allowed;
-  color: #9ca3af;
+.btn-primary:hover { background-color: #7440e0; transform: translateY(-2px); }
+.btn-primary:disabled { background-color: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn-secondary {
+  background-color: transparent;
+  color: #333333;
+  border: 1.5px solid #333333;
+  border-radius: 12px;
+  padding: 0 32px;
+  height: 48px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  min-width: 120px;
+  transition: all 0.2s;
 }
+
+.btn-secondary:hover { background-color: #f4f4f5; }
 
 @media (max-width: 600px) {
-  .actions-container { flex-direction: column-reverse; }
-  .form-card { padding: 24px; }
+  .register-card { padding: 30px 20px; }
+  .actions-container { flex-direction: column-reverse; gap: 15px; }
+  .btn-primary, .btn-secondary { width: 100%; }
 }

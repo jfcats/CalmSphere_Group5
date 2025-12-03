@@ -1,39 +1,58 @@
-<div class="form-container">
-  <div class="form-card">
+<div class="page-wrapper">
+  
+  <div class="register-card">
+    
+    <div class="card-header">
+      <h2>{{ edicion ? 'Editar Servicio' : 'Nuevo Servicio' }}</h2>
+      <p class="subtitle">Configura los detalles de tu consulta.</p>
+    </div>
 
-    <h2 class="form-title">
-      {{ edicion ? 'Editar Perfil Profesional' : 'Crear Perfil Profesional' }}
-    </h2>
+    <form [formGroup]="form" (submit)="aceptar()">
 
-    <form [formGroup]="form" (submit)="aceptar()" class="form-body">
-
-      <mat-form-field appearance="outline">
-        <mat-label>Nombre del Servicio</mat-label>
-        <input matInput formControlName="nombre" placeholder="Ej: Consulta Psicológica" required />
-        @if (form.get('nombre')?.hasError('required')) {
-          <mat-error>Requerido</mat-error>
-        }
-      </mat-form-field>
-
-      <div style="display: flex; gap: 10px;">
-        <mat-form-field appearance="outline" style="flex: 1;">
-          <mat-label>Duración (min)</mat-label>
-          <input matInput type="number" formControlName="duracionMin" required />
+      <div class="input-group">
+        <label class="field-label">Nombre del Servicio</label>
+        <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+          <mat-icon matPrefix class="prefix-icon"></mat-icon>
+          <input matInput formControlName="nombre" placeholder="Ej: Consulta Psicológica">
+          @if (form.get('nombre')?.hasError('required')) {
+            <mat-error>Requerido</mat-error>
+          }
         </mat-form-field>
+      </div>
 
-        <mat-form-field appearance="outline" style="flex: 1;">
-          <mat-label>Precio (S/)</mat-label>
-          <input matInput type="number" formControlName="precioBase" required />
-        </mat-form-field>
+      <div class="input-row">
+        
+        <div class="input-group">
+          <label class="field-label">Duración (minutos)</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <mat-icon matPrefix class="prefix-icon"></mat-icon>
+            <input matInput type="number" formControlName="duracionMin" placeholder="Ej: 60">
+          </mat-form-field>
+        </div>
+
+        <div class="input-group">
+          <label class="field-label">Precio (S/)</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <mat-icon matPrefix class="prefix-icon"></mat-icon>
+            <input matInput type="number" formControlName="precioBase" placeholder="Ej: 100.00">
+          </mat-form-field>
+        </div>
+
       </div>
 
       <div [hidden]="true">
           <input matInput formControlName="idUsuario" />
       </div>
 
-      <button mat-raised-button color="primary" class="btn-submit" [disabled]="form.invalid">
-        {{ edicion ? 'Actualizar' : 'Guardar Perfil' }}
-      </button>
+      <div class="actions-container">
+        <button type="button" class="btn-secondary" routerLink="/profesional-servicios">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="form.invalid">
+          {{ edicion ? 'Guardar Cambios' : 'Crear Servicio' }}
+        </button>
+      </div>
+
     </form>
   </div>
 </div>

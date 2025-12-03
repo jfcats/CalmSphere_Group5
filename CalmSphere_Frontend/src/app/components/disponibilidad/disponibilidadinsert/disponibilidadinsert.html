@@ -1,40 +1,40 @@
-<div class="form-wrapper">
+<div class="page-wrapper">
   
-  <div class="form-card">
+  <div class="register-card">
     
-    <div class="form-header">
-      <h2>{{ edicion ? 'Modificar Horario' : 'Abrir Nuevo Horario' }}</h2>
-      <p>Configura cuándo estarás disponible para recibir pacientes.</p>
+    <div class="card-header">
+      <h2>{{ edicion ? 'Editar Horario' : 'Nuevo Horario' }}</h2>
+      <p class="subtitle">Define tus horas de atención recurrente.</p>
     </div>
 
     <form [formGroup]="form" (submit)="aceptar()">
 
       <input type="hidden" formControlName="disponibilidadId">
 
-      <div class="field-group">
-        <label class="custom-label">¿Para qué servicio?</label>
-        <mat-form-field appearance="outline" class="full-width custom-field">
-          <mat-select formControlName="idProfesionalServicio" placeholder="Selecciona un servicio" required>
+      <div class="input-group">
+        <label class="field-label">Servicio a ofrecer</label>
+        <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+          <mat-icon matPrefix class="prefix-icon">medical_services</mat-icon>
+          <mat-select formControlName="idProfesionalServicio" placeholder="Selecciona un servicio">
             <mat-option *ngFor="let s of misServicios" [value]="s.idProfesionalServicio">
-              {{ s.nombre }} ({{ s.duracionMin }} min - S/{{ s.precioBase }})
+              {{ s.nombre }} ({{ s.duracionMin }} min)
             </mat-option>
           </mat-select>
-          <mat-icon matSuffix class="icon-suffix">medical_services</mat-icon>
           @if (form.get('idProfesionalServicio')?.hasError('required')) {
-            <mat-error>Debes elegir un servicio</mat-error>
+            <mat-error>Requerido</mat-error>
           }
         </mat-form-field>
       </div>
 
-      <div class="field-group">
-        <label class="custom-label">¿Qué día?</label>
-        <mat-form-field appearance="outline" class="full-width custom-field no-bottom-space">
-          <mat-select formControlName="diaSemana" placeholder="Selecciona el día" required>
+      <div class="input-group">
+        <label class="field-label">Día de la semana</label>
+        <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+          <mat-icon matPrefix class="prefix-icon">calendar_today</mat-icon>
+          <mat-select formControlName="diaSemana" placeholder="Selecciona el día">
             <mat-option *ngFor="let d of diasSemana" [value]="d.value">
               {{ d.viewValue }}
             </mat-option>
           </mat-select>
-          <mat-icon matSuffix class="icon-suffix">calendar_today</mat-icon>
           @if (form.get('diaSemana')?.hasError('required')) {
             <mat-error>Requerido</mat-error>
           }
@@ -43,42 +43,40 @@
 
       <div class="time-grid">
         
-        <div class="field-group">
-          <label class="custom-label">Desde las</label>
-          <mat-form-field appearance="outline" class="custom-field no-bottom-space">
-            <input matInput type="time" formControlName="horaInicio" required />
-            <span matSuffix class="time-suffix">AM/PM</span> 
+        <div class="input-group">
+          <label class="field-label">Desde</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <mat-icon matPrefix class="prefix-icon">schedule</mat-icon>
+            <input matInput type="time" formControlName="horaInicio">
             @if (form.get('horaInicio')?.hasError('required')) {
-              <mat-error>Requerido</mat-error>
+                <mat-error>Requerido</mat-error>
             }
           </mat-form-field>
         </div>
 
-        <div class="field-group">
-          <label class="custom-label">Hasta las</label>
-          <mat-form-field appearance="outline" class="custom-field no-bottom-space">
-            <input matInput type="time" formControlName="horaFin" required />
-            <span matSuffix class="time-suffix">AM/PM</span>
+        <div class="input-group">
+          <label class="field-label">Hasta</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <mat-icon matPrefix class="prefix-icon">logout</mat-icon> <input matInput type="time" formControlName="horaFin">
             @if (form.get('horaFin')?.hasError('required')) {
-              <mat-error>Requerido</mat-error>
+                <mat-error>Requerido</mat-error>
             }
           </mat-form-field>
         </div>
 
       </div>
 
-      <div class="info-box">
-        <mat-icon>info</mat-icon>
-        <small>Los pacientes podrán reservar citas dentro de este rango.</small>
+      <div class="info-note">
+          <mat-icon>info</mat-icon>
+          <small>Este horario se repetirá todos los {{ getDiaNombre(form.value.diaSemana) || 'días seleccionados' }}.</small>
       </div>
 
-      <div class="form-actions">
-        <button type="button" class="btn-cancel" (click)="router.navigate(['disponibilidades'])">
+      <div class="actions-container">
+        <button type="button" class="btn-secondary" routerLink="/disponibilidades">
           Cancelar
         </button>
-        
-        <button type="submit" class="btn-save" [disabled]="form.invalid">
-          {{ edicion ? 'Guardar Cambios' : 'Habilitar Horario' }}
+        <button type="submit" class="btn-primary" [disabled]="form.invalid">
+          {{ edicion ? 'Guardar Cambios' : 'Crear Horario' }}
         </button>
       </div>
 

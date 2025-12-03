@@ -1,45 +1,78 @@
 /* ============================
-   PALETA OFICIAL CALMSPHERE
-============================ */
-:root {
-  --cs-main: #021b20;
-  --cs-secondary: #eac0d5;
-  --cs-accent: #8428ff;
-}
-
-/* ============================
-   TOOLBAR CALMSPHERE
+   TOOLBAR (Barra Superior)
 ============================ */
 .custom-toolbar {
-  background: linear-gradient(90deg, #0b1120 0%, #111e3d 40%, #4f46e5 100%);
+  /* CAMBIO: Gradiente idéntico al banner de bienvenida (Consistency) */
+  background: linear-gradient(135deg, #1e1b4b 0%, #581c87 100%);
+  
+  /* Fallback color por si acaso */
+  color: white !important;
+  
   display: flex;
   align-items: center;
   padding: 0 24px;
   min-height: 64px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25); /* Sombra un poco más marcada */
   position: sticky;
   top: 0;
   z-index: 1000;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
-/* Textos e iconos del Toolbar en blanco */
-.custom-toolbar * {
+/* Forzamos que todos los textos e iconos dentro del toolbar sean blancos */
+.custom-toolbar mat-icon, 
+.custom-toolbar span, 
+.custom-toolbar button {
   color: white !important;
 }
 
 /* ============================
-   BOTONES
+   LOGO
+============================ */
+.logo-container {
+    display: flex; 
+    align-items: center; 
+    margin-right: 30px; 
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+}
+
+.logo-img {
+    /* CAMBIO: Aumentado de 32px a 40px */
+    height: 40px; 
+    margin-right: 12px;
+    /* Filtro para asegurar que se vea blanco */
+    filter: brightness(0) invert(1); 
+    transition: transform 0.3s ease;
+}
+
+/* Efecto sutil al pasar el mouse sobre el logo */
+.logo-container:hover .logo-img {
+    transform: scale(1.05);
+}
+
+.logo-text {
+    font-weight: 700; 
+    letter-spacing: 0.5px; 
+    font-size: 1.3rem; /* Ligeramente más grande también */
+}
+
+/* ============================
+   BOTONES DE NAVEGACIÓN
 ============================ */
 .btn-rojo {
   background-color: transparent;
   border-radius: 8px;
   border: none;
-  margin-right: 4px;
-  padding: 0 12px;
-  height: 36px;
+  margin-right: 8px;
+  padding: 0 14px;
+  height: 38px;
   font-weight: 500;
   letter-spacing: 0.3px;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
 }
 
 .btn-rojo:hover {
@@ -47,36 +80,44 @@
 }
 
 .btn-rojo mat-icon {
-  margin-right: 6px;
+  margin-right: 8px;
   font-size: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .spacer {
   flex: 1 1 auto;
 }
 
+/* ============================
+   BOTÓN "MI CUENTA"
+============================ */
 .btn-user {
-  background: rgba(255, 255, 255, 0.1);
+  /* Fondo semi-transparente */
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 50px;
-  padding: 4px 16px 4px 12px;
-  margin-left: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-  height: 40px;
+  
   display: flex;
   align-items: center;
+  gap: 10px;
+  
+  padding: 0 16px 0 10px;
+  height: 40px;
+  margin-left: 16px;
+  transition: all 0.3s ease;
 }
 
 .btn-user:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: var(--cs-secondary);
-  box-shadow: 0 0 15px rgba(234, 192, 213, 0.3);
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
 }
 
 .btn-user mat-icon {
   font-size: 24px;
-  margin-right: 8px;
-  color: var(--cs-secondary) !important;
+  width: 24px;
+  height: 24px;
 }
 
 .user-label {
@@ -85,38 +126,23 @@
 }
 
 /* ============================
-   CORRECCIÓN DE MENÚS (IMPORTANTE)
+   MENÚS DESPLEGABLES
 ============================ */
-
-/* Fondo BLANCO para legibilidad total */
 ::ng-deep .mat-mdc-menu-panel {
   background-color: #ffffff !important;
-  border-radius: 8px !important;
-  box-shadow: 0px 5px 20px rgba(0,0,0,0.2) !important;
-  min-width: 180px;
+  border-radius: 10px !important;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
 }
 
-/* Texto OSCURO para contraste */
 ::ng-deep .mat-mdc-menu-item {
-  color: #333333 !important;
+  color: #374151 !important;
   font-weight: 500;
 }
 
-/* Iconos con color del tema */
-::ng-deep .mat-mdc-menu-item .mat-icon {
-  color: #5b4dbb !important;
-  margin-right: 12px;
-}
-
-/* Hover suave */
 ::ng-deep .mat-mdc-menu-item:hover {
-  background-color: #f5f3ff !important; /* Lila muy suave */
+  background-color: #f3e8ff !important;
 }
 
-/* Texto pequeño en el menú de usuario */
-::ng-deep .mat-mdc-menu-content small {
-    color: #888 !important;
-}
-::ng-deep .mat-mdc-menu-content span {
-    color: #000 !important;
+::ng-deep .mat-mdc-menu-item mat-icon {
+  color: #581c87 !important;
 }

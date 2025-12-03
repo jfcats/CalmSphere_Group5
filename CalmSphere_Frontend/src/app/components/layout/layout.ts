@@ -1,34 +1,32 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
-import { Menu } from '../menu/menu'; // Asegúrate de que la ruta sea correcta
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Menu } from '../menu/menu'; 
 import { Loginservice } from '../../services/loginservice';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [Menu, RouterOutlet, CommonModule],
+  imports: [Menu, RouterOutlet, CommonModule, RouterLink], // Importamos RouterLink para el HTML
   templateUrl: './layout.html',
   styleUrls: ['./layout.css']
 })
 export class Layout implements OnInit {
   
-  // AHORA ES UN ARRAY PARA SOPORTAR MULTI-ROL
   roles: string[] = []; 
 
   constructor(private lS: Loginservice, private router: Router) {}
 
   ngOnInit(): void {
-    // showRole() ahora devuelve string[] según el cambio en el servicio
     this.roles = this.lS.showRole(); 
   }
 
-  // Lógica para mostrar el Dashboard SOLO si estamos en '/inicio'
+  // Muestra el Dashboard SOLO si la URL es exacta '/inicio'
   showDashboard(): boolean {
     return this.router.url === '/inicio';
   }
 
-  // VALIDACIONES MULTI-ROL (USANDO INCLUDES)
+  // Helpers para el HTML
   isAdmin() { 
     return this.roles.includes('ADMIN'); 
   }

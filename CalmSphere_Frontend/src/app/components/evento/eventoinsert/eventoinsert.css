@@ -1,19 +1,19 @@
-/* === SISTEMA DE DISEÑO UNIFICADO (Igual que Usuario/Pagos) === */
-
+/* Heredado de usuarioinsert.css */
 .page-wrapper {
   min-height: calc(100vh - 64px);
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Alineado arriba para forms largos */
+  align-items: flex-start; /* Alineado arriba para formularios largos */
   background-color: #F4F4F5;
   padding: 40px 20px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Poppins', system-ui, sans-serif; 
 }
 
+/* Tarjeta */
 .register-card {
   background: #FFFFFF;
   width: 100%;
-  max-width: 800px; /* Más ancho porque la agenda necesita espacio */
+  max-width: 800px; /* Un poco más ancho que Usuario por los campos extra */
   padding: 48px 56px;
   border-radius: 24px;
   box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.06);
@@ -24,41 +24,41 @@
 .card-header {
   text-align: center;
   margin-bottom: 40px;
-  border-bottom: 1px solid #f3f4f6;
-  padding-bottom: 20px;
 }
 
 .card-header h2 {
+  font-family: 'Prompt', sans-serif;
   font-weight: 700;
-  font-size: 28px;
-  color: #1f2937;
+  font-size: 32px;
+  color: #333333;
   margin: 0 0 8px 0;
 }
 
 .subtitle {
-  font-size: 15px;
-  color: #6b7280;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  color: #666666;
   margin: 0;
 }
 
-/* Grillas y Inputs */
+/* Layout de Formulario */
 .input-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .field-label {
   font-size: 14px;
   font-weight: 600;
-  color: #374151;
+  color: #333333;
   margin-bottom: 8px;
   margin-left: 4px;
 }
@@ -66,7 +66,7 @@
 .section-title {
   font-size: 16px;
   font-weight: 700;
-  color: #4f46e5;
+  color: #8654FC; /* Color de marca */
   margin-top: 20px;
   margin-bottom: 20px;
   display: flex;
@@ -74,6 +74,7 @@
   gap: 10px;
 }
 
+/* Ajustes de Inputs */
 .custom-input {
   width: 100%;
 }
@@ -82,19 +83,20 @@
   background-color: white !important;
 }
 
+/* Ajuste para mensajes de error */
+.custom-input .mat-mdc-form-field-subscript-wrapper {
+  font-size: 11px; 
+}
+
+.no-bottom-space .mat-mdc-form-field-subscript-wrapper {
+  margin-top: 0;
+}
+
 .prefix-icon {
-  color: #9ca3af;
+  color: #999999;
   margin-right: 8px;
 }
 
-.full-width {
-  grid-column: span 2;
-  width: 100%;
-}
-
-/* === ESTILOS ESPECÍFICOS DE AGENDA === */
-
-/* Precio Badge en el Select */
 .price-badge {
   background-color: #e0e7ff;
   color: #4338ca;
@@ -104,14 +106,7 @@
   font-weight: 700;
 }
 
-.option-row {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  align-items: center;
-}
-
-/* Área de Pago (Destacada) */
+/* PAGO SECTION (Específico de Eventos pero estilizado igual) */
 .payment-section {
   background-color: #fafafa;
   border: 1px solid #e5e7eb;
@@ -131,11 +126,10 @@
 
 .total-price {
   font-size: 1.5rem;
-  font-weight: 800;
-  color: #4f46e5;
+  font-weight: 700;
+  color: #8654FC;
 }
 
-/* Stripe Container */
 .stripe-container {
   background: white;
   border: 1px solid #d1d5db;
@@ -144,75 +138,105 @@
   margin-top: 10px;
 }
 
-/* Botones */
+/* BOTONES */
 .actions-container {
   display: flex;
-  justify-content: flex-end; /* Alineados a la derecha es común en wizards */
-  gap: 16px;
+  justify-content: center; /* Centrados como en Usuario */
+  gap: 24px;
   margin-top: 40px;
-  padding-top: 20px;
   border-top: 1px solid #f3f4f6;
+  padding-top: 30px;
 }
 
+/* Botón Primario (Guardar/Pagar) */
 .btn-primary {
   background-color: #8654FC;
-  color: white;
+  color: #FFFFFF;
   border: none;
   border-radius: 12px;
-  padding: 0 40px;
+  padding: 0 32px;
   height: 48px;
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 180px;
   box-shadow: 0 4px 12px rgba(134, 84, 252, 0.3);
-  transition: all 0.3s;
 }
 
 .btn-primary:hover {
   background-color: #7440e0;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .btn-primary:disabled {
-  background-color: #e5e7eb;
-  color: #9ca3af;
+  background-color: #CCCCCC;
   box-shadow: none;
   cursor: not-allowed;
+  transform: none;
 }
 
+/* Botón Secundario (Cancelar/Volver) */
 .btn-secondary {
-  background-color: white;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background-color: transparent;
+  color: #333333;
+  border: 1.5px solid #333333;
   border-radius: 12px;
   padding: 0 32px;
   height: 48px;
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  min-width: 140px;
 }
 
 .btn-secondary:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
+  background-color: #F4F4F5;
+  border-color: #000000;
+}
+
+/* Botón Cancelar Cita (Rojo - Específico) */
+.btn-cancel {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1.5px solid #fecaca;
+  border-radius: 12px;
+  padding: 0 24px;
+  height: 48px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: auto; /* Empuja a la izquierda */
+}
+
+.btn-cancel:hover {
+  background-color: #fecaca;
+  color: #7f1d1d;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .input-row {
     grid-template-columns: 1fr;
-  }
-  .full-width {
-    grid-column: span 1;
+    gap: 0;
   }
   .register-card {
-    padding: 24px;
+    padding: 32px 24px;
   }
   .actions-container {
     flex-direction: column-reverse;
+    gap: 16px;
   }
-  .btn-primary, .btn-secondary {
+  .btn-primary, .btn-secondary, .btn-cancel {
     width: 100%;
+    margin-right: 0;
+    justify-content: center;
   }
 }

@@ -6,13 +6,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router'; // Agregado RouterLink
 
-// Modelos
 import { Disponibilidad } from '../../../models/disponibilidad';
 import { ProfesionalServicio } from '../../../models/profesionalservicio';
 
-// Servicios
 import { Disponibilidadservice } from '../../../services/disponibilidadservice';
 import { Profesionalservicioservice } from '../../../services/profesionalservicioservice';
 import { Loginservice } from '../../../services/loginservice';
@@ -23,7 +21,7 @@ import { Usuarioservice } from '../../../services/usuarioservice';
   standalone: true,
   imports: [
     ReactiveFormsModule, CommonModule, MatFormFieldModule, 
-    MatButtonModule, MatInputModule, MatSelectModule, MatIconModule
+    MatButtonModule, MatInputModule, MatSelectModule, MatIconModule, RouterLink
   ],
   templateUrl: './disponibilidadinsert.html',
   styleUrl: './disponibilidadinsert.css',
@@ -34,7 +32,6 @@ export class Disponibilidadinsert implements OnInit {
   id: number = 0;
   edicion: boolean = false;
   
-  // CAMBIO: Ahora es una lista para que el usuario elija
   misServicios: ProfesionalServicio[] = [];
 
   diasSemana = [
@@ -55,10 +52,9 @@ export class Disponibilidadinsert implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // CAMBIO: Agregamos idProfesionalServicio al formulario visible
     this.form = this.formBuilder.group({
       disponibilidadId: [''],
-      idProfesionalServicio: ['', Validators.required], // El usuario debe elegir uno
+      idProfesionalServicio: ['', Validators.required],
       diaSemana: ['', Validators.required],
       horaInicio: ['', Validators.required],
       horaFin: ['', Validators.required],
@@ -70,7 +66,6 @@ export class Disponibilidadinsert implements OnInit {
       this.init();
     });
 
-    // Cargamos la lista de servicios del doctor logueado
     this.cargarMisServicios();
   }
 
@@ -80,7 +75,6 @@ export class Disponibilidadinsert implements OnInit {
         this.uS.listByEmail(email).subscribe({
             next: (myUser) => {
                 if (myUser) {
-                    // Buscamos TODOS los servicios de este usuario
                     this.psS.searchByUsuario(myUser.idUsuario).subscribe(servicios => {
                         this.misServicios = servicios;
                         
@@ -102,8 +96,6 @@ export class Disponibilidadinsert implements OnInit {
       this.disp.diaSemana = this.form.value.diaSemana;
       this.disp.horaInicio = this.form.value.horaInicio;
       this.disp.horaFin = this.form.value.horaFin;
-      
-      // CAMBIO: Tomamos el valor que el usuario eligió en el Select
       this.disp.idProfesionalServicio = this.form.value.idProfesionalServicio;
 
       const request = this.edicion ? this.dS.update(this.disp) : this.dS.insert(this.disp);
@@ -114,13 +106,17 @@ export class Disponibilidadinsert implements OnInit {
       });
     }
   }
+  
+  getDiaNombre(val: number): string {
+    const dia = this.diasSemana.find(d => d.value === val);
+    return dia ? dia.viewValue + 's' : ''; // Retorna "Lunes", "Martes", etc.
+  }
 
   init() {
     if (this.edicion) {
       this.dS.listId(this.id).subscribe((data) => {
         this.form.setValue({
           disponibilidadId: data.disponibilidadId,
-          // Al editar, pre-seleccionamos el servicio que ya tenía este horario
           idProfesionalServicio: data.idProfesionalServicio, 
           diaSemana: data.diaSemana,
           horaInicio: data.horaInicio ? data.horaInicio.substring(0, 5) : '',

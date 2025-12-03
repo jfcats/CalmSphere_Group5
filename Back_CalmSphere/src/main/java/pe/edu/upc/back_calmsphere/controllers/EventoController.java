@@ -231,12 +231,19 @@ public class EventoController {
 
     @GetMapping("/reporte-profesional")
     public List<ReporteDTO> obtenerReporteProfesional() {
-        List<String[]> fila = service.reporteProfesional();
+        // 1. Recibimos Object[]
+        List<Object[]> fila = service.reporteProfesional();
         List<ReporteDTO> dtoLista = new ArrayList<>();
-        for (String[] columna : fila) {
+
+        for (Object[] columna : fila) {
             ReporteDTO dto = new ReporteDTO();
-            dto.setNombre(columna[0]);
-            dto.setCantidad(Integer.parseInt(columna[1]));
+            // 2. Casteamos los datos
+            dto.setNombre((String) columna[0]); // El nombre sigue siendo String
+
+            // 3. El conteo viene como Long en JPQL, lo convertimos a int
+            Long cantidad = (Long) columna[1];
+            dto.setCantidad(cantidad.intValue());
+
             dtoLista.add(dto);
         }
         return dtoLista;

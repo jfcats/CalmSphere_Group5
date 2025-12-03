@@ -37,13 +37,20 @@ import { Disponibilidadservice } from '../../../services/disponibilidadservice';
 })
 export class Eventoinsert implements OnInit {
   @ViewChild(StripeCardComponent) card!: StripeCardComponent;
+  
+  soloLectura: boolean = false;
+  esProfesional: boolean = false; // <--- Nueva bandera
+  
+  // Datos extra para la vista de detalle
+  nombrePaciente: string = '';
+  edadPaciente: string = 'No especificada';
 
   form: FormGroup = new FormGroup({});
   id: number = 0;
   edicion: boolean = false;
   loading: boolean = false;
 
-  // Datos
+  // Datos Listas
   todosLosServicios: any[] = []; 
   listaProfesionales: any[] = [];
   serviciosDelDoctor: any[] = [];
@@ -59,6 +66,7 @@ export class Eventoinsert implements OnInit {
   pagarAhora: boolean = false;
   mostrarStripe: boolean = false;
 
+  // Stripe Config
   cardOptions: StripeCardElementOptions = {
     style: {
       base: {
@@ -88,7 +96,11 @@ export class Eventoinsert implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // 1. Inicializar Formulario
+    // 1. Detectar Rol
+    const roles = this.loginService.showRole();
+    this.esProfesional = roles.includes('PROFESIONAL');
+
+    // 2. Inicializar Formulario
     this.form = this.formBuilder.group({
       id: [''],
       idUsuario: ['', Validators.required],
@@ -102,11 +114,22 @@ export class Eventoinsert implements OnInit {
       pagarAhoraCheck: [false]
     });
 
-    // 2. Cargar Listas y luego verificar parámetros
+    // 3. Detectar si es solo lectura
+    this.route.queryParams.subscribe(params => {
+        this.soloLectura = params['readonly'] === 'true';
+    });
+
+    // 4. Cargar Listas
     this.cargarListasMaestras().then(() => {
         this.route.params.subscribe((data: Params) => {
           this.id = data['id'];
           this.edicion = data['id'] != null;
+
+          if (this.esProfesional && !this.edicion) {
+             alert("Acceso denegado: Los profesionales solo pueden gestionar citas existentes.");
+             this.router.navigate(['/eventos']);
+             return; // Detenemos la ejecución
+          }
           
           if (this.edicion) {
             this.cargarDatosParaEditar();
@@ -117,11 +140,10 @@ export class Eventoinsert implements OnInit {
     });
   }
 
-  // Promise para asegurar que los selects tengan opciones antes de setear valores
   cargarListasMaestras(): Promise<void> {
     return new Promise((resolve) => {
         let cargas = 0;
-        const totalCargas = 2; // Servicios y Pagos
+        const totalCargas = 2; 
         const check = () => { cargas++; if(cargas >= totalCargas) resolve(); };
 
         this.psS.list().subscribe({
@@ -152,27 +174,40 @@ export class Eventoinsert implements OnInit {
     });
   }
 
-  // --- LÓGICA DE EDICIÓN ---
   cargarDatosParaEditar() {
     this.eS.listId(this.id).subscribe(data => {
       
-      // 1. Encontrar el doctor asociado al servicio de la cita
       const servicio = this.todosLosServicios.find(s => s.idProfesionalServicio === data.idProfesionalServicio);
       const idDoctor = servicio ? servicio.idUsuario : null;
 
-      // 2. Parsear Fecha y Hora
-      // El backend manda "2025-12-08T19:00:00"
       const fechaObj = new Date(data.inicio);
-      const horaStr = data.inicio.split('T')[1].substring(0, 5); // "19:00"
+      const horaStr = data.inicio.split('T')[1].substring(0, 5); 
 
-      // 3. Preparar selects dependientes
       if (idDoctor) {
           this.serviciosDelDoctor = this.todosLosServicios.filter(s => s.idUsuario === idDoctor);
-          // Forzamos el slot de tiempo actual en la lista para que no salga vacío
           this.slotsDeTiempo = [horaStr]; 
       }
 
-      // 4. Rellenar el formulario
+      // --- RECUPERAR DATOS DEL PACIENTE ---
+      // Si soy profesional y estoy viendo detalles, necesito saber quién es el paciente
+      if (this.soloLectura && this.esProfesional) {
+        this.uS.listId(data.idUsuario).subscribe(paciente => {
+             this.nombrePaciente = `${paciente.nombre} ${paciente.apellido}`;
+             // Calculamos edad si existe fecha de nacimiento
+             if (paciente.fechaNacimiento) {
+                const nacimiento = new Date(paciente.fechaNacimiento);
+                const hoy = new Date();
+                let edad = hoy.getFullYear() - nacimiento.getFullYear();
+                const m = hoy.getMonth() - nacimiento.getMonth();
+                if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+                    edad--;
+                }
+                this.edadPaciente = `${edad} años`;
+             }
+        });
+      }
+
+      // Rellenar form
       this.form.patchValue({
         id: data.idEvento,
         idUsuario: data.idUsuario,
@@ -185,15 +220,12 @@ export class Eventoinsert implements OnInit {
         idMetodoPago: data.idMetodoPago
       });
 
-      // 5. BLOQUEAR CAMPOS (UX: Solo editable el motivo)
-      this.form.get('idDoctorSeleccionado')?.disable();
-      this.form.get('idProfesionalServicio')?.disable();
-      this.form.get('fecha')?.disable();
-      this.form.get('horaInicio')?.disable();
-      this.form.get('pagarAhoraCheck')?.disable(); 
-      this.form.get('idMetodoPago')?.disable();
-      
-      this.form.get('motivo')?.enable(); // Asegurar que motivo sí se pueda tocar
+      this.form.disable(); 
+
+      // Si no es solo lectura (es decir, es una edición real), permitimos editar motivo
+      if (!this.soloLectura) {
+         this.form.get('motivo')?.enable();
+      }
     });
   }
 
@@ -206,14 +238,29 @@ export class Eventoinsert implements OnInit {
     }
   }
 
+  // --- NUEVA FUNCIÓN DE CANCELAR ---
+  cancelarCita() {
+    if (confirm("¿Estás seguro de que deseas cancelar esta cita? Esta acción no se puede deshacer.")) {
+        this.eS.delete(this.id).subscribe({
+            next: () => {
+                alert("Cita cancelada correctamente.");
+                this.router.navigate(['eventos']);
+            },
+            error: (err) => alert("Error al cancelar: " + err.message)
+        });
+    }
+  }
+
   // --- TEXTOS DINÁMICOS ---
   get titulo(): string {
+    if (this.soloLectura) return 'Detalle de la Cita';
     return this.edicion ? 'Editar Cita' : 'Reservar Cita';
   }
 
   get subtitulo(): string {
+    if (this.soloLectura) return 'Información completa de la sesión.';
     return this.edicion 
-      ? 'Modifica los detalles de tu sesión. Solo el motivo es editable.' 
+      ? 'Modifica los detalles. Solo el motivo es editable.' 
       : 'Agenda tu sesión con nuestros especialistas.';
   }
 
@@ -223,7 +270,6 @@ export class Eventoinsert implements OnInit {
   }
 
   // --- MÉTODOS AUXILIARES ---
-  
   alElegirDoctor(idDoctor: number) {
     this.serviciosDelDoctor = this.todosLosServicios.filter(s => s.idUsuario === idDoctor);
     this.form.get('idProfesionalServicio')?.enable();
@@ -270,7 +316,6 @@ export class Eventoinsert implements OnInit {
     this.slotsDeTiempo = [];
     const diaSemana = fecha.getDay() || 7;
     const idServicioActual = this.form.get('idProfesionalServicio')?.value;
-
     if (!idServicioActual) return;
 
     const disponibilidades = this.horariosDisponiblesDelDoctor.filter(
@@ -316,13 +361,10 @@ export class Eventoinsert implements OnInit {
   aceptar(): void {
     if (this.form.invalid) return;
     this.loading = true;
-
-    // Si es edición, ignoramos Stripe en esta pantalla
     if (this.edicion) {
         this.guardarCita(''); 
         return;
     }
-
     if (this.pagarAhora && this.mostrarStripe) {
       this.stripeService.createToken(this.card.element).subscribe((result) => {
         if (result.token) {
@@ -339,8 +381,6 @@ export class Eventoinsert implements OnInit {
 
   guardarCita(tokenPago: string) {
     const formValue = this.form.getRawValue();
-
-    // Reconstruimos la fecha solo para cumplir con el formato (aunque el backend ignore en update)
     const fechaBase = new Date(formValue.fecha); 
     const [hora, min] = formValue.horaInicio.split(':');
     fechaBase.setHours(Number(hora), Number(min), 0);
@@ -350,11 +390,9 @@ export class Eventoinsert implements OnInit {
         idUsuario: Number(formValue.idUsuario),
         idProfesionalServicio: Number(formValue.idProfesionalServicio),
         idMetodoPago: this.pagarAhora ? Number(formValue.idMetodoPago) : 1,
-        
         inicio: this.toLocalISO(fechaBase),
-        fin: this.toLocalISO(new Date(fechaBase.getTime() + 60*60000)), // Dummy end
+        fin: this.toLocalISO(new Date(fechaBase.getTime() + 60*60000)), 
         monto: String(formValue.monto), 
-        
         estado: true,
         pagado: !!tokenPago,
         motivo: formValue.motivo,

@@ -15,7 +15,7 @@ public interface IEventoService {
     public List<Evento> findByProfesionalServicio(int idProfesionalServicio);
     public List<Evento> findByMetodoPago(int idMetodoPago);
 
-    public List<String[]> reporteProfesional();
+    public List<Object[]> reporteProfesional();
     public List<String[]> reporteMetodoPago();
 
     public int contarCitasEnHorario(int idDoc, LocalDateTime inicio, LocalDateTime fin);

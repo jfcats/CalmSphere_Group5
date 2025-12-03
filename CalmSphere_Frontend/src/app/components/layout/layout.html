@@ -1,29 +1,23 @@
 <div class="layout-wrapper">
-    <!-- 1. BARRA DE NAVEGACIÓN (Siempre visible) -->
     <app-menu></app-menu>
 
-    <!-- 2. CONTENIDO DEL DASHBOARD / INICIO -->
-    <!-- Se oculta automáticamente cuando navegas a /usuarios, /eventos, etc. -->
     <div class="dashboard-content" *ngIf="showDashboard()">
         
-        <!-- BANNER DE BIENVENIDA -->
         <div class="welcome-card">
             <div class="text-section">
                 <h1>Hola, bienvenido a <span class="brand">CalmSphere</span></h1>
                 <p>
-                    Estás conectado como <span class="role-badge">{{ roles }}</span>.
+                    Estás conectado como: 
+                    <span class="role-badge">{{ roles.join(' / ') }}</span>
                     <br>
                     ¿Qué te gustaría gestionar el día de hoy?
                 </p>
             </div>
-            <!-- Logo flotante decorativo -->
             <img src="assets/img/logoCalmSphere.png" alt="Logo" class="floating-logo">
         </div>
 
-        <!-- GRID DE ACCIONES RÁPIDAS (Lógica de roles) -->
         <div class="actions-grid">
 
-            <!-- PACIENTE -->
             <ng-container *ngIf="isPaciente()">
                 <a routerLink="/eventos/news" class="card-action">
                     <div class="icon-circle purple">📅</div>
@@ -42,13 +36,19 @@
                 </a>
             </ng-container>
 
-            <!-- PROFESIONAL -->
             <ng-container *ngIf="isProfesional()">
                 <a routerLink="/eventos" class="card-action">
                     <div class="icon-circle purple">👨‍⚕️</div>
                     <h3>Mi Agenda</h3>
-                    <p>Revisa tus pacientes del día.</p>
+                    <p>Revisa tus pacientes y citas del día.</p>
                 </a>
+
+                <a routerLink="/profesional-servicios" class="card-action">
+                    <div class="icon-circle green">🩺</div>
+                    <h3>Mis Servicios</h3>
+                    <p>Administra los servicios que ofreces.</p>
+                </a>
+
                 <a routerLink="/disponibilidades" class="card-action">
                     <div class="icon-circle blue">⏰</div>
                     <h3>Disponibilidad</h3>
@@ -56,7 +56,6 @@
                 </a>
             </ng-container>
 
-            <!-- ADMIN -->
             <ng-container *ngIf="isAdmin()">
                 <a routerLink="/usuarios" class="card-action">
                     <div class="icon-circle orange">👥</div>
@@ -68,15 +67,17 @@
                     <h3>Roles</h3>
                     <p>Configurar permisos.</p>
                 </a>
-                <!-- Agrega más tarjetas de admin si necesitas -->
+                <a routerLink="/reportes" class="card-action">
+                    <div class="icon-circle purple">📊</div>
+                    <h3>Reportes</h3>
+                    <p>Estadísticas del sistema.</p>
+                </a>
             </ng-container>
 
         </div>
     </div>
 
-    <!-- 3. RENDERIZADOR DE RUTAS HIJAS (Usuarios, Eventos, Roles, etc.) -->
-    <!-- Esto se llena cuando showDashboard() es falso -->
-    <div class="router-container">
+    <div class="router-container" *ngIf="!showDashboard()">
         <router-outlet></router-outlet>
     </div>
 </div>
