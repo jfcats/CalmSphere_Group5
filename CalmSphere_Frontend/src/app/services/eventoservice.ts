@@ -74,7 +74,7 @@ export class Eventoservice {
   }
 
   // --- MAPEO PARA UPDATE ---
-  private toDTOPlano(e: Evento): any {
+  private toDTOPlano(e: any): any { 
     return {
       idEvento: e.idEvento,
       idUsuario: e.idUsuario,
@@ -83,9 +83,18 @@ export class Eventoservice {
       inicio: e.inicio,
       fin: e.fin,
       estado: e.estado,
-      pagado: e.pagado, // <--- INCLUIMOS PAGADO
+      pagado: e.pagado, 
       motivo: e.motivo,
       monto: e.monto.toString(),
+      tokenPago: e.tokenPago ? e.tokenPago : null 
     };
   }
+
+  // NUEVO MÉTODO PARA PAGAR
+  pagar(idEvento: number, token: string) {
+    // El backend espera un Map con "token", así que enviamos un objeto JSON
+    const body = { token: token }; 
+    return this.http.post(`${this.url}/pagar/${idEvento}`, body, { responseType: 'text' });
+  }
+
 }

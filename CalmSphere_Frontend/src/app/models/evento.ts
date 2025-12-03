@@ -9,4 +9,5 @@ export class Evento {
   pagado: boolean = false; 
   motivo: string = '';
   monto: number = 0;
+  tokenPago?: string;
 }

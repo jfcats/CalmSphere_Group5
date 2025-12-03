@@ -11,8 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import pe.edu.upc.back_calmsphere.dtos.EventoDTOInsert; // DTO para Insertar/Editar
-import pe.edu.upc.back_calmsphere.dtos.EventoDTOList;   // DTO para Listar
+import pe.edu.upc.back_calmsphere.dtos.EventoDTOInsert;
+import pe.edu.upc.back_calmsphere.dtos.EventoDTOList;
 import pe.edu.upc.back_calmsphere.dtos.ReporteDTO;
 import pe.edu.upc.back_calmsphere.entities.Evento;
 import pe.edu.upc.back_calmsphere.entities.MetodoPago;
@@ -39,7 +39,7 @@ public class EventoController {
 
     private String STRIPE_API_KEY = "sk_test_51SZbSORxQ8RAFGuoDIxgNHhc0oATsTUHeNPEkatQxYAajARDaHeeGOnKcZ7IwepAabTtjYlIB341hFuM7WKZsM3f001OoTy4R9";
 
-    // --- CONVERSOR PARA LISTAR (Muestra nombres bonitos en la tabla) ---
+    // --- CONVERSORES ---
     private EventoDTOList toDTOList(Evento e){
         EventoDTOList dto = new EventoDTOList();
         dto.setIdEvento(e.getIdEvento());
@@ -63,26 +63,20 @@ public class EventoController {
         dto.setInicio(e.getInicio());
         dto.setFin(e.getFin());
         dto.setEstado(e.isEstado());
-        dto.setPagado(e.isPagado()); // ¡Crucial para que la lista se vea verde!
+        dto.setPagado(e.isPagado());
         dto.setMotivo(e.getMotivo());
         dto.setMonto(e.getMonto());
         return dto;
     }
 
-    // --- CONVERSOR PARA EDITAR (Devuelve IDs para rellenar el formulario) ---
     private EventoDTOInsert toDTOInsert(Evento e) {
         EventoDTOInsert dto = new EventoDTOInsert();
         dto.setIdEvento(e.getIdEvento());
-
-        // Enviamos IDs puros para que el <mat-select> funcione
         if (e.getIdUsuario() != null) dto.setIdUsuario(e.getIdUsuario().getIdUsuario());
         if (e.getProfesionalServicio() != null) dto.setIdProfesionalServicio(e.getProfesionalServicio().getIdProfesionalServicio());
         if (e.getIdMetodoPago() != null) dto.setIdMetodoPago(e.getIdMetodoPago().getIdMetodoPago());
-
-        // Convertimos fechas a String para el Frontend
         dto.setInicio(e.getInicio().toString());
         dto.setFin(e.getFin().toString());
-
         dto.setMonto(String.valueOf(e.getMonto()));
         dto.setEstado(e.isEstado());
         dto.setPagado(e.isPagado());
@@ -108,9 +102,6 @@ public class EventoController {
         return e;
     }
 
-    // =========================================================
-    // 🔒 LISTAR
-    // =========================================================
     @GetMapping
     public ResponseEntity<?> listar(){
         try {
@@ -142,9 +133,6 @@ public class EventoController {
         }
     }
 
-    // =========================================================
-    // ➕ INSERTAR
-    // =========================================================
     @PostMapping
     public ResponseEntity<?> insertar(@RequestBody EventoDTOInsert dto) {
         try {
@@ -182,29 +170,19 @@ public class EventoController {
         }
     }
 
-    // =========================================================
-    // ✏️ ACTUALIZAR (SOLO MOTIVO)
-    // =========================================================
     @PutMapping
     public ResponseEntity<?> modificar(@RequestBody EventoDTOInsert dto) {
         try {
             Evento eventoOriginal = service.listId(dto.getIdEvento());
             if (eventoOriginal == null) return ResponseEntity.notFound().build();
-
-            // Solo actualizamos el motivo
             eventoOriginal.setMotivo(dto.getMotivo());
-
             service.update(eventoOriginal);
             return ResponseEntity.ok("Cita actualizada (solo motivo).");
-
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar");
         }
     }
 
-    // =========================================================
-    // 💳 PAGAR (ENDPOINT ESPECIAL)
-    // =========================================================
     @PostMapping("/pagar/{id}")
     public ResponseEntity<?> pagarCita(@PathVariable("id") int id, @RequestBody Map<String, String> body) {
         try {
@@ -226,7 +204,7 @@ public class EventoController {
                     .build();
             Charge charge = Charge.create(params);
 
-            // 🚨 SOLUCIÓN DE HIBERNATE: Usamos el método que fuerza el UPDATE SQL
+            // 🚨 ACTUALIZACIÓN FORZADA EN BD 🚨
             service.marcarComoPagado(id);
 
             return ResponseEntity.ok("Pago registrado exitosamente. ID Transacción: " + charge.getId());
@@ -238,16 +216,10 @@ public class EventoController {
         }
     }
 
-    // =========================================================
-    // 🔍 OBTENER POR ID (SOLUCIÓN PARA EDICIÓN)
-    // =========================================================
     @GetMapping("/{id}")
     public ResponseEntity<?> listarId(@PathVariable("id") int id){
         Evento e = service.listId(id);
         if(e==null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe ID: "+id);
-
-        // ✅ CORRECCIÓN: Devolvemos toDTOInsert (con IDs) en lugar de toDTOList (con Nombres)
-        // Esto permite que el formulario de edición reciba los datos correctos.
         return ResponseEntity.ok(toDTOInsert(e));
     }
 
@@ -257,7 +229,6 @@ public class EventoController {
         return ResponseEntity.ok("Eliminado");
     }
 
-    // --- REPORTES ---
     @GetMapping("/reporte-profesional")
     public List<ReporteDTO> obtenerReporteProfesional() {
         List<String[]> fila = service.reporteProfesional();

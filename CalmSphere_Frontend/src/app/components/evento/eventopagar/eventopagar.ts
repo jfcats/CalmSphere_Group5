@@ -77,29 +77,21 @@ export class Eventopagar implements OnInit {
     });
   }
 
-  confirmarPagoEnBackend(token: string) {
-    // Usamos el mismo objeto evento pero le inyectamos el token y cambiamos estado
-    // NOTA: Para no romper tu backend actual, enviamos el objeto completo como un update
-    // PERO asegurándonos de enviar el tokenPago para que el backend procese el cobro
-    
-    // Convertimos a any para agregar tokenPago que no está en el modelo base
-    const payload: any = { ...this.evento, tokenPago: token, pagado: true };
-    
-    // IMPORTANTE: Tu backend 'update' debe estar preparado para recibir tokenPago
-    // Si no, tendremos que usar 'insert' o crear un endpoint nuevo. 
-    // Por ahora intentemos reutilizar update si modificaste el backend para procesar cobros en update.
-    // SI NO: Lo mejor es llamar a un endpoint específico.
-    
-    // OPCIÓN SEGURA: Reutilizar lógica de update
-    this.eS.update(payload).subscribe({
-      next: () => {
+confirmarPagoEnBackend(token: string) {
+    // YA NO usamos 'update', usamos el endpoint específico de pago
+    this.eS.pagar(this.idEvento, token).subscribe({
+      next: (resp) => {
+        // La respuesta del backend es un mensaje de éxito
+        console.log("Respuesta backend:", resp); 
         alert("¡Pago Exitoso! Cita confirmada.");
         this.router.navigate(['eventos']);
       },
       error: (err) => {
         this.loading = false;
-        console.error(err);
-        alert("Error al procesar el pago en el servidor.");
+        console.error("Error backend:", err);
+        // Manejo de errores más amigable
+        const mensaje = err.error || "Error al procesar el pago en el servidor.";
+        alert(mensaje);
       }
     });
   }
