@@ -75,7 +75,7 @@ export class Eventoinsert implements OnInit {
         fontWeight: '400',
         fontFamily: '"Inter", sans-serif',
         fontSize: '16px',
-        '::placeholder': { color: '#aab7c4' }
+        '::placeholder': { color: '#aab7c4' },
       }
     },
     hidePostalCode: true

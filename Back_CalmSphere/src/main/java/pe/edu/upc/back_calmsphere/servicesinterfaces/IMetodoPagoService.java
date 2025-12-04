@@ -11,4 +11,6 @@ public interface IMetodoPagoService {
     public void delete(int id);
     public MetodoPago listId(int id);
 
+    // NUEVO
+    public List<MetodoPago> listByUserId(int idUsuario);
 }
