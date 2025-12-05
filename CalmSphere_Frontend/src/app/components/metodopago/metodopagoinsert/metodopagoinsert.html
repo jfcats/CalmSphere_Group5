@@ -1,0 +1,58 @@
+<div class="page-wrapper">
+  
+  <div class="register-card">
+    
+    <div class="card-header">
+      <h2>{{ titulo }}</h2>
+      <p class="subtitle">{{ subtitulo }}</p>
+    </div>
+
+    <form [formGroup]="form" (submit)="aceptar()">
+      
+      <input type="hidden" formControlName="idMetodoPago">
+
+      <div class="input-group">
+        <label class="field-label">Nombre del Método</label>
+        <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+          <mat-icon matPrefix class="prefix-icon">payments</mat-icon>
+          <input matInput placeholder="Ej. Visa Débito" formControlName="nombre">
+          @if (form.get('nombre')?.hasError('required') && form.get('nombre')?.touched) {
+            <mat-error>El nombre es requerido</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="input-group">
+        <label class="field-label">Tipo / Categoría</label>
+        <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+          <mat-icon matPrefix class="prefix-icon">category</mat-icon>
+          <input matInput placeholder="Ej. Tarjeta, Billetera Digital, Efectivo" formControlName="tipo">
+          @if (form.get('tipo')?.hasError('required') && form.get('tipo')?.touched) {
+            <mat-error>El tipo es requerido</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="input-group">
+        <label class="field-label">Estado</label>
+        <div class="radio-wrapper">
+          <mat-radio-group formControlName="estado" color="primary">
+            <mat-radio-button [value]="true">Activo</mat-radio-button>
+            <mat-radio-button [value]="false">Inactivo</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+
+      <div class="actions-container">
+        <button type="button" class="btn-secondary" (click)="cancel()">
+          Cancelar
+        </button>
+        
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || isSaving">
+          {{ textoBoton }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

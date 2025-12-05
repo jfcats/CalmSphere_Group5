@@ -1,0 +1,337 @@
+/* ---------- RESET SIMPLE ---------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.page {
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: #ffffff;
+  color: #111827;
+}
+
+/* ---------- NAVBAR LANDING ---------- */
+.cs-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 72px;
+  background: #ffffffcc;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+
+.cs-logo-img {
+  width: 70px;
+}
+
+.cs-nav-links {
+  display: flex;
+  gap: 32px;
+  font-size: 14px;
+}
+
+.cs-nav-links a {
+  text-decoration: none;
+  color: #374151;
+  font-weight: 500;
+}
+
+.cs-nav-links a:hover {
+  color: #8b5cf6;
+}
+
+.cs-auth {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ---------- BOTONES ---------- */
+.cs-btn {
+  border-radius: 999px;
+  padding: 9px 18px;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.cs-btn-primary {
+  background: linear-gradient(90deg, #6d28d9, #a855f7);
+  color: #ffffff;
+  box-shadow: 0 10px 25px rgba(129, 140, 248, 0.5);
+}
+
+.cs-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 30px rgba(129, 140, 248, 0.6);
+}
+
+.cs-btn-outline {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+.cs-btn-outline:hover {
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+/* ---------- HERO ---------- */
+.hero {
+  max-width: 1200px;
+  margin: 80px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+  padding: 0 40px;
+}
+
+.hero-text h1 {
+  font-size: 2.4rem;
+  line-height: 1.2;
+  margin-bottom: 18px;
+}
+
+.hero-text p {
+  font-size: 0.98rem;
+  color: #6b7280;
+  max-width: 520px;
+  margin-bottom: 26px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+}
+
+.hero-image img {
+  width: 480px;
+  max-width: 100%;
+  border-radius: 32px;
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.25);
+  object-fit: cover;
+}
+
+/* ---------- SECCIONES GENERALES ---------- */
+.section {
+  padding: 100px 40px;
+}
+
+.section-gray {
+  background-color: #f7f8fc;  /* recomendaciones */
+}
+
+.section-pink {
+  background-color: #f3ced6;  /* comentarios */
+}
+
+.section-header {
+  max-width: 1200px;
+  margin: 0 auto 36px;
+  text-align: center;
+}
+
+.section-header h2 {
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+}
+
+.section-header p {
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+/* ---------- GRID TARJETAS ---------- */
+.card-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+/* TARJETAS RECOMENDACIONES */
+.cs-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px 22px 26px;
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cs-card h3 {
+  font-size: 1.05rem;
+}
+
+.cs-card p {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.cs-card-btn {
+  margin-top: 14px;
+  align-self: stretch;
+}
+
+/* Iconos redondos */
+.cs-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+}
+
+.cs-card-icon-purple { background: #a855f7; }
+.cs-card-icon-green  { background: #22c55e; }
+.cs-card-icon-orange { background: #f59e0b; }
+
+/* TARJETAS COMENTARIOS */
+.cs-card-flat {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: flex-start;
+}
+
+.cs-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-right: 18px;
+  margin-top: 6px;
+}
+
+.cs-avatar-green { background: #bbf7d0; }
+.cs-avatar-orange { background: #fed7aa; }
+
+.cs-user-role {
+  font-size: 0.78rem;
+  color: #6b7280;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+/* ---------- FOOTER ---------- */
+.cs-footer {
+  background-color: #0b3b3c;
+  color: #ffffff;
+  padding: 50px 40px 25px;
+}
+
+.cs-footer-top {
+  max-width: 1200px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.footer-logo-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tagline {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.cs-footer-links {
+  display: flex;
+  gap: 18px;
+  font-size: 0.88rem;
+}
+
+.cs-footer-links a {
+  color: #ffffff;
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+.cs-footer-links a:hover {
+  opacity: 1;
+}
+
+.cs-footer-social {
+  display: flex;
+  gap: 10px;
+}
+
+.cs-footer-social .circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+.cs-footer-bottom {
+  max-width: 1200px;
+  margin: 10px auto 0;
+  border-top: 1px solid #0f766e;
+  padding-top: 10px;
+  text-align: center;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 1024px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-text p {
+    margin-inline: auto;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .cs-navbar {
+    padding: 12px 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .cs-nav-links {
+    display: none; /* luego si quieres hacemos hamburguesa */
+  }
+
+  .section {
+    padding-inline: 20px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}

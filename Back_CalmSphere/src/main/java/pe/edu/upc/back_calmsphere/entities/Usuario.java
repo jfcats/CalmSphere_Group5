@@ -1,5 +1,6 @@
 package pe.edu.upc.back_calmsphere.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -10,7 +11,8 @@ import java.util.List;
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idUsuario;
+    private Integer idUsuario; // <--- CAMBIO: Integer
+
     @Column(name = "nombre", length = 30, nullable = false)
     private String nombre;
     @Column(name = "apellido", length = 30, nullable = false)
@@ -23,12 +25,13 @@ public class Usuario {
     private LocalDate fechaNacimiento;
     @Column(name = "fechaRegistro", nullable = false)
     private LocalDate fechaRegistro;
-    @OneToMany(mappedBy = "idUsuario", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Rol> roles;
 
     public Usuario() {}
 
-    public Usuario(int idUsuario, String nombre, String apellido, String email, String contraseña, LocalDate fechaNacimiento, LocalDate fechaRegistro, List<Rol> roles) {
+    public Usuario(Integer idUsuario, String nombre, String apellido, String email, String contraseña, LocalDate fechaNacimiento, LocalDate fechaRegistro, List<Rol> roles) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -39,11 +42,11 @@ public class Usuario {
         this.roles = roles;
     }
 
-    public int getIdUsuario() {
+    public Integer getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
+    public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
 

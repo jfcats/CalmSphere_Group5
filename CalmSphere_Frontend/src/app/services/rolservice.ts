@@ -9,7 +9,6 @@ const base_url = environment.base;
 @Injectable({
   providedIn: 'root',
 })
-
 export class Rolservice {
   private url = `${base_url}/roles`;
   private listaCambio = new Subject<Rol[]>();
@@ -21,7 +20,12 @@ export class Rolservice {
   }
 
   insert(r: Rol) {
-    return this.http.post(this.url, r);
+    return this.http.post(this.url, r, { responseType: 'text' });
+  }
+  
+  // === NUEVO: Asignación Masiva ===
+  assignRoles(data: any) {
+    return this.http.post(`${this.url}/asignar`, data, { responseType: 'text' });
   }
 
   update(r: Rol) {

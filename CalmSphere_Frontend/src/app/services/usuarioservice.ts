@@ -9,11 +9,8 @@ const base_url = environment.base;
 @Injectable({
   providedIn: 'root',
 })
-
 export class Usuarioservice {
-  
   private url = `${base_url}/usuarios`;
-
   private listaCambio = new Subject<Usuario[]>();
 
   constructor(private http: HttpClient) {}
@@ -24,13 +21,13 @@ export class Usuarioservice {
   }
 
   // INSERTAR
+  // ⚠️ AQUÍ FALTABA EL { responseType: 'text' }
   insert(u: Usuario) {
-    return this.http.post(this.url, u);
+    return this.http.post(this.url, u, { responseType: 'text' }); 
   }
 
   // ACTUALIZAR
   update(u: Usuario) {
-    // Backend usa PUT /usuarios SIN ID en la URL
     return this.http.put(this.url, u, { responseType: 'text' });
   }
 
@@ -64,4 +61,7 @@ export class Usuarioservice {
     return this.listaCambio.asObservable();
   }
 
+  listByEmail(email: string): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.url}/buscarPorEmail/${email}`);
+  }
 }

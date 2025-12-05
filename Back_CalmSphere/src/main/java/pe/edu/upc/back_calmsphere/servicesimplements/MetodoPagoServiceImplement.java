@@ -12,6 +12,7 @@ import java.util.List;
 public class MetodoPagoServiceImplement implements IMetodoPagoService {
     @Autowired
     private IMetodoPagoRepository rMP;
+
     @Override
     public List<MetodoPago> list(){
         return rMP.findAll();
@@ -35,4 +36,9 @@ public class MetodoPagoServiceImplement implements IMetodoPagoService {
         return rMP.findById(id).orElse(new MetodoPago());
     }
 
+    // NUEVO
+    @Override
+    public List<MetodoPago> listByUserId(int idUsuario) {
+        return rMP.findByUsuario(idUsuario);
+    }
 }

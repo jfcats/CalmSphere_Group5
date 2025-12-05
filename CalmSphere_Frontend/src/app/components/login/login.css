@@ -1,0 +1,106 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #F4F4F5;
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.login-card {
+  background: white;
+  width: 100%;
+  max-width: 480px;
+  padding: 48px;
+  border-radius: 24px;
+  box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.06);
+  border: 1px solid #E6E6E6;
+  text-align: center;
+}
+
+.logo {
+  height: 60px;
+  margin-bottom: 20px;
+}
+
+.login-header h2 {
+  font-family: 'Prompt', sans-serif;
+  font-weight: 700;
+  color: #333;
+  font-size: 26px;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 15px;
+  margin-bottom: 32px;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  margin-left: 4px;
+}
+
+/* Inputs */
+.custom-input {
+  width: 100%;
+}
+.custom-input .mat-mdc-text-field-wrapper {
+  background-color: white !important;
+}
+.input-icon {
+  color: #999;
+  margin-right: 8px;
+}
+
+/* Botones */
+.btn-primary {
+  background-color: #8654FC !important;
+  color: white !important;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(134, 84, 252, 0.3);
+}
+
+.btn-secondary {
+  color: #333 !important;
+  border-color: #333 !important;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.login-footer {
+  margin-top: 24px;
+  font-size: 14px;
+  color: #666;
+}
+
+.login-footer a {
+  color: #8654FC;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-footer a:hover {
+  text-decoration: underline;
+}

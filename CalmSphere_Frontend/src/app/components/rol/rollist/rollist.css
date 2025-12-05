@@ -1,65 +1,204 @@
-:root {
-  --cs-primary: #6366f1;
-  --cs-primary-soft: rgba(99, 102, 241, 0.15);
-  --cs-text: #e5e7eb;
-  --cs-muted: #9ca3af;
-  --cs-surface: #0b1120;
+/* Heredamos la base limpia de Usuarios */
+.list-container {
+  padding: 40px;
+  background-color: #f4f4f5;
+  min-height: calc(100vh - 64px);
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
-/* === Tabla === */
-table {
-  background: var(--cs-surface);
-  color: var(--cs-text);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-/* Encabezados */
-.mat-mdc-header-cell {
-  background: rgba(99, 102, 241, 0.12);
-  color: var(--cs-text);
-  font-weight: 600;
-}
-
-/* Filas */
-.mat-mdc-row:hover {
-  background: var(--cs-primary-soft) !important;
-  transition: background 0.2s ease;
-}
-
-/* Centrar columnas de acciones (si usas c3/c4 para botones) */
-.mat-mdc-cell.c-acciones,
-.mat-mdc-header-cell.c-acciones {
-  text-align: center;
-}
-
-/* === Botones de acción (Editar / Eliminar) === */
-button[matButton] {
-  font-size: 0.8rem;
-  font-weight: 500;
-  border-radius: 8px;
-  padding: 6px 10px;
-  text-transform: none;
-  display: inline-flex;
+/* HEADER */
+.header-section {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 4px;
-  color: white;
-  background-color: var(--cs-primary);
-  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.25);
-  transition: background-color 0.25s ease, transform 0.15s ease;
+  margin-bottom: 30px;
 }
 
-button[matButton]:hover {
-  background-color: #4f46e5;
-  transform: translateY(-1px);
+.header-section h1 {
+  font-size: 2.5rem;
+  color: #1f2937;
+  font-weight: 500;
+  margin: 0;
 }
 
-/* Botón eliminar (rojo CalmSphere) */
-button.delete {
-  background-color: #ef4444;
-  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.25);
+/* Botón Principal (Lila Pastel) */
+.btn-primary {
+  background-color: #d8b4fe;
+  color: #581c87 !important;
+  border-radius: 12px;
+  padding: 0 24px;
+  height: 48px;
+  font-weight: 600;
+  box-shadow: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-button.delete:hover {
-  background-color: #dc2626;
+.btn-primary:hover {
+  background-color: #c084fc;
+}
+
+/* FILTROS */
+.filters-container {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e7eb;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 10px;
+  color: #9ca3af;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  width: 100%;
+  margin-left: 10px;
+  color: #374151;
+}
+
+/* TABLA UNIFICADA */
+.table-wrapper {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.users-table { /* Usamos la misma clase que en usuarios para consistencia */
+    width: 100%;
+    background: transparent;
+    border-collapse: separate;
+    border-spacing: 0 10px !important;
+}
+
+.table-header th {
+    background: transparent;
+    color: #1f2937;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-bottom: none;
+    padding-bottom: 10px;
+}
+
+.table-row {
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    transition: transform 0.2s;
+}
+
+.table-row:hover {
+    transform: scale(1.005);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.table-row td {
+    border-top: 1px solid #f3f4f6;
+    border-bottom: 1px solid #f3f4f6;
+    padding: 20px;
+    vertical-align: middle;
+}
+
+.table-row td:first-child {
+    border-left: 1px solid #f3f4f6;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+.table-row td:last-child {
+    border-right: 1px solid #f3f4f6;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+/* INFO USUARIO */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e0e7ff;
+  color: #4338ca;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.user-name { font-weight: 600; color: #111827; display: block; }
+.user-email { font-size: 0.85rem; color: #6b7280; }
+
+/* BADGES */
+.role-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-admin { background-color: #111827; color: white; }
+.badge-pro { background-color: #e9d5ff; color: #7e22ce; }
+.badge-cliente { background-color: #f3f4f6; color: #4b5563; }
+
+/* ACCIONES (Botones idénticos a Usuarios) */
+.actions-row {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-icon:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+.btn-icon.delete {
+    color: #ef4444;
+    border-color: #fca5a5;
+}
+
+.btn-icon.delete:hover {
+    background-color: #fef2f2;
+}
+
+.mat-mdc-paginator {
+    background: transparent !important;
+    margin-top: 20px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #9ca3af;
 }

@@ -8,6 +8,9 @@ public class DisponibilidadDTOList {
     private LocalTime horaInicio;
     private LocalTime horaFin;
 
+    // --- CAMBIO: Agregamos el campo que faltaba ---
+    private int idProfesionalServicio;
+
     public int getDisponibilidadId() {
         return disponibilidadId;
     }
@@ -38,5 +41,14 @@ public class DisponibilidadDTOList {
 
     public void setHoraFin(LocalTime horaFin) {
         this.horaFin = horaFin;
+    }
+
+    // --- CAMBIO: Getters y Setters REALES para el servicio ---
+    public int getIdProfesionalServicio() {
+        return idProfesionalServicio;
+    }
+
+    public void setIdProfesionalServicio(int idProfesionalServicio) {
+        this.idProfesionalServicio = idProfesionalServicio;
     }
 }

@@ -1,0 +1,37 @@
+<div class="pay-container">
+  <div class="pay-card">
+    <div class="header">
+      <div class="icon-circle">
+        <mat-icon>payments</mat-icon>
+      </div>
+      <h2>Finalizar Pago</h2>
+      <p>Estás a un paso de confirmar tu cita.</p>
+    </div>
+
+    <div class="summary">
+      <div class="row">
+        <span>Servicio:</span>
+        <strong>Cita Médica #{{evento.idEvento}}</strong> 
+      </div>
+      <div class="row">
+        <span>Fecha:</span>
+        <strong>{{ evento.inicio | date:'dd/MM/yyyy HH:mm' }}</strong>
+      </div>
+      <div class="row total">
+        <span>Total a Pagar:</span>
+        <span class="amount">S/ {{ evento.monto }}</span>
+      </div>
+    </div>
+
+    <div class="stripe-box">
+      <ngx-stripe-card [options]="cardOptions" [elementsOptions]="elementsOptions"></ngx-stripe-card>
+    </div>
+
+    <div class="actions">
+      <button mat-button (click)="cancelar()">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="procesarPago()" [disabled]="loading">
+        {{ loading ? 'Procesando...' : 'Pagar S/ ' + evento.monto }}
+      </button>
+    </div>
+  </div>
+</div>

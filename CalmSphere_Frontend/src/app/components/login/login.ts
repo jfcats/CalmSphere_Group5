@@ -1,0 +1,87 @@
+import { Component, OnInit } from '@angular/core';
+import { Loginservice } from '../../services/loginservice';
+import { Router } from '@angular/router';
+import { JwtRequest } from '../../models/jwtRequest';
+
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
+import { JwtHelperService } from '@auth0/angular-jwt';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  templateUrl: './login.html',
+  styleUrl: './login.css',
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule
+  ]
+})
+export class Login implements OnInit {
+
+  email: string = ''; // Cambiado de username a email para claridad
+  password: string = '';
+  hidePassword: boolean = true;
+  isLoading: boolean = false;
+
+  constructor(
+    private loginservice: Loginservice,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    // Si ya hay sesión válida, salta login
+    if (typeof window !== 'undefined') {
+      const token = sessionStorage.getItem('token');
+      const jwtHelper = new JwtHelperService();
+      if (token && !jwtHelper.isTokenExpired(token)) {
+        this.router.navigate(['/inicio']); 
+      }
+    }
+  }
+
+  togglePasswordVisibility() {
+    this.hidePassword = !this.hidePassword;
+  }
+
+  login(): void {
+    if (!this.email || !this.password) {
+      alert('Ingresa tu correo y contraseña');
+      return;
+    }
+
+    this.isLoading = true;
+
+    const request = new JwtRequest();
+    // El backend espera "username" en el DTO, pero le enviamos el email
+    request.username = this.email; 
+    request.password = this.password;
+
+    this.loginservice.login(request).subscribe({
+      next: (data: any) => {
+        if (data && data.jwttoken) {
+          // guarda token y entra a privadas
+          sessionStorage.setItem('token', data.jwttoken);
+          this.router.navigate(['/inicio']); 
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('ERROR LOGIN:', error);
+        this.isLoading = false;
+        alert('Credenciales incorrectas. Verifica tu correo y contraseña.');
+      }
+    });
+  }
+
+  cancel(): void {
+    this.router.navigate(['/landing']);
+  }
+}

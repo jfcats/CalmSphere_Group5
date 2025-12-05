@@ -1,0 +1,242 @@
+/* Heredado de usuarioinsert.css */
+.page-wrapper {
+  min-height: calc(100vh - 64px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Alineado arriba para formularios largos */
+  background-color: #F4F4F5;
+  padding: 40px 20px;
+  font-family: 'Poppins', system-ui, sans-serif; 
+}
+
+/* Tarjeta */
+.register-card {
+  background: #FFFFFF;
+  width: 100%;
+  max-width: 800px; /* Un poco más ancho que Usuario por los campos extra */
+  padding: 48px 56px;
+  border-radius: 24px;
+  box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.06);
+  border: 1px solid #E6E6E6;
+}
+
+/* Cabecera */
+.card-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.card-header h2 {
+  font-family: 'Prompt', sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  color: #333333;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  color: #666666;
+  margin: 0;
+}
+
+/* Layout de Formulario */
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 6px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.field-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 8px;
+  margin-left: 4px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #8654FC; /* Color de marca */
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Ajustes de Inputs */
+.custom-input {
+  width: 100%;
+}
+
+.custom-input .mat-mdc-text-field-wrapper {
+  background-color: white !important;
+}
+
+/* Ajuste para mensajes de error */
+.custom-input .mat-mdc-form-field-subscript-wrapper {
+  font-size: 11px; 
+}
+
+.no-bottom-space .mat-mdc-form-field-subscript-wrapper {
+  margin-top: 0;
+}
+
+.prefix-icon {
+  color: #999999;
+  margin-right: 8px;
+}
+
+.price-badge {
+  background-color: #e0e7ff;
+  color: #4338ca;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* PAGO SECTION (Específico de Eventos pero estilizado igual) */
+.payment-section {
+  background-color: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 20px;
+}
+
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.total-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #8654FC;
+}
+
+.stripe-container {
+  background: white;
+  border: 1px solid #d1d5db;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+/* BOTONES */
+.actions-container {
+  display: flex;
+  justify-content: center; /* Centrados como en Usuario */
+  gap: 24px;
+  margin-top: 40px;
+  border-top: 1px solid #f3f4f6;
+  padding-top: 30px;
+}
+
+/* Botón Primario (Guardar/Pagar) */
+.btn-primary {
+  background-color: #8654FC;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  padding: 0 32px;
+  height: 48px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 180px;
+  box-shadow: 0 4px 12px rgba(134, 84, 252, 0.3);
+}
+
+.btn-primary:hover {
+  background-color: #7440e0;
+  transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+  background-color: #CCCCCC;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Botón Secundario (Cancelar/Volver) */
+.btn-secondary {
+  background-color: transparent;
+  color: #333333;
+  border: 1.5px solid #333333;
+  border-radius: 12px;
+  padding: 0 32px;
+  height: 48px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.btn-secondary:hover {
+  background-color: #F4F4F5;
+  border-color: #000000;
+}
+
+/* Botón Cancelar Cita (Rojo - Específico) */
+.btn-cancel {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1.5px solid #fecaca;
+  border-radius: 12px;
+  padding: 0 24px;
+  height: 48px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: auto; /* Empuja a la izquierda */
+}
+
+.btn-cancel:hover {
+  background-color: #fecaca;
+  color: #7f1d1d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .input-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .register-card {
+    padding: 32px 24px;
+  }
+  .actions-container {
+    flex-direction: column-reverse;
+    gap: 16px;
+  }
+  .btn-primary, .btn-secondary, .btn-cancel {
+    width: 100%;
+    margin-right: 0;
+    justify-content: center;
+  }
+}

@@ -1,79 +1,89 @@
-<div class="container">
-  <div style="text-align: center; margin: 5%">
-    <h1>Lista de usuarios</h1>
-  </div>
+<div class="list-container">
 
-  <div style="margin-bottom: 10px; text-align: right">
-    <button mat-raised-button color="primary" routerLink="news">
-      + Nuevo usuario
+  <div class="header-section">
+    <h1>Gestión de Usuarios</h1>
+    <button class="btn-primary" mat-button routerLink="news">
+      <mat-icon>add</mat-icon> Registrar Usuario
     </button>
   </div>
 
-  <div>
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <!-- ID -->
-      <ng-container matColumnDef="c1">
-        <th mat-header-cell *matHeaderCellDef>No.</th>
-        <td mat-cell *matCellDef="let element">{{ element.idUsuario }}</td>
-      </ng-container>
+  <!-- FILTROS -->
+  <div class="filters-container">
+    
+    <!-- Buscador -->
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input type="text" placeholder="Buscar por nombre o email..." [(ngModel)]="filtroTexto" (keyup)="aplicarFiltros()">
+    </div>
+
+    <!-- Filtro Rol -->
+    <div class="dropdowns">
+        <div class="filter-group">
+            <label>Filtrar por Rol</label>
+            <select class="custom-select" [(ngModel)]="filtroRol" (change)="aplicarFiltros()">
+                <option value="">Todos los roles</option>
+                <option value="ADMIN">Admin</option>
+                <option value="PROFESIONAL">Profesional</option>
+                <option value="PACIENTE">Paciente</option>
+            </select>
+        </div>
+    </div>
+
+  </div>
+
+  <!-- TABLA -->
+  <div class="table-wrapper">
+    <table mat-table [dataSource]="dataSource" class="users-table">
 
       <!-- Nombre -->
-      <ng-container matColumnDef="c2">
+      <ng-container matColumnDef="nombre">
         <th mat-header-cell *matHeaderCellDef>Nombre</th>
-        <td mat-cell *matCellDef="let element">{{ element.nombre }}</td>
+        <td mat-cell *matCellDef="let u" class="text-dark">{{ u.nombre }}</td>
       </ng-container>
 
       <!-- Apellido -->
-      <ng-container matColumnDef="c3">
+      <ng-container matColumnDef="apellido">
         <th mat-header-cell *matHeaderCellDef>Apellido</th>
-        <td mat-cell *matCellDef="let element">{{ element.apellido }}</td>
+        <td mat-cell *matCellDef="let u" class="text-dark">{{ u.apellido }}</td>
       </ng-container>
 
       <!-- Email -->
-      <ng-container matColumnDef="c4">
+      <ng-container matColumnDef="email">
         <th mat-header-cell *matHeaderCellDef>Email</th>
-        <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+        <td mat-cell *matCellDef="let u" class="text-muted">{{ u.email }}</td>
       </ng-container>
 
-      <!-- Fecha Nacimiento -->
-      <ng-container matColumnDef="c5">
-        <th mat-header-cell *matHeaderCellDef>F. Nacimiento</th>
-        <td mat-cell *matCellDef="let element">
-          {{ element.fechaNacimiento }}
+      <!-- Rol -->
+      <ng-container matColumnDef="rol">
+        <th mat-header-cell *matHeaderCellDef>Rol</th>
+        <td mat-cell *matCellDef="let u">
+            <span class="role-badge" [ngClass]="getRolClass(getRolPrincipal(u))">
+                {{ getRolPrincipal(u) | titlecase }}
+            </span>
         </td>
       </ng-container>
 
-      <!-- Fecha Registro -->
-      <ng-container matColumnDef="c6">
-        <th mat-header-cell *matHeaderCellDef>F. Registro</th>
-        <td mat-cell *matCellDef="let element">
-          {{ element.fechaRegistro }}
+      <!-- Acciones -->
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+        <td mat-cell *matCellDef="let u">
+          <div class="actions-row">
+              <button class="btn-icon" [routerLink]="['edits', u.idUsuario]" title="Editar">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button class="btn-icon" (click)="eliminar(u.idUsuario)" title="Eliminar" style="color: #ef4444; border-color: #fca5a5;">
+                <mat-icon>delete</mat-icon>
+              </button>
+          </div>
         </td>
       </ng-container>
 
-      <!-- Actualizar -->
-      <ng-container matColumnDef="c7">
-        <th mat-header-cell *matHeaderCellDef>Actualizar</th>
-        <td mat-cell *matCellDef="let element">
-          <button matButton [routerLink]="['edits', element.idUsuario]">
-            <mat-icon>edit</mat-icon>
-          </button>
-        </td>
-      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="table-header"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
 
-      <!-- Eliminar -->
-      <ng-container matColumnDef="c8">
-        <th mat-header-cell *matHeaderCellDef>Eliminar</th>
-        <td mat-cell *matCellDef="let element">
-          <button matButton class="delete" (click)="eliminar(element.idUsuario)">
-            <mat-icon>delete</mat-icon>
-            </button>
-
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+    
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
   </div>
+
 </div>

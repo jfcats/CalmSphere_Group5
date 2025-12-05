@@ -1,0 +1,59 @@
+<div class="list-container">
+  
+  <div class="header-section">
+    <h1>Mis Servicios</h1>
+    <button class="btn-primary" mat-button routerLink="news">
+      <mat-icon>add</mat-icon> 
+      {{ isAdmin() ? 'Registrar Profesional' : 'Crear Servicio' }}
+    </button>
+  </div>
+
+  <div class="filters-container">
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input type="text" placeholder="Buscar servicio..." (keyup)="filtrar($event)">
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    
+    <div class="service-card" *ngFor="let item of dataSource.filteredData">
+      
+      <div class="card-top-accent"></div> <div class="card-content">
+        <div class="service-avatar">
+            {{ item.nombre.charAt(0) | uppercase }}
+        </div>
+
+        <h3>{{ item.nombre }}</h3>
+        
+        <div class="service-details">
+            <div class="detail-item">
+                <mat-icon>schedule</mat-icon>
+                <span>{{ item.duracionMin }} min</span>
+            </div>
+            <div class="detail-item price">
+                <mat-icon>attach_money</mat-icon>
+                <span>S/ {{ item.precioBase }}</span>
+            </div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn-icon" [routerLink]="['edits', item.idProfesionalServicio]" title="Editar">
+            <mat-icon>edit</mat-icon>
+        </button>
+        
+        <button class="btn-icon delete" (click)="eliminar(item.idProfesionalServicio)" title="Eliminar">
+            <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+    </div>
+  </div>
+    
+  <div class="empty-state" *ngIf="dataSource.filteredData.length === 0">
+      <mat-icon>medical_services</mat-icon>
+      <p>No has registrado ningún servicio aún.</p>
+  </div>
+
+</div>

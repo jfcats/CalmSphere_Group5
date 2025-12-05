@@ -1,0 +1,204 @@
+/* Base unificada */
+.list-container {
+  padding: 40px;
+  background-color: #f4f4f5;
+  min-height: calc(100vh - 64px);
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+
+/* Header y Botón Principal */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header-section h1 {
+  font-size: 2.5rem;
+  color: #1f2937;
+  margin: 0;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background-color: #d8b4fe; /* Lila Pastel */
+  color: #581c87 !important; /* Morado Oscuro */
+  border-radius: 12px;
+  padding: 0 24px;
+  height: 48px;
+  font-weight: 600;
+  box-shadow: none;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  background-color: #c084fc;
+}
+
+/* Buscador */
+.filters-container {
+  background: white;
+  padding: 15px 25px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  border: 1px solid #e5e7eb;
+  max-width: 600px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+}
+
+.search-box mat-icon { color: #9ca3af; margin-right: 10px; }
+
+.search-box input {
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  width: 100%;
+  color: #374151;
+}
+
+/* GRID DE TARJETAS */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+/* DISEÑO DE TARJETA DE SERVICIO */
+.service-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+  border: 1px solid #f3f4f6;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(134, 84, 252, 0.1);
+  border-color: #d8b4fe;
+}
+
+.card-top-accent {
+    height: 6px;
+    background: linear-gradient(90deg, #8654FC, #d8b4fe);
+    width: 100%;
+}
+
+.card-content {
+    padding: 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.service-avatar {
+    width: 60px;
+    height: 60px;
+    background-color: #f3e8ff;
+    color: #8654FC;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.card-content h3 {
+    font-size: 1.2rem;
+    color: #1f2937;
+    margin: 0 0 15px 0;
+    font-weight: 600;
+}
+
+.service-details {
+    display: flex;
+    gap: 15px;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #f9fafb;
+    padding: 6px 12px;
+    border-radius: 10px;
+}
+
+.detail-item.price {
+    color: #059669; /* Verde para dinero */
+    background-color: #ecfdf5;
+    font-weight: 600;
+}
+
+.detail-item mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+/* Footer con acciones */
+.card-actions {
+    border-top: 1px solid #f3f4f6;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    background-color: #fafafa;
+}
+
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    color: #6b7280;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-icon:hover {
+    background: #f3e8ff;
+    border-color: #d8b4fe;
+    color: #8654FC;
+}
+
+.btn-icon.delete:hover {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    color: #ef4444;
+}
+
+/* Empty State */
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px;
+    color: #9ca3af;
+}
+
+.empty-state mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    opacity: 0.5;
+    margin-bottom: 10px;
+}

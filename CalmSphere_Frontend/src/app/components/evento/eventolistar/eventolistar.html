@@ -1,0 +1,164 @@
+<div class="list-container">
+
+  <div class="header-section">
+    <h1>{{ esProfesional ? 'Mi Agenda Médica' : 'Agenda de Citas' }}</h1>
+    
+    <button *ngIf="!esProfesional" class="btn-primary" mat-button routerLink="/eventos/news">
+      <mat-icon>add</mat-icon> Nueva Cita
+    </button>
+  </div>
+
+  <div class="filters-container">
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input type="text" (keyup)="filtrar($event)" placeholder="Buscar por paciente, motivo...">
+    </div>
+  </div>
+
+  <div class="table-wrapper" *ngIf="!esProfesional; else vistaProfesional">
+    <table mat-table [dataSource]="dataSource" matSort class="users-table">
+
+      <ng-container matColumnDef="fecha">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> FECHA </th>
+        <td mat-cell *matCellDef="let element" class="text-dark"> 
+          {{ element.inicio | date:'dd/MM/yyyy' }} <br>
+          <small class="text-muted">{{ element.inicio | date:'HH:mm a' }}</small>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="paciente">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> PACIENTE / MOTIVO </th>
+        <td mat-cell *matCellDef="let element">
+          <div style="display: flex; flex-direction: column;">
+            <span class="text-dark">{{ element.nombreUsuario }}</span>
+            <span class="text-muted">{{ element.motivo }}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="profesional">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> PROFESIONAL </th>
+        <td mat-cell *matCellDef="let element">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="doctor-avatar">
+              {{ element.nombreProfesional?.charAt(0) || 'D' }}
+            </div>
+            <span class="text-dark">Dr. {{ element.nombreProfesional | titlecase }}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="pago">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> PAGO </th>
+        <td mat-cell *matCellDef="let element">
+          <span class="role-badge" 
+                [style.background-color]="element.pagado ? '#dcfce7' : '#fee2e2'"
+                [style.color]="element.pagado ? '#166534' : '#991b1b'">
+            {{ element.pagado ? 'Pagado' : 'Pendiente' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> ESTADO </th>
+        <td mat-cell *matCellDef="let element">
+          <span style="font-weight: 600; font-size: 0.85rem;" 
+                [class.text-dark]="element.estado">
+            {{ element.estado ? 'Activa' : 'Cancelada' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="monto">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> MONTO </th>
+        <td mat-cell *matCellDef="let element" style="font-weight: 700; color: #475569;">
+           S/ {{ element.monto }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef> ACCIONES </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="actions-row">
+            
+            <button *ngIf="!element.pagado" class="btn-icon" 
+                    [routerLink]="['/eventos/pay', element.idEvento]" 
+                    title="Pagar Ahora">
+              <mat-icon style="color: #059669;">credit_card</mat-icon>
+            </button>
+
+            <button class="btn-icon" 
+                    [routerLink]="['/eventos/edits', element.idEvento]" 
+                    title="Editar detalles">
+              <mat-icon>edit</mat-icon>
+            </button>
+            
+            <button class="btn-icon" (click)="eliminar(element.idEvento)" title="Eliminar">
+              <mat-icon style="color: #ef4444;">delete</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns" class="table-header"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
+
+  <ng-template #vistaProfesional>
+    <div class="cards-grid">
+      
+      <div *ngFor="let element of dataSource.filteredData" class="cita-card" [class.border-paid]="element.pagado">
+        
+        <div class="card-header-custom">
+            <div class="user-info-group">
+                <div class="card-avatar">
+                    <mat-icon>person</mat-icon>
+                </div>
+                <div class="card-texts">
+                    <h3>{{ element.nombreUsuario | titlecase }}</h3>
+                    <p>
+                        <mat-icon style="font-size:16px; width:16px; height:16px;">schedule</mat-icon> 
+                        {{ element.inicio | date:'hh:mm a' }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="date-badge">
+                <span class="day">{{ element.inicio | date:'dd' }}</span>
+                <span class="month">{{ element.inicio | date:'MMM' }}</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="motivo-label">Motivo de consulta:</div>
+            <div class="motivo-text">"{{ element.motivo }}"</div>
+            
+            <div class="status-row">
+                <span class="status-chip" [class.chip-green]="element.pagado" [class.chip-red]="!element.pagado">
+                    {{ element.pagado ? 'PAGADO' : 'PENDIENTE' }}
+                </span>
+                <span class="status-chip chip-green" *ngIf="element.estado">CONFIRMADA</span>
+            </div>
+        </div>
+
+        <div class="card-actions">
+            <button class="btn-detail" 
+                    [routerLink]="['/eventos/edits', element.idEvento]"
+                    [queryParams]="{ readonly: 'true' }">
+                <mat-icon style="font-size: 18px;">visibility</mat-icon>
+                VER DETALLES
+            </button>
+        </div>
+
+      </div>
+
+      <div *ngIf="dataSource.filteredData.length === 0" class="no-results">
+        <p>No tienes citas programadas.</p>
+      </div>
+    </div>
+  </ng-template>
+
+</div>

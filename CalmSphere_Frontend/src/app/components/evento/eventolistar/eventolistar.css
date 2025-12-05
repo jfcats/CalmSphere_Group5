@@ -1,0 +1,366 @@
+/* ========================================= */
+/* BASE DEL CONTENEDOR (Compartido)          */
+/* ========================================= */
+.list-container {
+  padding: 40px;
+  background-color: #f8fafc; /* Fondo gris muy suave */
+  min-height: calc(100vh - 64px);
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+
+/* HEADER Y BOTONES */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header-section h1 {
+  font-size: 2.5rem;
+  color: #1e1b4b; /* Azul muy oscuro */
+  font-weight: 600;
+  margin: 0;
+}
+
+.btn-primary {
+  background-color: #d8b4fe; /* Lila Pastel */
+  color: #581c87 !important; /* Morado Oscuro */
+  border-radius: 12px;
+  padding: 0 24px;
+  height: 48px;
+  font-weight: 600;
+  box-shadow: none;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  background-color: #c084fc;
+}
+
+/* FILTROS (Compartido) */
+.filters-container {
+  background: white;
+  padding: 15px 25px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  border: 1px solid #e5e7eb;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+}
+
+.search-box mat-icon { color: #9ca3af; margin-right: 10px; }
+
+.search-box input {
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  width: 100%;
+  color: #374151;
+}
+
+/* ========================================= */
+/* VISTA 1: TABLA (ADMIN Y PACIENTE)         */
+/* ========================================= */
+.table-wrapper {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-x: auto;
+}
+
+.users-table {
+    width: 100%;
+    background: transparent;
+    border-collapse: separate;
+    border-spacing: 0 10px !important;
+}
+
+.table-header th {
+    background: transparent;
+    color: #64748b;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    border-bottom: none;
+    padding-bottom: 10px;
+}
+
+.table-row {
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    transition: transform 0.2s;
+}
+
+.table-row:hover {
+    transform: scale(1.005);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.table-row td {
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 20px;
+    vertical-align: middle;
+    color: #334155;
+}
+
+.table-row td:first-child {
+    border-left: 1px solid #f1f5f9;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+.table-row td:last-child {
+    border-right: 1px solid #f1f5f9;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+/* Estilos de texto en tabla */
+.text-dark { font-weight: 600; color: #1e293b; }
+.text-muted { color: #64748b; font-size: 0.9rem; }
+
+.doctor-avatar {
+  width: 32px;
+  height: 32px;
+  background-color: #e0e7ff;
+  color: #4338ca;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* Badges de Tabla */
+.role-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+.badge-pro { background-color: #e9d5ff; color: #7e22ce; }
+.badge-default { background-color: #e5e7eb; color: #374151; }
+
+/* Botones de Acción en Tabla */
+.actions-row {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-icon:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+
+/* ========================================= */
+/* VISTA 2: CARDS (SOLO PROFESIONAL)         */
+/* ========================================= */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+  padding-bottom: 20px;
+}
+
+.cita-card {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cita-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(134, 84, 252, 0.1); /* Sombra morada */
+  border-color: #d8b4fe;
+}
+
+/* Borde lateral verde si está pagado */
+.border-paid {
+  border-left: 5px solid #10b981 !important; 
+}
+
+/* HEADER DE LA TARJETA */
+.card-header-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+    gap: 15px;
+    border-bottom: 1px solid #f8fafc;
+}
+
+.user-info-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex: 1;
+}
+
+.card-avatar {
+  width: 48px;
+  height: 48px;
+  background-color: #e0e7ff; /* Fondo azul suave */
+  color: #4338ca;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.card-texts h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.2;
+}
+
+.card-texts p {
+    margin: 4px 0 0 0;
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Badge de Fecha */
+.date-badge {
+  background-color: #faf5ff;
+  border: 1px solid #f3e8ff;
+  border-radius: 10px;
+  padding: 6px 12px;
+  text-align: center;
+  min-width: 50px;
+}
+
+.date-badge .day {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #581c87;
+  line-height: 1;
+}
+
+.date-badge .month {
+  font-size: 0.7rem;
+  color: #9333ea;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* CUERPO */
+.card-body {
+  padding: 20px;
+  flex-grow: 1;
+}
+
+.motivo-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.motivo-text {
+  font-style: italic;
+  color: #334155;
+  font-size: 0.95rem;
+  margin: 0 0 15px 0;
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 8px;
+  border-left: 3px solid #cbd5e1;
+}
+
+.status-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* CHIPS */
+.status-chip {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.chip-green { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.chip-red { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+/* FOOTER / ACCIONES */
+.card-actions {
+    padding: 15px 20px;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: flex-end;
+    background-color: #fafafa;
+}
+
+.btn-detail {
+    border: 1px solid #d8b4fe !important;
+    color: #6b21a8 !important;
+    background-color: white !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    padding: 0 16px !important;
+    height: 36px !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-detail:hover {
+    background-color: #f3e8ff !important;
+    border-color: #8654FC !important;
+}
+
+/* Empty State */
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px;
+  color: #9ca3af;
+  font-style: italic;
+}

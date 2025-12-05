@@ -10,30 +10,42 @@ public class Evento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idEvento;
+
     @ManyToOne
     @JoinColumn(name = "idUsuario")
     private Usuario idUsuario;
+
     @ManyToOne
     @JoinColumn(name = "profesionalServicio")
     private ProfesionalServicio profesionalServicio;
+
     @ManyToOne
     @JoinColumn(name = "idMetodoPago")
     private MetodoPago idMetodoPago;
+
     @Column(name = "inicio", nullable = false)
     private LocalDateTime inicio;
+
     @Column(name = "fin", nullable = false)
     private LocalDateTime fin;
+
     @Column(name = "estado", nullable = false)
     private boolean estado;
+
+    // FIELD BARO: PAGADO
+    @Column(name = "pagado", nullable = false)
+    private boolean pagado = false; // Default: Saan pay nabayadan
+
     @Column(name = "motivo", nullable = false)
     private String motivo;
+
     @Column(name = "monto", nullable = false)
     private double monto;
 
     public Evento() {
     }
 
-    public Evento(int idEvento, Usuario idUsuario, ProfesionalServicio profesionalServicio, MetodoPago idMetodoPago, LocalDateTime inicio, LocalDateTime fin, boolean estado, String motivo, double monto) {
+    public Evento(int idEvento, Usuario idUsuario, ProfesionalServicio profesionalServicio, MetodoPago idMetodoPago, LocalDateTime inicio, LocalDateTime fin, boolean estado, boolean pagado, String motivo, double monto) {
         this.idEvento = idEvento;
         this.idUsuario = idUsuario;
         this.profesionalServicio = profesionalServicio;
@@ -41,6 +53,7 @@ public class Evento {
         this.inicio = inicio;
         this.fin = fin;
         this.estado = estado;
+        this.pagado = pagado;
         this.motivo = motivo;
         this.monto = monto;
     }
@@ -99,6 +112,14 @@ public class Evento {
 
     public void setEstado(boolean estado) {
         this.estado = estado;
+    }
+
+    public boolean isPagado() {
+        return pagado;
+    }
+
+    public void setPagado(boolean pagado) {
+        this.pagado = pagado;
     }
 
     public String getMotivo() {

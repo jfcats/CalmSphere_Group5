@@ -1,0 +1,151 @@
+<div class="page-wrapper">
+  
+  <div class="register-card">
+    
+    <div class="card-header">
+      <h2>{{ titulo }}</h2>
+      <p class="subtitle">{{ subtitulo }}</p>
+    </div>
+
+    <form [formGroup]="form" (submit)="aceptar()">
+      <input type="hidden" formControlName="idUsuario">
+
+      <h3 class="section-title"><mat-icon>medical_information</mat-icon> 1. Datos de la Consulta</h3>
+      
+      <div class="input-row">
+        
+        <div class="input-group">
+          
+          <ng-container *ngIf="!soloLectura || !esProfesional">
+            <label class="field-label">Profesional</label>
+            <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+              <mat-icon matPrefix class="prefix-icon">person_search</mat-icon>
+              <mat-select formControlName="idDoctorSeleccionado" (selectionChange)="alElegirDoctor($event.value)" placeholder="Seleccione doctor">
+                <mat-option *ngFor="let doc of listaProfesionales" [value]="doc.id">
+                  {{ doc.nombreCompleto }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+
+          <ng-container *ngIf="soloLectura && esProfesional">
+            <label class="field-label">Paciente</label>
+            <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+              <mat-icon matPrefix class="prefix-icon">person</mat-icon>
+              <input matInput [value]="nombrePaciente" readonly class="text-dark">
+            </mat-form-field>
+          </ng-container>
+
+        </div>
+
+        <div class="input-group">
+          <label class="field-label">Servicio</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <mat-icon matPrefix class="prefix-icon">stethoscope</mat-icon>
+            <mat-select formControlName="idProfesionalServicio" (selectionChange)="alElegirServicio($event.value)" placeholder="Tipo de consulta">
+              <mat-option *ngFor="let s of serviciosDelDoctor" [value]="s.idProfesionalServicio">
+                <div class="option-row">
+                  <span>{{ s.nombre }}</span>
+                  <span class="price-badge">S/ {{ s.precioBase }}</span>
+                </div>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="input-row" *ngIf="soloLectura && esProfesional">
+         <div class="input-group">
+            <label class="field-label">Edad del Paciente</label>
+            <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+                <mat-icon matPrefix class="prefix-icon">cake</mat-icon>
+                <input matInput [value]="edadPaciente" readonly>
+            </mat-form-field>
+         </div>
+         <div class="input-group"></div>
+      </div>
+
+      <h3 class="section-title"><mat-icon>calendar_month</mat-icon> 2. Horario</h3>
+
+      <div class="input-row">
+        <div class="input-group">
+          <label class="field-label">Fecha</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <mat-icon matPrefix class="prefix-icon">event</mat-icon>
+            <input matInput [matDatepicker]="picker" formControlName="fecha" 
+                   [matDatepickerFilter]="filtroFechas" (dateChange)="alCambiarFecha($event)" placeholder="DD/MM/AAAA">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="input-group">
+          <label class="field-label">Hora de Inicio</label>
+          <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+            <mat-icon matPrefix class="prefix-icon">schedule</mat-icon>
+            <mat-select formControlName="horaInicio" placeholder="--:--">
+              <mat-option *ngFor="let slot of slotsDeTiempo" [value]="slot">
+                {{ slot }}
+              </mat-option>
+              <mat-option *ngIf="slotsDeTiempo.length === 0" disabled>
+                {{ form.get('fecha')?.value ? 'No hay horarios disponibles' : 'Seleccione fecha primero' }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="field-label">Motivo de la visita</label>
+        <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+          <mat-icon matPrefix class="prefix-icon" style="margin-top: -20px;">edit_note</mat-icon>
+          <textarea matInput formControlName="motivo" rows="3" placeholder="Describe brevemente..."></textarea>
+        </mat-form-field>
+      </div>
+
+      <div class="payment-section" *ngIf="!edicion">
+        <div class="payment-header">
+          <mat-checkbox formControlName="pagarAhoraCheck" (change)="togglePago($event.checked)" color="primary">
+            Quiero pagar ahora online
+          </mat-checkbox>
+          <div *ngIf="form.get('monto')?.value" class="total-price">
+            Total: S/ {{ form.get('monto')?.value }}
+          </div>
+        </div>
+
+        <div *ngIf="pagarAhora" class="payment-details">
+          <div class="input-group">
+            <label class="field-label">Método de Pago</label>
+            <mat-form-field appearance="outline" class="custom-input no-bottom-space">
+              <mat-icon matPrefix class="prefix-icon">credit_card</mat-icon>
+              <mat-select formControlName="idMetodoPago" (selectionChange)="verificarMetodoPago($event.value)">
+                <mat-option *ngFor="let mp of listaPagos" [value]="mp.idMetodoPago">
+                  {{ mp.nombre }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div *ngIf="mostrarStripe" class="stripe-container">
+            <ngx-stripe-card [options]="cardOptions" [elementsOptions]="elementsOptions"></ngx-stripe-card>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions-container">
+        
+        <button *ngIf="soloLectura && esProfesional" type="button" class="btn-cancel" (click)="cancelarCita()">
+            <mat-icon>cancel</mat-icon> Cancelar Cita
+        </button>
+
+        <button type="button" class="btn-secondary" routerLink="/eventos">
+          {{ soloLectura ? 'Volver' : 'Cancelar' }}
+        </button>
+
+        <button *ngIf="!soloLectura" type="submit" class="btn-primary" [disabled]="form.invalid || loading">
+          {{ botonTexto }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

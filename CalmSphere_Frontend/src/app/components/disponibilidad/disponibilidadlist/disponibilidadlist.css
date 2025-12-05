@@ -1,0 +1,166 @@
+.calendar-container {
+  padding: 40px;
+  background-color: #f4f4f5;
+  min-height: calc(100vh - 64px);
+  font-family: 'Poppins', system-ui, sans-serif;
+}
+
+/* Header */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header-section h1 {
+  font-size: 2.2rem;
+  color: #1f2937;
+  font-weight: 600;
+  margin: 0;
+}
+
+.header-section p {
+  color: #6b7280;
+  margin: 5px 0 0;
+}
+
+/* Botón Nuevo (Estilo unificado) */
+.btn-primary {
+  background-color: #d8b4fe;
+  color: #581c87;
+  border-radius: 12px;
+  padding: 0 24px;
+  height: 48px;
+  font-weight: 600;
+  box-shadow: none;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.btn-primary:hover {
+  background-color: #c084fc;
+}
+
+/* Wrapper para el scroll horizontal si es necesario */
+.calendar-wrapper {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    overflow-x: auto; /* Permite scroll en pantallas chicas */
+}
+
+/* Grid de 7 columnas */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0; /* Sin gap, usaremos bordes para separar días */
+  min-width: 900px; /* Asegura que no se aplaste en móvil */
+}
+
+/* Columna de día */
+.day-column {
+  border-right: 1px solid #f3f4f6;
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.day-column:last-child {
+    border-right: none;
+}
+
+/* Cabecera del día */
+.day-header {
+  text-align: center;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.day-name {
+  font-weight: 700;
+  color: #374151;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+/* TARJETA DE HORARIO (Estilo bloque sólido) */
+.time-card {
+  background-color: #f3e8ff; /* Fondo Lila marca */
+  border-left: 4px solid #8654FC; /* Borde izquierdo morado fuerte */
+  border-radius: 8px;
+  padding: 10px 8px;
+  position: relative;
+  transition: all 0.2s ease;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.time-card:hover {
+  background-color: #e9d5ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(134, 84, 252, 0.15);
+  z-index: 2;
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #581c87;
+}
+
+.clock-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+}
+
+.time-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.time-range {
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* Botón 3 puntos (Opciones) */
+.btn-options {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+
+.btn-options mat-icon { 
+    font-size: 16px; 
+    color: #8654FC; 
+    opacity: 0.6;
+}
+
+.btn-options:hover mat-icon { opacity: 1; }
+
+/* Empty state sutil */
+.empty-slot {
+  text-align: center;
+  color: #e5e7eb;
+  font-size: 2rem;
+  font-weight: 200;
+  padding-top: 20px;
+  user-select: none;
+}
